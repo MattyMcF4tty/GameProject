@@ -3,5 +3,7 @@
 
 int main(void)
 {
+	uart_init(9600);
+	printf("TESTER");
 	while(1){}
 }
