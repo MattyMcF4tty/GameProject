@@ -6,21 +6,27 @@
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
 ../Src/30010_io.c \
+../Src/joystick.c \
 ../Src/main.c \
+../Src/stm32_helpers.c \
 ../Src/syscalls.c \
 ../Src/sysmem.c \
 ../Src/system_stm32f30x.c 
 
 OBJS += \
 ./Src/30010_io.o \
+./Src/joystick.o \
 ./Src/main.o \
+./Src/stm32_helpers.o \
 ./Src/syscalls.o \
 ./Src/sysmem.o \
 ./Src/system_stm32f30x.o 
 
 C_DEPS += \
 ./Src/30010_io.d \
+./Src/joystick.d \
 ./Src/main.d \
+./Src/stm32_helpers.d \
 ./Src/syscalls.d \
 ./Src/sysmem.d \
 ./Src/system_stm32f30x.d 
@@ -33,7 +39,7 @@ Src/%.o: ../Src/%.c Src/subdir.mk
 clean: clean-Src
 
 clean-Src:
-	-$(RM) ./Src/30010_io.d ./Src/30010_io.o ./Src/main.d ./Src/main.o ./Src/syscalls.d ./Src/syscalls.o ./Src/sysmem.d ./Src/sysmem.o ./Src/system_stm32f30x.d ./Src/system_stm32f30x.o
+	-$(RM) ./Src/30010_io.d ./Src/30010_io.o ./Src/joystick.d ./Src/joystick.o ./Src/main.d ./Src/main.o ./Src/stm32_helpers.d ./Src/stm32_helpers.o ./Src/syscalls.d ./Src/syscalls.o ./Src/sysmem.d ./Src/sysmem.o ./Src/system_stm32f30x.d ./Src/system_stm32f30x.o
 
 .PHONY: clean-Src
 

@@ -7,23 +7,23 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, ALLOC, LOAD, READONLY, DATA
   1 .text         00001d20  08000190  08000190  00010190  2**4
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  2 .rodata       000000a8  08001eb0  08001eb0  00011eb0  2**2
+  2 .rodata       000000a0  08001eb0  08001eb0  00011eb0  2**2
                   CONTENTS, ALLOC, LOAD, READONLY, DATA
-  3 .ARM.extab    00000000  08001f58  08001f58  00020090  2**0
+  3 .ARM.extab    00000000  08001f50  08001f50  00020090  2**0
                   CONTENTS
-  4 .ARM          00000000  08001f58  08001f58  00020090  2**0
+  4 .ARM          00000000  08001f50  08001f50  00020090  2**0
                   CONTENTS
-  5 .preinit_array 00000000  08001f58  08001f58  00020090  2**0
+  5 .preinit_array 00000000  08001f50  08001f50  00020090  2**0
                   CONTENTS, ALLOC, LOAD, DATA
-  6 .init_array   00000004  08001f58  08001f58  00011f58  2**2
+  6 .init_array   00000004  08001f50  08001f50  00011f50  2**2
                   CONTENTS, ALLOC, LOAD, DATA
-  7 .fini_array   00000004  08001f5c  08001f5c  00011f5c  2**2
+  7 .fini_array   00000004  08001f54  08001f54  00011f54  2**2
                   CONTENTS, ALLOC, LOAD, DATA
-  8 .data         00000090  20000000  08001f60  00020000  2**2
+  8 .data         00000090  20000000  08001f58  00020000  2**2
                   CONTENTS, ALLOC, LOAD, DATA
-  9 .bss          0000013c  20000090  08001ff0  00020090  2**2
+  9 .bss          0000013c  20000090  08001fe8  00020090  2**2
                   ALLOC
- 10 ._user_heap_stack 00000604  200001cc  08001ff0  000201cc  2**0
+ 10 ._user_heap_stack 00000604  200001cc  08001fe8  000201cc  2**0
                   ALLOC
  11 .ARM.attributes 00000030  00000000  00000000  00020090  2**0
                   CONTENTS, READONLY
@@ -1655,7 +1655,7 @@ int main(void)
 	uart_init(9600);
  8000b74:	f44f 5016 	mov.w	r0, #9600	; 0x2580
  8000b78:	f7ff fee0 	bl	800093c <uart_init>
-	printf("HEEJEJEJEJEJE");
+	printf("TESTER");
  8000b7c:	4801      	ldr	r0, [pc, #4]	; (8000b84 <main+0x14>)
  8000b7e:	f000 f971 	bl	8000e64 <iprintf>
 	while(1){}
@@ -2160,7 +2160,7 @@ LoopForever:
   ldr r1, =_edata
  8000dec:	20000090 	.word	0x20000090
   ldr r2, =_sidata
- 8000df0:	08001f60 	.word	0x08001f60
+ 8000df0:	08001f58 	.word	0x08001f58
   ldr r2, =_sbss
  8000df4:	20000090 	.word	0x20000090
   ldr r4, =_ebss
@@ -2209,10 +2209,10 @@ Infinite_Loop:
  8000e3e:	4798      	blx	r3
  8000e40:	3601      	adds	r6, #1
  8000e42:	e7f2      	b.n	8000e2a <__libc_init_array+0x1e>
- 8000e44:	08001f58 	.word	0x08001f58
- 8000e48:	08001f58 	.word	0x08001f58
- 8000e4c:	08001f58 	.word	0x08001f58
- 8000e50:	08001f5c 	.word	0x08001f5c
+ 8000e44:	08001f50 	.word	0x08001f50
+ 8000e48:	08001f50 	.word	0x08001f50
+ 8000e4c:	08001f50 	.word	0x08001f50
+ 8000e50:	08001f54 	.word	0x08001f54
 
 08000e54 <memset>:
  8000e54:	4402      	add	r2, r0
@@ -2411,9 +2411,9 @@ Infinite_Loop:
  800101c:	e7b7      	b.n	8000f8e <setvbuf+0xea>
  800101e:	bf00      	nop
  8001020:	2000002c 	.word	0x2000002c
- 8001024:	08001ee4 	.word	0x08001ee4
- 8001028:	08001f04 	.word	0x08001f04
- 800102c:	08001ec4 	.word	0x08001ec4
+ 8001024:	08001edc 	.word	0x08001edc
+ 8001028:	08001efc 	.word	0x08001efc
+ 800102c:	08001ebc 	.word	0x08001ebc
 
 08001030 <__sflush_r>:
  8001030:	898a      	ldrh	r2, [r1, #12]
@@ -2589,9 +2589,9 @@ Infinite_Loop:
  80011a2:	bf08      	it	eq
  80011a4:	68ec      	ldreq	r4, [r5, #12]
  80011a6:	e7da      	b.n	800115e <_fflush_r+0x22>
- 80011a8:	08001ee4 	.word	0x08001ee4
- 80011ac:	08001f04 	.word	0x08001f04
- 80011b0:	08001ec4 	.word	0x08001ec4
+ 80011a8:	08001edc 	.word	0x08001edc
+ 80011ac:	08001efc 	.word	0x08001efc
+ 80011b0:	08001ebc 	.word	0x08001ebc
 
 080011b4 <std>:
  80011b4:	2300      	movs	r3, #0
@@ -2716,7 +2716,7 @@ Infinite_Loop:
  80012c6:	61a3      	str	r3, [r4, #24]
  80012c8:	e7d2      	b.n	8001270 <__sinit+0xc>
  80012ca:	bf00      	nop
- 80012cc:	08001ec0 	.word	0x08001ec0
+ 80012cc:	08001eb8 	.word	0x08001eb8
  80012d0:	080011fd 	.word	0x080011fd
 
 080012d4 <__sfp>:
@@ -2771,7 +2771,7 @@ Infinite_Loop:
  8001352:	603b      	str	r3, [r7, #0]
  8001354:	e7ee      	b.n	8001334 <__sfp+0x60>
  8001356:	bf00      	nop
- 8001358:	08001ec0 	.word	0x08001ec0
+ 8001358:	08001eb8 	.word	0x08001eb8
  800135c:	ffff0001 	.word	0xffff0001
 
 08001360 <_fwalk_reent>:
@@ -3342,14 +3342,14 @@ Infinite_Loop:
  800185c:	f000 f880 	bl	8001960 <_printf_i>
  8001860:	e7e4      	b.n	800182c <_vfiprintf_r+0x208>
  8001862:	bf00      	nop
- 8001864:	08001ee4 	.word	0x08001ee4
- 8001868:	08001f04 	.word	0x08001f04
- 800186c:	08001ec4 	.word	0x08001ec4
- 8001870:	08001f24 	.word	0x08001f24
- 8001874:	08001f2e 	.word	0x08001f2e
+ 8001864:	08001edc 	.word	0x08001edc
+ 8001868:	08001efc 	.word	0x08001efc
+ 800186c:	08001ebc 	.word	0x08001ebc
+ 8001870:	08001f1c 	.word	0x08001f1c
+ 8001874:	08001f26 	.word	0x08001f26
  8001878:	00000000 	.word	0x00000000
  800187c:	080015ff 	.word	0x080015ff
- 8001880:	08001f2a 	.word	0x08001f2a
+ 8001880:	08001f22 	.word	0x08001f22
 
 08001884 <_printf_common>:
  8001884:	e92d 47f0 	stmdb	sp!, {r4, r5, r6, r7, r8, r9, sl, lr}
@@ -3685,8 +3685,8 @@ Infinite_Loop:
  8001b9c:	f104 0619 	add.w	r6, r4, #25
  8001ba0:	e7f5      	b.n	8001b8e <_printf_i+0x22e>
  8001ba2:	bf00      	nop
- 8001ba4:	08001f35 	.word	0x08001f35
- 8001ba8:	08001f46 	.word	0x08001f46
+ 8001ba4:	08001f2d 	.word	0x08001f2d
+ 8001ba8:	08001f3e 	.word	0x08001f3e
 
 08001bac <_sbrk_r>:
  8001bac:	b538      	push	{r3, r4, r5, lr}
@@ -3836,9 +3836,9 @@ Infinite_Loop:
  8001ce4:	f04f 37ff 	mov.w	r7, #4294967295	; 0xffffffff
  8001ce8:	e7ea      	b.n	8001cc0 <__swbuf_r+0x6c>
  8001cea:	bf00      	nop
- 8001cec:	08001ee4 	.word	0x08001ee4
- 8001cf0:	08001f04 	.word	0x08001f04
- 8001cf4:	08001ec4 	.word	0x08001ec4
+ 8001cec:	08001edc 	.word	0x08001edc
+ 8001cf0:	08001efc 	.word	0x08001efc
+ 8001cf4:	08001ebc 	.word	0x08001ebc
 
 08001cf8 <__swsetup_r>:
  8001cf8:	4b32      	ldr	r3, [pc, #200]	; (8001dc4 <__swsetup_r+0xcc>)
@@ -3930,9 +3930,9 @@ Infinite_Loop:
  8001dc0:	e7f7      	b.n	8001db2 <__swsetup_r+0xba>
  8001dc2:	bf00      	nop
  8001dc4:	2000002c 	.word	0x2000002c
- 8001dc8:	08001ee4 	.word	0x08001ee4
- 8001dcc:	08001f04 	.word	0x08001f04
- 8001dd0:	08001ec4 	.word	0x08001ec4
+ 8001dc8:	08001edc 	.word	0x08001edc
+ 8001dcc:	08001efc 	.word	0x08001efc
+ 8001dd0:	08001ebc 	.word	0x08001ebc
 
 08001dd4 <_close_r>:
  8001dd4:	b538      	push	{r3, r4, r5, lr}

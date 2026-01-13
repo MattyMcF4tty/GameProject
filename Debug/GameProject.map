@@ -3256,6 +3256,155 @@ Discarded input sections
  .debug_macro   0x0000000000000000      0x364 ./Src/30010_io.o
  .debug_macro   0x0000000000000000       0x34 ./Src/30010_io.o
  .debug_macro   0x0000000000000000       0x89 ./Src/30010_io.o
+ .group         0x0000000000000000        0xc ./Src/joystick.o
+ .group         0x0000000000000000        0xc ./Src/joystick.o
+ .group         0x0000000000000000        0xc ./Src/joystick.o
+ .group         0x0000000000000000        0xc ./Src/joystick.o
+ .group         0x0000000000000000        0xc ./Src/joystick.o
+ .group         0x0000000000000000        0xc ./Src/joystick.o
+ .group         0x0000000000000000        0xc ./Src/joystick.o
+ .group         0x0000000000000000        0xc ./Src/joystick.o
+ .group         0x0000000000000000        0xc ./Src/joystick.o
+ .group         0x0000000000000000        0xc ./Src/joystick.o
+ .group         0x0000000000000000        0xc ./Src/joystick.o
+ .group         0x0000000000000000        0xc ./Src/joystick.o
+ .group         0x0000000000000000        0xc ./Src/joystick.o
+ .group         0x0000000000000000        0xc ./Src/joystick.o
+ .group         0x0000000000000000        0xc ./Src/joystick.o
+ .group         0x0000000000000000        0xc ./Src/joystick.o
+ .group         0x0000000000000000        0xc ./Src/joystick.o
+ .group         0x0000000000000000        0xc ./Src/joystick.o
+ .group         0x0000000000000000        0xc ./Src/joystick.o
+ .group         0x0000000000000000        0xc ./Src/joystick.o
+ .group         0x0000000000000000        0xc ./Src/joystick.o
+ .group         0x0000000000000000        0xc ./Src/joystick.o
+ .group         0x0000000000000000        0xc ./Src/joystick.o
+ .group         0x0000000000000000        0xc ./Src/joystick.o
+ .group         0x0000000000000000        0xc ./Src/joystick.o
+ .group         0x0000000000000000        0xc ./Src/joystick.o
+ .group         0x0000000000000000        0xc ./Src/joystick.o
+ .group         0x0000000000000000        0xc ./Src/joystick.o
+ .group         0x0000000000000000        0xc ./Src/joystick.o
+ .group         0x0000000000000000        0xc ./Src/joystick.o
+ .group         0x0000000000000000        0xc ./Src/joystick.o
+ .group         0x0000000000000000        0xc ./Src/joystick.o
+ .group         0x0000000000000000        0xc ./Src/joystick.o
+ .group         0x0000000000000000        0xc ./Src/joystick.o
+ .group         0x0000000000000000        0xc ./Src/joystick.o
+ .group         0x0000000000000000        0xc ./Src/joystick.o
+ .group         0x0000000000000000        0xc ./Src/joystick.o
+ .group         0x0000000000000000        0xc ./Src/joystick.o
+ .group         0x0000000000000000        0xc ./Src/joystick.o
+ .group         0x0000000000000000        0xc ./Src/joystick.o
+ .group         0x0000000000000000        0xc ./Src/joystick.o
+ .group         0x0000000000000000        0xc ./Src/joystick.o
+ .group         0x0000000000000000        0xc ./Src/joystick.o
+ .group         0x0000000000000000        0xc ./Src/joystick.o
+ .group         0x0000000000000000        0xc ./Src/joystick.o
+ .group         0x0000000000000000        0xc ./Src/joystick.o
+ .group         0x0000000000000000        0xc ./Src/joystick.o
+ .group         0x0000000000000000        0xc ./Src/joystick.o
+ .group         0x0000000000000000        0xc ./Src/joystick.o
+ .group         0x0000000000000000        0xc ./Src/joystick.o
+ .group         0x0000000000000000        0xc ./Src/joystick.o
+ .group         0x0000000000000000        0xc ./Src/joystick.o
+ .group         0x0000000000000000        0xc ./Src/joystick.o
+ .group         0x0000000000000000        0xc ./Src/joystick.o
+ .group         0x0000000000000000        0xc ./Src/joystick.o
+ .group         0x0000000000000000        0xc ./Src/joystick.o
+ .group         0x0000000000000000        0xc ./Src/joystick.o
+ .group         0x0000000000000000        0xc ./Src/joystick.o
+ .group         0x0000000000000000        0xc ./Src/joystick.o
+ .group         0x0000000000000000        0xc ./Src/joystick.o
+ .group         0x0000000000000000        0xc ./Src/joystick.o
+ .group         0x0000000000000000        0xc ./Src/joystick.o
+ .group         0x0000000000000000        0xc ./Src/joystick.o
+ .group         0x0000000000000000        0xc ./Src/joystick.o
+ .text          0x0000000000000000        0x0 ./Src/joystick.o
+ .data          0x0000000000000000        0x0 ./Src/joystick.o
+ .bss           0x0000000000000000        0x0 ./Src/joystick.o
+ .data.joystickEnabled
+                0x0000000000000000        0x1 ./Src/joystick.o
+ .text.readJoystick
+                0x0000000000000000       0xa0 ./Src/joystick.o
+ .text.toggleJoystick
+                0x0000000000000000       0x2c ./Src/joystick.o
+ .debug_info    0x0000000000000000      0xb44 ./Src/joystick.o
+ .debug_abbrev  0x0000000000000000      0x215 ./Src/joystick.o
+ .debug_aranges
+                0x0000000000000000       0x28 ./Src/joystick.o
+ .debug_ranges  0x0000000000000000       0x18 ./Src/joystick.o
+ .debug_macro   0x0000000000000000      0x319 ./Src/joystick.o
+ .debug_macro   0x0000000000000000      0xaba ./Src/joystick.o
+ .debug_macro   0x0000000000000000       0x7a ./Src/joystick.o
+ .debug_macro   0x0000000000000000       0x35 ./Src/joystick.o
+ .debug_macro   0x0000000000000000       0x22 ./Src/joystick.o
+ .debug_macro   0x0000000000000000       0x8e ./Src/joystick.o
+ .debug_macro   0x0000000000000000       0x51 ./Src/joystick.o
+ .debug_macro   0x0000000000000000      0x103 ./Src/joystick.o
+ .debug_macro   0x0000000000000000       0x6a ./Src/joystick.o
+ .debug_macro   0x0000000000000000      0x1df ./Src/joystick.o
+ .debug_macro   0x0000000000000000       0x18 ./Src/joystick.o
+ .debug_macro   0x0000000000000000       0x42 ./Src/joystick.o
+ .debug_macro   0x0000000000000000      0x8cb ./Src/joystick.o
+ .debug_macro   0x0000000000000000     0x769b ./Src/joystick.o
+ .debug_macro   0x0000000000000000       0x35 ./Src/joystick.o
+ .debug_macro   0x0000000000000000      0x5a6 ./Src/joystick.o
+ .debug_macro   0x0000000000000000      0x3cf ./Src/joystick.o
+ .debug_macro   0x0000000000000000       0x46 ./Src/joystick.o
+ .debug_macro   0x0000000000000000      0x231 ./Src/joystick.o
+ .debug_macro   0x0000000000000000      0x196 ./Src/joystick.o
+ .debug_macro   0x0000000000000000       0x8e ./Src/joystick.o
+ .debug_macro   0x0000000000000000      0x3a8 ./Src/joystick.o
+ .debug_macro   0x0000000000000000      0x114 ./Src/joystick.o
+ .debug_macro   0x0000000000000000      0x1e4 ./Src/joystick.o
+ .debug_macro   0x0000000000000000      0x1b6 ./Src/joystick.o
+ .debug_macro   0x0000000000000000      0x1df ./Src/joystick.o
+ .debug_macro   0x0000000000000000      0x29a ./Src/joystick.o
+ .debug_macro   0x0000000000000000       0x70 ./Src/joystick.o
+ .debug_macro   0x0000000000000000      0x10c ./Src/joystick.o
+ .debug_macro   0x0000000000000000       0xb8 ./Src/joystick.o
+ .debug_macro   0x0000000000000000      0x5c6 ./Src/joystick.o
+ .debug_macro   0x0000000000000000      0x551 ./Src/joystick.o
+ .debug_macro   0x0000000000000000      0x3ab ./Src/joystick.o
+ .debug_macro   0x0000000000000000      0x8d8 ./Src/joystick.o
+ .debug_macro   0x0000000000000000      0x364 ./Src/joystick.o
+ .debug_macro   0x0000000000000000       0x34 ./Src/joystick.o
+ .debug_macro   0x0000000000000000       0x89 ./Src/joystick.o
+ .debug_macro   0x0000000000000000       0x52 ./Src/joystick.o
+ .debug_macro   0x0000000000000000       0x18 ./Src/joystick.o
+ .debug_macro   0x0000000000000000       0x3c ./Src/joystick.o
+ .debug_macro   0x0000000000000000       0x34 ./Src/joystick.o
+ .debug_macro   0x0000000000000000       0x16 ./Src/joystick.o
+ .debug_macro   0x0000000000000000       0x97 ./Src/joystick.o
+ .debug_macro   0x0000000000000000      0x339 ./Src/joystick.o
+ .debug_macro   0x0000000000000000       0xfd ./Src/joystick.o
+ .debug_macro   0x0000000000000000       0x10 ./Src/joystick.o
+ .debug_macro   0x0000000000000000       0x16 ./Src/joystick.o
+ .debug_macro   0x0000000000000000       0x43 ./Src/joystick.o
+ .debug_macro   0x0000000000000000       0x34 ./Src/joystick.o
+ .debug_macro   0x0000000000000000       0x10 ./Src/joystick.o
+ .debug_macro   0x0000000000000000       0x58 ./Src/joystick.o
+ .debug_macro   0x0000000000000000       0x71 ./Src/joystick.o
+ .debug_macro   0x0000000000000000       0x1c ./Src/joystick.o
+ .debug_macro   0x0000000000000000      0x12a ./Src/joystick.o
+ .debug_macro   0x0000000000000000       0x10 ./Src/joystick.o
+ .debug_macro   0x0000000000000000       0x1c ./Src/joystick.o
+ .debug_macro   0x0000000000000000       0x52 ./Src/joystick.o
+ .debug_macro   0x0000000000000000       0x22 ./Src/joystick.o
+ .debug_macro   0x0000000000000000       0x10 ./Src/joystick.o
+ .debug_macro   0x0000000000000000       0x40 ./Src/joystick.o
+ .debug_macro   0x0000000000000000       0xd5 ./Src/joystick.o
+ .debug_macro   0x0000000000000000       0x1c ./Src/joystick.o
+ .debug_macro   0x0000000000000000       0x3d ./Src/joystick.o
+ .debug_macro   0x0000000000000000       0x16 ./Src/joystick.o
+ .debug_macro   0x0000000000000000      0x145 ./Src/joystick.o
+ .debug_line    0x0000000000000000      0x98d ./Src/joystick.o
+ .debug_str     0x0000000000000000    0x57174 ./Src/joystick.o
+ .comment       0x0000000000000000       0x54 ./Src/joystick.o
+ .debug_frame   0x0000000000000000       0x5c ./Src/joystick.o
+ .ARM.attributes
+                0x0000000000000000       0x34 ./Src/joystick.o
  .group         0x0000000000000000        0xc ./Src/main.o
  .group         0x0000000000000000        0xc ./Src/main.o
  .group         0x0000000000000000        0xc ./Src/main.o
@@ -3387,6 +3536,160 @@ Discarded input sections
  .debug_macro   0x0000000000000000       0x3d ./Src/main.o
  .debug_macro   0x0000000000000000       0x16 ./Src/main.o
  .debug_macro   0x0000000000000000      0x145 ./Src/main.o
+ .group         0x0000000000000000        0xc ./Src/stm32_helpers.o
+ .group         0x0000000000000000        0xc ./Src/stm32_helpers.o
+ .group         0x0000000000000000        0xc ./Src/stm32_helpers.o
+ .group         0x0000000000000000        0xc ./Src/stm32_helpers.o
+ .group         0x0000000000000000        0xc ./Src/stm32_helpers.o
+ .group         0x0000000000000000        0xc ./Src/stm32_helpers.o
+ .group         0x0000000000000000        0xc ./Src/stm32_helpers.o
+ .group         0x0000000000000000        0xc ./Src/stm32_helpers.o
+ .group         0x0000000000000000        0xc ./Src/stm32_helpers.o
+ .group         0x0000000000000000        0xc ./Src/stm32_helpers.o
+ .group         0x0000000000000000        0xc ./Src/stm32_helpers.o
+ .group         0x0000000000000000        0xc ./Src/stm32_helpers.o
+ .group         0x0000000000000000        0xc ./Src/stm32_helpers.o
+ .group         0x0000000000000000        0xc ./Src/stm32_helpers.o
+ .group         0x0000000000000000        0xc ./Src/stm32_helpers.o
+ .group         0x0000000000000000        0xc ./Src/stm32_helpers.o
+ .group         0x0000000000000000        0xc ./Src/stm32_helpers.o
+ .group         0x0000000000000000        0xc ./Src/stm32_helpers.o
+ .group         0x0000000000000000        0xc ./Src/stm32_helpers.o
+ .group         0x0000000000000000        0xc ./Src/stm32_helpers.o
+ .group         0x0000000000000000        0xc ./Src/stm32_helpers.o
+ .group         0x0000000000000000        0xc ./Src/stm32_helpers.o
+ .group         0x0000000000000000        0xc ./Src/stm32_helpers.o
+ .group         0x0000000000000000        0xc ./Src/stm32_helpers.o
+ .group         0x0000000000000000        0xc ./Src/stm32_helpers.o
+ .group         0x0000000000000000        0xc ./Src/stm32_helpers.o
+ .group         0x0000000000000000        0xc ./Src/stm32_helpers.o
+ .group         0x0000000000000000        0xc ./Src/stm32_helpers.o
+ .group         0x0000000000000000        0xc ./Src/stm32_helpers.o
+ .group         0x0000000000000000        0xc ./Src/stm32_helpers.o
+ .group         0x0000000000000000        0xc ./Src/stm32_helpers.o
+ .group         0x0000000000000000        0xc ./Src/stm32_helpers.o
+ .group         0x0000000000000000        0xc ./Src/stm32_helpers.o
+ .group         0x0000000000000000        0xc ./Src/stm32_helpers.o
+ .group         0x0000000000000000        0xc ./Src/stm32_helpers.o
+ .group         0x0000000000000000        0xc ./Src/stm32_helpers.o
+ .group         0x0000000000000000        0xc ./Src/stm32_helpers.o
+ .group         0x0000000000000000        0xc ./Src/stm32_helpers.o
+ .group         0x0000000000000000        0xc ./Src/stm32_helpers.o
+ .group         0x0000000000000000        0xc ./Src/stm32_helpers.o
+ .group         0x0000000000000000        0xc ./Src/stm32_helpers.o
+ .group         0x0000000000000000        0xc ./Src/stm32_helpers.o
+ .group         0x0000000000000000        0xc ./Src/stm32_helpers.o
+ .group         0x0000000000000000        0xc ./Src/stm32_helpers.o
+ .group         0x0000000000000000        0xc ./Src/stm32_helpers.o
+ .group         0x0000000000000000        0xc ./Src/stm32_helpers.o
+ .group         0x0000000000000000        0xc ./Src/stm32_helpers.o
+ .group         0x0000000000000000        0xc ./Src/stm32_helpers.o
+ .group         0x0000000000000000        0xc ./Src/stm32_helpers.o
+ .group         0x0000000000000000        0xc ./Src/stm32_helpers.o
+ .group         0x0000000000000000        0xc ./Src/stm32_helpers.o
+ .group         0x0000000000000000        0xc ./Src/stm32_helpers.o
+ .group         0x0000000000000000        0xc ./Src/stm32_helpers.o
+ .group         0x0000000000000000        0xc ./Src/stm32_helpers.o
+ .group         0x0000000000000000        0xc ./Src/stm32_helpers.o
+ .group         0x0000000000000000        0xc ./Src/stm32_helpers.o
+ .group         0x0000000000000000        0xc ./Src/stm32_helpers.o
+ .group         0x0000000000000000        0xc ./Src/stm32_helpers.o
+ .group         0x0000000000000000        0xc ./Src/stm32_helpers.o
+ .group         0x0000000000000000        0xc ./Src/stm32_helpers.o
+ .group         0x0000000000000000        0xc ./Src/stm32_helpers.o
+ .group         0x0000000000000000        0xc ./Src/stm32_helpers.o
+ .group         0x0000000000000000        0xc ./Src/stm32_helpers.o
+ .group         0x0000000000000000        0xc ./Src/stm32_helpers.o
+ .text          0x0000000000000000        0x0 ./Src/stm32_helpers.o
+ .data          0x0000000000000000        0x0 ./Src/stm32_helpers.o
+ .bss           0x0000000000000000        0x0 ./Src/stm32_helpers.o
+ .text.gpioEnable
+                0x0000000000000000       0xb0 ./Src/stm32_helpers.o
+ .text.gpioReadPin
+                0x0000000000000000       0x38 ./Src/stm32_helpers.o
+ .rodata        0x0000000000000000       0x58 ./Src/stm32_helpers.o
+ .text.gpioSetModer
+                0x0000000000000000       0x60 ./Src/stm32_helpers.o
+ .text.gpioSetPin
+                0x0000000000000000       0x74 ./Src/stm32_helpers.o
+ .text.gpioSetPull
+                0x0000000000000000       0x60 ./Src/stm32_helpers.o
+ .debug_info    0x0000000000000000      0xc8c ./Src/stm32_helpers.o
+ .debug_abbrev  0x0000000000000000      0x206 ./Src/stm32_helpers.o
+ .debug_aranges
+                0x0000000000000000       0x40 ./Src/stm32_helpers.o
+ .debug_ranges  0x0000000000000000       0x30 ./Src/stm32_helpers.o
+ .debug_macro   0x0000000000000000      0x30f ./Src/stm32_helpers.o
+ .debug_macro   0x0000000000000000      0xaba ./Src/stm32_helpers.o
+ .debug_macro   0x0000000000000000       0x7a ./Src/stm32_helpers.o
+ .debug_macro   0x0000000000000000       0x35 ./Src/stm32_helpers.o
+ .debug_macro   0x0000000000000000       0x22 ./Src/stm32_helpers.o
+ .debug_macro   0x0000000000000000       0x8e ./Src/stm32_helpers.o
+ .debug_macro   0x0000000000000000       0x51 ./Src/stm32_helpers.o
+ .debug_macro   0x0000000000000000      0x103 ./Src/stm32_helpers.o
+ .debug_macro   0x0000000000000000       0x6a ./Src/stm32_helpers.o
+ .debug_macro   0x0000000000000000      0x1df ./Src/stm32_helpers.o
+ .debug_macro   0x0000000000000000       0x18 ./Src/stm32_helpers.o
+ .debug_macro   0x0000000000000000       0x42 ./Src/stm32_helpers.o
+ .debug_macro   0x0000000000000000      0x8cb ./Src/stm32_helpers.o
+ .debug_macro   0x0000000000000000     0x769b ./Src/stm32_helpers.o
+ .debug_macro   0x0000000000000000       0x35 ./Src/stm32_helpers.o
+ .debug_macro   0x0000000000000000      0x5a6 ./Src/stm32_helpers.o
+ .debug_macro   0x0000000000000000      0x3cf ./Src/stm32_helpers.o
+ .debug_macro   0x0000000000000000       0x46 ./Src/stm32_helpers.o
+ .debug_macro   0x0000000000000000      0x231 ./Src/stm32_helpers.o
+ .debug_macro   0x0000000000000000      0x196 ./Src/stm32_helpers.o
+ .debug_macro   0x0000000000000000       0x8e ./Src/stm32_helpers.o
+ .debug_macro   0x0000000000000000      0x3a8 ./Src/stm32_helpers.o
+ .debug_macro   0x0000000000000000      0x114 ./Src/stm32_helpers.o
+ .debug_macro   0x0000000000000000      0x1e4 ./Src/stm32_helpers.o
+ .debug_macro   0x0000000000000000      0x1b6 ./Src/stm32_helpers.o
+ .debug_macro   0x0000000000000000      0x1df ./Src/stm32_helpers.o
+ .debug_macro   0x0000000000000000      0x29a ./Src/stm32_helpers.o
+ .debug_macro   0x0000000000000000       0x70 ./Src/stm32_helpers.o
+ .debug_macro   0x0000000000000000      0x10c ./Src/stm32_helpers.o
+ .debug_macro   0x0000000000000000       0xb8 ./Src/stm32_helpers.o
+ .debug_macro   0x0000000000000000      0x5c6 ./Src/stm32_helpers.o
+ .debug_macro   0x0000000000000000      0x551 ./Src/stm32_helpers.o
+ .debug_macro   0x0000000000000000      0x3ab ./Src/stm32_helpers.o
+ .debug_macro   0x0000000000000000      0x8d8 ./Src/stm32_helpers.o
+ .debug_macro   0x0000000000000000      0x364 ./Src/stm32_helpers.o
+ .debug_macro   0x0000000000000000       0x34 ./Src/stm32_helpers.o
+ .debug_macro   0x0000000000000000       0x89 ./Src/stm32_helpers.o
+ .debug_macro   0x0000000000000000       0x52 ./Src/stm32_helpers.o
+ .debug_macro   0x0000000000000000       0x18 ./Src/stm32_helpers.o
+ .debug_macro   0x0000000000000000       0x3c ./Src/stm32_helpers.o
+ .debug_macro   0x0000000000000000       0x34 ./Src/stm32_helpers.o
+ .debug_macro   0x0000000000000000       0x16 ./Src/stm32_helpers.o
+ .debug_macro   0x0000000000000000       0x97 ./Src/stm32_helpers.o
+ .debug_macro   0x0000000000000000      0x339 ./Src/stm32_helpers.o
+ .debug_macro   0x0000000000000000       0xfd ./Src/stm32_helpers.o
+ .debug_macro   0x0000000000000000       0x10 ./Src/stm32_helpers.o
+ .debug_macro   0x0000000000000000       0x16 ./Src/stm32_helpers.o
+ .debug_macro   0x0000000000000000       0x43 ./Src/stm32_helpers.o
+ .debug_macro   0x0000000000000000       0x34 ./Src/stm32_helpers.o
+ .debug_macro   0x0000000000000000       0x10 ./Src/stm32_helpers.o
+ .debug_macro   0x0000000000000000       0x58 ./Src/stm32_helpers.o
+ .debug_macro   0x0000000000000000       0x71 ./Src/stm32_helpers.o
+ .debug_macro   0x0000000000000000       0x1c ./Src/stm32_helpers.o
+ .debug_macro   0x0000000000000000      0x12a ./Src/stm32_helpers.o
+ .debug_macro   0x0000000000000000       0x10 ./Src/stm32_helpers.o
+ .debug_macro   0x0000000000000000       0x1c ./Src/stm32_helpers.o
+ .debug_macro   0x0000000000000000       0x52 ./Src/stm32_helpers.o
+ .debug_macro   0x0000000000000000       0x22 ./Src/stm32_helpers.o
+ .debug_macro   0x0000000000000000       0x10 ./Src/stm32_helpers.o
+ .debug_macro   0x0000000000000000       0x40 ./Src/stm32_helpers.o
+ .debug_macro   0x0000000000000000       0xd5 ./Src/stm32_helpers.o
+ .debug_macro   0x0000000000000000       0x1c ./Src/stm32_helpers.o
+ .debug_macro   0x0000000000000000       0x3d ./Src/stm32_helpers.o
+ .debug_macro   0x0000000000000000       0x16 ./Src/stm32_helpers.o
+ .debug_macro   0x0000000000000000      0x145 ./Src/stm32_helpers.o
+ .debug_line    0x0000000000000000      0xa2f ./Src/stm32_helpers.o
+ .debug_str     0x0000000000000000    0x571c9 ./Src/stm32_helpers.o
+ .comment       0x0000000000000000       0x54 ./Src/stm32_helpers.o
+ .debug_frame   0x0000000000000000       0xcc ./Src/stm32_helpers.o
+ .ARM.attributes
+                0x0000000000000000       0x34 ./Src/stm32_helpers.o
  .group         0x0000000000000000        0xc ./Src/syscalls.o
  .group         0x0000000000000000        0xc ./Src/syscalls.o
  .group         0x0000000000000000        0xc ./Src/syscalls.o
@@ -3852,7 +4155,9 @@ LOAD ./SPL/src/stm32f30x_tim.o
 LOAD ./SPL/src/stm32f30x_usart.o
 LOAD ./SPL/src/stm32f30x_wwdg.o
 LOAD ./Src/30010_io.o
+LOAD ./Src/joystick.o
 LOAD ./Src/main.o
+LOAD ./Src/stm32_helpers.o
 LOAD ./Src/syscalls.o
 LOAD ./Src/sysmem.o
 LOAD ./Src/system_stm32f30x.o
@@ -4175,73 +4480,73 @@ LOAD /Applications/STM32CubeIDE.app/Contents/Eclipse/plugins/com.st.stm32cube.id
 .iplt           0x0000000008001eb0        0x0
  .iplt          0x0000000008001eb0        0x0 /Applications/STM32CubeIDE.app/Contents/Eclipse/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.9-2020-q2-update.macos64_2.0.0.202105311346/tools/bin/../lib/gcc/arm-none-eabi/9.3.1/thumb/v7e-m+fp/hard/crtbegin.o
 
-.rodata         0x0000000008001eb0       0xa8
+.rodata         0x0000000008001eb0       0xa0
                 0x0000000008001eb0                . = ALIGN (0x4)
  *(.rodata)
- .rodata        0x0000000008001eb0        0xe ./Src/main.o
+ .rodata        0x0000000008001eb0        0x7 ./Src/main.o
  *(.rodata*)
- *fill*         0x0000000008001ebe        0x2 
+ *fill*         0x0000000008001eb7        0x1 
  .rodata._global_impure_ptr
-                0x0000000008001ec0        0x4 /Applications/STM32CubeIDE.app/Contents/Eclipse/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.9-2020-q2-update.macos64_2.0.0.202105311346/tools/bin/../lib/gcc/arm-none-eabi/9.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(lib_a-impure.o)
-                0x0000000008001ec0                _global_impure_ptr
+                0x0000000008001eb8        0x4 /Applications/STM32CubeIDE.app/Contents/Eclipse/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.9-2020-q2-update.macos64_2.0.0.202105311346/tools/bin/../lib/gcc/arm-none-eabi/9.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(lib_a-impure.o)
+                0x0000000008001eb8                _global_impure_ptr
  .rodata.__sf_fake_stderr
-                0x0000000008001ec4       0x20 /Applications/STM32CubeIDE.app/Contents/Eclipse/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.9-2020-q2-update.macos64_2.0.0.202105311346/tools/bin/../lib/gcc/arm-none-eabi/9.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(lib_a-findfp.o)
-                0x0000000008001ec4                __sf_fake_stderr
+                0x0000000008001ebc       0x20 /Applications/STM32CubeIDE.app/Contents/Eclipse/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.9-2020-q2-update.macos64_2.0.0.202105311346/tools/bin/../lib/gcc/arm-none-eabi/9.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(lib_a-findfp.o)
+                0x0000000008001ebc                __sf_fake_stderr
  .rodata.__sf_fake_stdin
-                0x0000000008001ee4       0x20 /Applications/STM32CubeIDE.app/Contents/Eclipse/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.9-2020-q2-update.macos64_2.0.0.202105311346/tools/bin/../lib/gcc/arm-none-eabi/9.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(lib_a-findfp.o)
-                0x0000000008001ee4                __sf_fake_stdin
+                0x0000000008001edc       0x20 /Applications/STM32CubeIDE.app/Contents/Eclipse/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.9-2020-q2-update.macos64_2.0.0.202105311346/tools/bin/../lib/gcc/arm-none-eabi/9.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(lib_a-findfp.o)
+                0x0000000008001edc                __sf_fake_stdin
  .rodata.__sf_fake_stdout
-                0x0000000008001f04       0x20 /Applications/STM32CubeIDE.app/Contents/Eclipse/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.9-2020-q2-update.macos64_2.0.0.202105311346/tools/bin/../lib/gcc/arm-none-eabi/9.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(lib_a-findfp.o)
-                0x0000000008001f04                __sf_fake_stdout
+                0x0000000008001efc       0x20 /Applications/STM32CubeIDE.app/Contents/Eclipse/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.9-2020-q2-update.macos64_2.0.0.202105311346/tools/bin/../lib/gcc/arm-none-eabi/9.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(lib_a-findfp.o)
+                0x0000000008001efc                __sf_fake_stdout
  .rodata._vfprintf_r.str1.1
-                0x0000000008001f24       0x11 /Applications/STM32CubeIDE.app/Contents/Eclipse/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.9-2020-q2-update.macos64_2.0.0.202105311346/tools/bin/../lib/gcc/arm-none-eabi/9.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(lib_a-nano-vfprintf.o)
+                0x0000000008001f1c       0x11 /Applications/STM32CubeIDE.app/Contents/Eclipse/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.9-2020-q2-update.macos64_2.0.0.202105311346/tools/bin/../lib/gcc/arm-none-eabi/9.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(lib_a-nano-vfprintf.o)
  .rodata._printf_i.str1.1
-                0x0000000008001f35       0x22 /Applications/STM32CubeIDE.app/Contents/Eclipse/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.9-2020-q2-update.macos64_2.0.0.202105311346/tools/bin/../lib/gcc/arm-none-eabi/9.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(lib_a-nano-vfprintf_i.o)
-                0x0000000008001f58                . = ALIGN (0x4)
- *fill*         0x0000000008001f57        0x1 
+                0x0000000008001f2d       0x22 /Applications/STM32CubeIDE.app/Contents/Eclipse/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.9-2020-q2-update.macos64_2.0.0.202105311346/tools/bin/../lib/gcc/arm-none-eabi/9.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(lib_a-nano-vfprintf_i.o)
+                0x0000000008001f50                . = ALIGN (0x4)
+ *fill*         0x0000000008001f4f        0x1 
 
-.rel.dyn        0x0000000008001f58        0x0
- .rel.iplt      0x0000000008001f58        0x0 /Applications/STM32CubeIDE.app/Contents/Eclipse/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.9-2020-q2-update.macos64_2.0.0.202105311346/tools/bin/../lib/gcc/arm-none-eabi/9.3.1/thumb/v7e-m+fp/hard/crtbegin.o
+.rel.dyn        0x0000000008001f50        0x0
+ .rel.iplt      0x0000000008001f50        0x0 /Applications/STM32CubeIDE.app/Contents/Eclipse/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.9-2020-q2-update.macos64_2.0.0.202105311346/tools/bin/../lib/gcc/arm-none-eabi/9.3.1/thumb/v7e-m+fp/hard/crtbegin.o
 
-.ARM.extab      0x0000000008001f58        0x0
-                0x0000000008001f58                . = ALIGN (0x4)
+.ARM.extab      0x0000000008001f50        0x0
+                0x0000000008001f50                . = ALIGN (0x4)
  *(.ARM.extab* .gnu.linkonce.armextab.*)
-                0x0000000008001f58                . = ALIGN (0x4)
+                0x0000000008001f50                . = ALIGN (0x4)
 
-.ARM            0x0000000008001f58        0x0
-                0x0000000008001f58                . = ALIGN (0x4)
-                0x0000000008001f58                __exidx_start = .
+.ARM            0x0000000008001f50        0x0
+                0x0000000008001f50                . = ALIGN (0x4)
+                0x0000000008001f50                __exidx_start = .
  *(.ARM.exidx*)
-                0x0000000008001f58                __exidx_end = .
-                0x0000000008001f58                . = ALIGN (0x4)
+                0x0000000008001f50                __exidx_end = .
+                0x0000000008001f50                . = ALIGN (0x4)
 
-.preinit_array  0x0000000008001f58        0x0
-                0x0000000008001f58                . = ALIGN (0x4)
-                0x0000000008001f58                PROVIDE (__preinit_array_start = .)
+.preinit_array  0x0000000008001f50        0x0
+                0x0000000008001f50                . = ALIGN (0x4)
+                0x0000000008001f50                PROVIDE (__preinit_array_start = .)
  *(.preinit_array*)
-                0x0000000008001f58                PROVIDE (__preinit_array_end = .)
-                0x0000000008001f58                . = ALIGN (0x4)
+                0x0000000008001f50                PROVIDE (__preinit_array_end = .)
+                0x0000000008001f50                . = ALIGN (0x4)
 
-.init_array     0x0000000008001f58        0x4
-                0x0000000008001f58                . = ALIGN (0x4)
-                0x0000000008001f58                PROVIDE (__init_array_start = .)
+.init_array     0x0000000008001f50        0x4
+                0x0000000008001f50                . = ALIGN (0x4)
+                0x0000000008001f50                PROVIDE (__init_array_start = .)
  *(SORT_BY_NAME(.init_array.*))
  *(.init_array*)
- .init_array    0x0000000008001f58        0x4 /Applications/STM32CubeIDE.app/Contents/Eclipse/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.9-2020-q2-update.macos64_2.0.0.202105311346/tools/bin/../lib/gcc/arm-none-eabi/9.3.1/thumb/v7e-m+fp/hard/crtbegin.o
-                0x0000000008001f5c                PROVIDE (__init_array_end = .)
-                0x0000000008001f5c                . = ALIGN (0x4)
+ .init_array    0x0000000008001f50        0x4 /Applications/STM32CubeIDE.app/Contents/Eclipse/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.9-2020-q2-update.macos64_2.0.0.202105311346/tools/bin/../lib/gcc/arm-none-eabi/9.3.1/thumb/v7e-m+fp/hard/crtbegin.o
+                0x0000000008001f54                PROVIDE (__init_array_end = .)
+                0x0000000008001f54                . = ALIGN (0x4)
 
-.fini_array     0x0000000008001f5c        0x4
-                0x0000000008001f5c                . = ALIGN (0x4)
+.fini_array     0x0000000008001f54        0x4
+                0x0000000008001f54                . = ALIGN (0x4)
                 [!provide]                        PROVIDE (__fini_array_start = .)
  *(SORT_BY_NAME(.fini_array.*))
  *(.fini_array*)
- .fini_array    0x0000000008001f5c        0x4 /Applications/STM32CubeIDE.app/Contents/Eclipse/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.9-2020-q2-update.macos64_2.0.0.202105311346/tools/bin/../lib/gcc/arm-none-eabi/9.3.1/thumb/v7e-m+fp/hard/crtbegin.o
+ .fini_array    0x0000000008001f54        0x4 /Applications/STM32CubeIDE.app/Contents/Eclipse/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.9-2020-q2-update.macos64_2.0.0.202105311346/tools/bin/../lib/gcc/arm-none-eabi/9.3.1/thumb/v7e-m+fp/hard/crtbegin.o
                 [!provide]                        PROVIDE (__fini_array_end = .)
-                0x0000000008001f60                . = ALIGN (0x4)
-                0x0000000008001f60                _sidata = LOADADDR (.data)
+                0x0000000008001f58                . = ALIGN (0x4)
+                0x0000000008001f58                _sidata = LOADADDR (.data)
 
-.data           0x0000000020000000       0x90 load address 0x0000000008001f60
+.data           0x0000000020000000       0x90 load address 0x0000000008001f58
                 0x0000000020000000                . = ALIGN (0x4)
                 0x0000000020000000                _sdata = .
  *(.data)
@@ -4259,11 +4564,11 @@ LOAD /Applications/STM32CubeIDE.app/Contents/Eclipse/plugins/com.st.stm32cube.id
                 0x0000000020000090                . = ALIGN (0x4)
                 0x0000000020000090                _edata = .
 
-.igot.plt       0x0000000020000090        0x0 load address 0x0000000008001ff0
+.igot.plt       0x0000000020000090        0x0 load address 0x0000000008001fe8
  .igot.plt      0x0000000020000090        0x0 /Applications/STM32CubeIDE.app/Contents/Eclipse/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.9-2020-q2-update.macos64_2.0.0.202105311346/tools/bin/../lib/gcc/arm-none-eabi/9.3.1/thumb/v7e-m+fp/hard/crtbegin.o
                 0x0000000020000090                . = ALIGN (0x4)
 
-.bss            0x0000000020000090      0x13c load address 0x0000000008001ff0
+.bss            0x0000000020000090      0x13c load address 0x0000000008001fe8
                 0x0000000020000090                _sbss = .
                 0x0000000020000090                __bss_start__ = _sbss
  *(.bss)
@@ -4309,7 +4614,7 @@ LOAD /Applications/STM32CubeIDE.app/Contents/Eclipse/plugins/com.st.stm32cube.id
                 0x00000000200001cc                __bss_end__ = _ebss
 
 ._user_heap_stack
-                0x00000000200001cc      0x604 load address 0x0000000008001ff0
+                0x00000000200001cc      0x604 load address 0x0000000008001fe8
                 0x00000000200001d0                . = ALIGN (0x8)
  *fill*         0x00000000200001cc        0x4 
                 0x00000000200001d0                PROVIDE (end = .)

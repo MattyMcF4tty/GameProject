@@ -1,0 +1,2 @@
+joystick.c:5:9:readJoystick	24	static
+joystick.c:25:6:toggleJoystick	16	static
