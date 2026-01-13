@@ -30,7 +30,9 @@ Src/main.o: ../Src/main.c \
  /Users/matthiaskristensen/Desktop/DTU/Noter/30010\ programming\ project/GameProject/SPL/inc/stm32f30x_usart.h \
  /Users/matthiaskristensen/Desktop/DTU/Noter/30010\ programming\ project/GameProject/SPL/inc/stm32f30x_wwdg.h \
  /Users/matthiaskristensen/Desktop/DTU/Noter/30010\ programming\ project/GameProject/SPL/inc/stm32f30x_misc.h \
- /Users/matthiaskristensen/Desktop/DTU/Noter/30010\ programming\ project/GameProject/Inc/stm32_helpers.h
+ /Users/matthiaskristensen/Desktop/DTU/Noter/30010\ programming\ project/GameProject/Inc/stm32_helpers.h \
+ /Users/matthiaskristensen/Desktop/DTU/Noter/30010\ programming\ project/GameProject/Inc/display_lcd.h \
+ /Users/matthiaskristensen/Desktop/DTU/Noter/30010\ programming\ project/GameProject/Inc/charset.h
 
 /Users/matthiaskristensen/Desktop/DTU/Noter/30010\ programming\ project/GameProject/Inc/main.h:
 
@@ -95,3 +97,7 @@ Src/main.o: ../Src/main.c \
 /Users/matthiaskristensen/Desktop/DTU/Noter/30010\ programming\ project/GameProject/SPL/inc/stm32f30x_misc.h:
 
 /Users/matthiaskristensen/Desktop/DTU/Noter/30010\ programming\ project/GameProject/Inc/stm32_helpers.h:
+
+/Users/matthiaskristensen/Desktop/DTU/Noter/30010\ programming\ project/GameProject/Inc/display_lcd.h:
+
+/Users/matthiaskristensen/Desktop/DTU/Noter/30010\ programming\ project/GameProject/Inc/charset.h:

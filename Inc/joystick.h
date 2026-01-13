@@ -2,8 +2,8 @@
 #define _JOYSTICK_H_
 
 	/* ----- Dependencies ----- */
+	#include <stdint.h>
 	#include "stm32_helpers.h"
-
 
 	/* ----- Functions ----- */
 	uint8_t readJoystick(); // Reads the joystick position and returns a onehot 5 bit bus

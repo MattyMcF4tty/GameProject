@@ -12,7 +12,7 @@ static void initBoard() {
 }
 
 int main() {
-	initBoard();
+    initBoard();
 
-	while(1){}
+    while (1) {}
 }

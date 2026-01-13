@@ -27,23 +27,23 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   ALLOC
  11 .ARM.attributes 00000030  00000000  00000000  00020090  2**0
                   CONTENTS, READONLY
- 12 .debug_info   000064a6  00000000  00000000  000200c0  2**0
+ 12 .debug_info   000064cd  00000000  00000000  000200c0  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 13 .debug_abbrev 000010ef  00000000  00000000  00026566  2**0
+ 13 .debug_abbrev 000010ef  00000000  00000000  0002658d  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 14 .debug_aranges 000004f0  00000000  00000000  00027658  2**3
+ 14 .debug_aranges 000004f0  00000000  00000000  00027680  2**3
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 15 .debug_ranges 00000468  00000000  00000000  00027b48  2**3
+ 15 .debug_ranges 00000468  00000000  00000000  00027b70  2**3
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 16 .debug_macro  000033a7  00000000  00000000  00027fb0  2**0
+ 16 .debug_macro  000033b9  00000000  00000000  00027fd8  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 17 .debug_line   00005362  00000000  00000000  0002b357  2**0
+ 17 .debug_line   00005380  00000000  00000000  0002b391  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 18 .debug_str    00059fc2  00000000  00000000  000306b9  2**0
+ 18 .debug_str    00059fe9  00000000  00000000  00030711  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 19 .comment      00000053  00000000  00000000  0008a67b  2**0
+ 19 .comment      00000053  00000000  00000000  0008a6fa  2**0
                   CONTENTS, READONLY
- 20 .debug_frame  00001a28  00000000  00000000  0008a6d0  2**2
+ 20 .debug_frame  00001a28  00000000  00000000  0008a750  2**2
                   CONTENTS, READONLY, DEBUGGING, OCTETS
 
 Disassembly of section .text:
@@ -1617,10 +1617,10 @@ static void initBoard() {
 int main() {
  8000af4:	b580      	push	{r7, lr}
  8000af6:	af00      	add	r7, sp, #0
-	initBoard();
+    initBoard();
  8000af8:	f7ff ffe6 	bl	8000ac8 <initBoard>
 
-	while(1){}
+    while (1) {}
  8000afc:	e7fe      	b.n	8000afc <main+0x8>
 	...
 

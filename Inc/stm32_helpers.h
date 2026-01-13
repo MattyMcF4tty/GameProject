@@ -2,6 +2,7 @@
 #define _STM32_HELPERS_H_
 
 	/* ----- Dependencies ----- */
+	#include <stdint.h>
 	#include "stm32f30x_conf.h" // STM32 config
 	#include "30010_io.h" // Input/output library for this course
 

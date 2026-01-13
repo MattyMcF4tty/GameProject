@@ -21,6 +21,8 @@
 "./SPL/src/stm32f30x_usart.o"
 "./SPL/src/stm32f30x_wwdg.o"
 "./Src/30010_io.o"
+"./Src/charset.o"
+"./Src/display_lcd.o"
 "./Src/joystick.o"
 "./Src/main.o"
 "./Src/stm32_helpers.o"
