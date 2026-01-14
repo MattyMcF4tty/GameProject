@@ -17,5 +17,12 @@ int main() {
 	clearScreen();
 	goHome();
 
+	spaceship_t ship;
+	ship.x = 10;
+	ship.y = 10;
+	ship.lvl = 0;
+
+	drawSpaceship(&ship);
+
     while (1) {}
 }
