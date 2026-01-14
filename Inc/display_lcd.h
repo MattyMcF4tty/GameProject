@@ -6,6 +6,6 @@
 	#include "charset.h"
 
 	/* ----- Functions ----- */
-	const char *charToBuffer(char c);
+	const uint8_t *charToBuffer(char c);
 
 #endif

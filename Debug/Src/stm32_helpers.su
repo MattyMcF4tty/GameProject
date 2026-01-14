@@ -1,5 +1,0 @@
-stm32_helpers.c:3:6:gpioEnable	16	static
-stm32_helpers.c:12:9:gpioReadPin	16	static
-stm32_helpers.c:19:6:gpioSetModer	16	static
-stm32_helpers.c:38:6:gpioSetPin	16	static
-stm32_helpers.c:55:6:gpioSetPull	16	static

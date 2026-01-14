@@ -38,6 +38,7 @@ Note:
 #ifndef _CHARSET_H_
 #define _CHARSET_H_
 
-extern const char character_data[95][5];
+	#include <stdint.h>
+	extern const uint8_t character_data[95][5];
 
 #endif /*! _ACHARSET_H_ */
