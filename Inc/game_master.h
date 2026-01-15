@@ -6,8 +6,9 @@
 	#include <stdlib.h>
 
 	/* ----- Config ----- */
-	#define MAX_ASTEROIDS 20
-	#define MAX_UFOS 100
+	#define MAX_ASTEROIDS	20
+	#define MAX_UFOS		40
+	#define MAX_BULLETS		100
 
 	/* ----- Type definitions ----- */
 	typedef struct {
@@ -26,6 +27,7 @@
 	} spaceship_t;
 
 	typedef struct {
+		uint8_t active;
 		uint8_t x, y;
 		int32_t vX, vY; // 16.16
 		uint8_t dmg;
@@ -41,15 +43,23 @@
 	} asteroid_t;
 
 	typedef struct {
+		uint8_t active;
 		uint8_t x, y;
 		int32_t vX, vY; // 16.16
 		uint8_t lives;
 		uint8_t type;
+		uint8_t shotDelay; // Number of ticks before alien shoots again
 	} ufo_t;
 
 
 	/* ----- Functions ----- */
 	void addAsteroid();
-	void moveAsteroids();
+	void updateAsteroids();
+
+	void addUfo();
+	void updateUfos();
+
+	void addBullet(uint8_t x, uint8_t y, uint32_t vY);
+	void updateBullets();
 
 #endif
