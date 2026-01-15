@@ -17,7 +17,6 @@ void blitAsteroid(const asteroid_t *asteroid, blitMode_t mode) {
    // Render sprite, we only update non-zero pixels for efficiency
 	for (uint8_t row = 0; row < AST_H; row++) {
 		for (uint8_t col = 0; col < AST_W; col++) {
-
 			uint8_t color = astroidSprite[row][col];
 
 			if (color == 0) continue;  // transparent -> do nothing
@@ -111,7 +110,7 @@ void blitBullet(const bullet_t *bullet, blitMode_t mode) {
 	goTo(bullet->x, bullet->y);
 
 	mode == DRAW ? bgColor(7) : resetBgColor();
-	print(" ");
+	printf(" ");
 
 	resetBgColor(); // -- Reset bg color just to be safe
 }

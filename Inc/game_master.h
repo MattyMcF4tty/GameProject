@@ -3,8 +3,11 @@
 
 	/* ----- Dependencies ----- */
 	#include <stdint.h>
+	#include <stdlib.h>
 
-
+	/* ----- Config ----- */
+	#define MAX_ASTEROIDS 20
+	#define MAX_UFOS 100
 
 	/* ----- Type definitions ----- */
 	typedef struct {
@@ -12,6 +15,7 @@
 		uint32_t score;
 		uint32_t highScore;
 		uint8_t level;
+		uint8_t spawnRate;
 	} gameState_t;
 
 	typedef struct {
@@ -29,6 +33,7 @@
 	} bullet_t;
 
 	typedef struct {
+		uint8_t active;
 		uint8_t x, y;
 		int32_t vX, vY; // 16.16
 		uint8_t lives;
@@ -42,7 +47,9 @@
 		uint8_t type;
 	} ufo_t;
 
-	/* ----- Functions ----- */
 
+	/* ----- Functions ----- */
+	void addAsteroid();
+	void moveAsteroids();
 
 #endif
