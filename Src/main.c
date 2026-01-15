@@ -14,15 +14,15 @@ static void initBoard() {
 int main() {
     initBoard(); // Should always be first
 
+    srand(1231);   // Init randomness
+
+    resetBgColor();
 	clearScreen();
 	goHome();
 
-	spaceship_t ship;
-	ship.x = 10;
-	ship.y = 10;
-	ship.lvl = 0;
 
-	drawSpaceship(&ship);
+    while (1) {
 
-    while (1) {}
+
+    }
 }
