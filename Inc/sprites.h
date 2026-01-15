@@ -8,19 +8,16 @@
 
 	/* ----- Type definitions ----- */
 	typedef struct {
-		uint8_t x, y;
-		int32_t vX, vY; // 16.16
-		uint8_t lvl;
-		uint8_t powerUp;
-	} spaceship_t;
-
-	typedef struct {
 		uint8_t offset;
 		uint8_t color;
 	} pixel_t;
 
-	/* ----- Functions ----- */
-	void drawSpaceship(const spaceship_t *ship);
+	/* ----- Sprites ----- */
+
+		/* ----- SPACESHIP ----- */
+		#define SPR_H 4 // REMEMBER TO UPDATE IN RENDER.C
+		#define SPR_W 5 // REMEMBER TO UPDATE IN RENDER.C
+		const uint8_t defaultShip[SPR_H][SPR_W];
 
 
 #endif
