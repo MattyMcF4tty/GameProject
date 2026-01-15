@@ -1,7 +1,7 @@
 #include "main.h"
 
 static void initBoard() {
-	uart_init(9600); // Set UART
+	uart_init(115200); // Set UART
 
 	/* ---- Enable necessary GPIO's ----- */
 	gpioEnable(GPIOA);	// Joystick,
