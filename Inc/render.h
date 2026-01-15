@@ -10,8 +10,14 @@
 	#include "game_master.h"
 
  	/* ----- Type definitions ----- */
+	typedef enum {
+		DRAW,
+		ERASE
+	} blitMode_t;
 
 	/* ----- Functions ----- */
-	void drawSpaceship(const spaceship_t *ship);
+	void blitSpaceship(const spaceship_t *ship, blitMode_t mode);
+	void blitAsteroid(const asteroid_t *asteroid, blitMode_t mode);
+	void blitUfo(const ufo_t *ufo, blitMode_t mode);
 
 #endif

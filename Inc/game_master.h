@@ -32,7 +32,15 @@
 		uint8_t x, y;
 		int32_t vX, vY; // 16.16
 		uint8_t lives;
-	} astroid_t;
+		uint8_t type;
+	} asteroid_t;
+
+	typedef struct {
+		uint8_t x, y;
+		int32_t vX, vY; // 16.16
+		uint8_t lives;
+		uint8_t type;
+	} ufo_t;
 
 	/* ----- Functions ----- */
 
