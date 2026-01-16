@@ -24,6 +24,14 @@ void goTo(uint8_t x, uint8_t y) {
 	printf("%c[%d;%dH", ESC, y, x);
 }
 
+void goToCoords(int16_t x, int16_t y) {
+
+    x >>= 6; // Convert x to integer
+    y >>= 6; // Convert y to integer
+
+	printf("%c[%d;%dH", ESC, y, x);
+}
+
 void fgColor(uint8_t foreground) {
 /*  Value      foreground     Value     foreground
     ------------------------------------------------

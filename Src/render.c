@@ -6,28 +6,42 @@
 #define AST_W 8 // REMEMBER TO UPDATE IN SPRITES.H
 
 void blitAsteroid(const asteroid_t *asteroid, blitMode_t mode) {
-	goTo(asteroid->x, asteroid->y);
-
 	const uint8_t (*astroidSprite)[AST_W];
 
 	// Find level sprite in LUT
-	uint8_t safeAsteroid = asteroid->type > 1 ? 1 : asteroid->type; // cap at 2 asteroids
+	uint8_t safeAsteroid = asteroid->type > 1 ? 1 : asteroid->type; // cap at 2 types
 	astroidSprite = asteroidSprites[safeAsteroid];
 
    // Render sprite, we only update non-zero pixels for efficiency
-	for (uint8_t row = 0; row < AST_H; row++) {
-		for (uint8_t col = 0; col < AST_W; col++) {
+	for (int16_t row = 0; row < AST_H; row++) {
+
+		int16_t fpRow = row<<6; // Only calc fixed point row once every row
+
+		for (int16_t col = 0; col < AST_W; col++) {
 			uint8_t color = astroidSprite[row][col];
 
 			if (color == 0) continue;  // transparent -> do nothing
 
-			goTo(asteroid->x + col, asteroid->y + row);
-			mode == DRAW ? bgColor(color) : resetBgColor();
+
+			int16_t nextX = asteroid->x;
+			int16_t nextY = asteroid->y;
+
+			if (mode == ERASE) {
+
+				// Go to last position
+				nextX -= asteroid->vX;
+				nextY -= asteroid->vY;
+
+				resetBgColor();
+			} else {
+				bgColor(color);
+			}
+
+			// Also convert col to Q10.6
+			goToCoords(nextX + (col << 6), nextY + fpRow);
 			printf(" ");
 		}
 	}
-
-	resetBgColor(); // -- Reset bg color just to be safe
 }
 
 
@@ -71,8 +85,6 @@ void blitSpaceship(const spaceship_t *ship, blitMode_t mode) {
             printf(" ");
         }
     }
-
-    resetBgColor(); // -- Reset bg color just to be safe
 }
 
 
@@ -89,28 +101,61 @@ void blitUfo(const ufo_t *ufo, blitMode_t mode) {
 
     // Render sprite, we only update non-zero pixels for efficiency
     for (uint8_t row = 0; row < UFO_H; row++) {
+    	int16_t fpRow = row << 6;
+
         for (uint8_t col = 0; col < UFO_W; col++) {
 
             uint8_t color = ufoSprite[row][col];
 
             if (color == 0) continue;  // transparent -> do nothing
 
-            goTo(ufo->x + col, ufo->y + row);
-            mode == DRAW ? bgColor(color) : resetBgColor();
+			int16_t nextX = ufo->x;
+			int16_t nextY = ufo->y;
+
+			if (mode == ERASE) {
+				// Go to last position
+				nextX -= ufo->vX;
+				nextY -= ufo->vY;
+
+				resetBgColor();
+			} else {
+				bgColor(color);
+			}
+
+            goToCoords(nextX + (col << 6), nextY + fpRow);
             printf(" ");
         }
     }
-
-    resetBgColor(); // -- Reset bg color just to be safe
 }
 
 
 /* ---------- BULLET ---------- */
 void blitBullet(const bullet_t *bullet, blitMode_t mode) {
-	goTo(bullet->x, bullet->y);
 
-	mode == DRAW ? bgColor(7) : resetBgColor();
-	printf(" ");
+	int16_t nextX = bullet->x;
+	int16_t nextY = bullet->y;
 
-	resetBgColor(); // -- Reset bg color just to be safe
+	if (mode == ERASE) {
+		// Go to last position
+		nextX -= bullet->vX;
+		nextY -= bullet->vY;
+
+		resetBgColor();
+	} else {
+		fgColor(7);
+		resetBgColor();
+	}
+
+	goToCoords(nextX, nextY);
+
+	if (mode == ERASE) {
+		putchar(' ');				// Delete bullet
+	}
+	else if (bullet->vX > 0) {
+		putchar('/');				// If bullet is going to the right, turn bullet right
+	} else if (bullet->vX < 0) {
+		putchar('\\');				// If bullet is going to the left, turn bullet left
+	} else {
+		putchar('|');				// If bullet is going straight, straighten bullet
+	}
 }
