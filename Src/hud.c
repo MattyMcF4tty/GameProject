@@ -37,7 +37,7 @@ void drawHud(void)
     printf("Lives: ");
 
     for (uint8_t i = 0; i < currentLives; i++) {
-        //printf("♥ ");   sprite heart
+        //printf("♥ ");   sprite heart here
     }
 }
 
@@ -46,7 +46,16 @@ void drawHud(void)
 //------------------------------------------------------
 void updateLives(uint8_t lives)
 {
-    currentLives = lives;
+	if (invader.y > SCREEN_HEIGHT) {
+	        lives--;
+	}
+	if (asteroid.y > SCREEN_HEIGHT) {
+	                lives--;
+	}
+
+	//Bullet hit player too
+
+	currentLives = lives;
 }
 
 //------------------------------------------------------
@@ -57,6 +66,6 @@ void updateScore(void)
     stopwatch_time_t t;
     timerGetTimer(&t);
 
-    // score increases each second
+    // score increases each second score = seconds + (minutes*60)
     currentScore = t.s + (t.m * 60);
 }

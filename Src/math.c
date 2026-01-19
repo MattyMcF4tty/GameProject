@@ -161,3 +161,4 @@ void applyLorentzForce(shot_t *s, int32_t k) { //EGG
 }
 
 
+
