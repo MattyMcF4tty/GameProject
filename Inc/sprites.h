@@ -4,7 +4,6 @@
 	/* ----- Dependencies ----- */
 	#include <stdint.h>
 	#include <stdio.h>
-	#include "ansi.h"
 
 	/* ----- Type definitions ----- */
 	typedef struct {
@@ -14,24 +13,28 @@
 
 	/* ----- Sprites ----- */
 
-		/* ----- SPACESHIP ----- */
-		#define SHIP_H 4 // REMEMBER TO UPDATE IN RENDER.C
-		#define SHIP_W 7 // REMEMBER TO UPDATE IN RENDER.C
-
-		extern const uint8_t shipLevelSprites[4][SHIP_H][SHIP_W]; 	// Ship level sprite LUT
-		extern const uint8_t shipPowerUpSprites[4][SHIP_H][SHIP_W];	// Ship power up LUT
-
 		/* ----- ASTROID ----- */
-		#define AST_H 6 // REMEMBER TO UPDATE IN RENDER.C
-		#define AST_W 8 // REMEMBER TO UPDATE IN RENDER.C
+		#define SPRITE_AST_TYPES 2
+		#define SPRITE_AST_H 6
+		#define SPRITE_AST_W 8
 
-		extern const uint8_t asteroidSprites[2][AST_H][AST_W];
+		extern const uint8_t asteroidSprites[SPRITE_AST_TYPES][SPRITE_AST_H][SPRITE_AST_W];
+
+		/* ----- SPACESHIP ----- */
+		#define SPRITE_SHIP_LEVELS 4
+		#define SPRITE_SHIP_POWER_UPS 2
+		#define SPRITE_SHIP_H 4
+		#define SPRITE_SHIP_W 7
+
+		extern const uint8_t shipLevelSprites[SPRITE_SHIP_LEVELS][SPRITE_SHIP_H][SPRITE_SHIP_W]; 	// Ship level sprite LUT
+		extern const uint8_t shipPowerUpSprites[SPRITE_SHIP_POWER_UPS][SPRITE_SHIP_H][SPRITE_SHIP_W];	// Ship power up LUT
 
 		/* ----- UFO ----- */
-		#define UFO_H 2 // REMEMBER TO UPDATE IN RENDER.C
-		#define UFO_W 3 // REMEMBER TO UPDATE IN RENDER.C
+		#define SPRITE_UFO_TYPES 5
+		#define SPRITE_UFO_H 2
+		#define SPRITE_UFO_W 3
 
-		extern const uint8_t ufoSprites[5][UFO_H][UFO_W];
+		extern const uint8_t ufoSprites[SPRITE_UFO_TYPES][SPRITE_UFO_H][SPRITE_UFO_W];
 
 
 #endif

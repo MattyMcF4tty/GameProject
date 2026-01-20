@@ -1,10 +1,20 @@
 #include "game_master.h"
 #include "render.h"
+#include "math.h"
+#include "sprites.h"
 
-#define TEMP_WIDTH 200
-#define TEMP_HEIGHT 50
+/* ----------- Static function definitions ---------- */
+static void entitySpawner(const gameConfig_t *config, gameState_t *state);
+static void addAsteroid(const gameConfig_t *config, asteroid_t *asteroidArray);
+static void updateAsteroids(const gameConfig_t *config, asteroid_t *asteroidArray);
+static void addUfo(const gameConfig_t *config, ufo_t *ufoArray);
+static void updateUfos(const gameConfig_t *config, ufo_t *ufoArray, bullet_t *bulletArray);
+static void addBullet(const gameConfig_t *config, bullet_t *bulletArray, int16_t x, int16_t y, int16_t vY);
+static uint8_t detectHit(const gameConfig_t *config, gameState_t *state, bullet_t *bullet);
+static void updateBullets(const gameConfig_t *config, gameState_t *state);
 
 /* ----------- RANDOMNESS ---------- */
+// Should use pin noise and should be in stm helpers
 static uint32_t randomRange(uint32_t min, uint32_t max) {
     if (max < min) {
         return min;  // or swap, or assert
@@ -14,43 +24,86 @@ static uint32_t randomRange(uint32_t min, uint32_t max) {
     return min + ((uint32_t)rand() % span);
 }
 
+/* ---------- Public functions ---------- */
+uint8_t initGameState(const gameConfig_t *config, gameState_t *state) {
+
+	// We allocate the needed memory for game
+    state->ufoArray = calloc(config->maxUfos, sizeof(ufo_t));
+    state->asteroidArray = calloc(config->maxAsteroids, sizeof(asteroid_t));
+    state->bulletArray = calloc(config->maxBullets, sizeof(bullet_t));
+
+    if (!state->ufoArray || !state->asteroidArray || !state->bulletArray) {
+    	// Allocation failed, clean up
+
+    	free(state->ufoArray);
+		free(state->asteroidArray);
+		free(state->bulletArray);
+
+    	return 1;
+    }
+
+    return 0;
+}
+
+void updateGameState(const gameConfig_t *config, gameState_t *state) {
+	entitySpawner(config, state);
+
+	updateAsteroids(config, state->asteroidArray);
+	updateUfos(config, state->ufoArray, state->bulletArray);
+	updateBullets(config, state);
+}
+
+/*------------ Local functions ---------- */
+static void entitySpawner(const gameConfig_t *config, gameState_t *state) {
+	uint16_t spawn = (uint16_t)randomRange(0, 1000);
+
+	if (spawn <= 10) { // 0.3% spawn change
+		addAsteroid(config, state->asteroidArray);
+	}
+	if (spawn <= 10) { //1.0% spawn change
+		addUfo(config, state->ufoArray);
+	}
+}
 
 /* ----------- ASTEROID ---------- */
-static asteroid_t asteroidArray[MAX_ASTEROIDS] = {0};
-
-void addAsteroid() {
-	for (uint8_t i = 0; i < MAX_ASTEROIDS; i++) {
+static void addAsteroid(const gameConfig_t *config, asteroid_t *asteroidArray) {
+	for (uint8_t i = 0; i < config->maxAsteroids; i++) {
 		asteroid_t *asteroid = &asteroidArray[i];
 
-		if (!asteroid->active) {
-			asteroid->active = 1;
-			asteroid->x = (int16_t)randomRange(1 << 6, TEMP_WIDTH << 6); // Spawn within 1 -> width
-			asteroid->y = 0;
-			asteroid->vX = 0;
-			asteroid->vY = (int16_t)randomRange(1 << 4, 0x40); // Fastest speed is 1/4, slowest is 1/32 cells per frame.
-			asteroid->type = (uint8_t)randomRange(0, 1);;
-			break;
-		}
+		if (asteroid->active) continue; // Skip if index already initialized
+
+		uint8_t randType = (uint8_t)randomRange(0, 1);
+
+		asteroid->active = 1;
+		asteroid->lives = 10;
+		asteroid->x = (int16_t)randomRange(1 << 6, config->winW << 6);	// Spawn within 1 -> width
+		asteroid->y = 0;
+		asteroid->vX = 0;
+		asteroid->vY = (int16_t)randomRange(1<<2, 1<<4); 				// speed: 1/32 -> 1/4
+		asteroid->type = randType;
+		asteroid->gravity = (int16_t)randomRange(1 << 4, 1 << 5);		// 1/4 -> 1/2
+
+		break; // Stop after initialization
 	}
 }
 
 
-void updateAsteroids() {
-	for (uint8_t i = 0; i < MAX_ASTEROIDS; i++) {
+static void updateAsteroids(const gameConfig_t *config, asteroid_t *asteroidArray) {
+	for (uint8_t i = 0; i < config->maxAsteroids; i++) {
 		asteroid_t *asteroid = &asteroidArray[i];
 
-		if (!asteroid->active) continue; // Skip non-active asteroids
+		if (!asteroid->active) continue; // Skip non-initialized asteroids
 
 		int16_t oldXCell = asteroid->x >> 6;
 		int16_t oldYCell = asteroid->y >> 6;
 
+		// Detect if asteroid should be redrawn in a different cell
 		asteroid->x += asteroid->vX;
 		asteroid->y += asteroid->vY;
-
 		uint8_t xMoved = oldXCell != (asteroid->x >> 6);
 		uint8_t yMoved = oldYCell  != (asteroid->y >> 6);
 
-		if ((asteroid->y >> 6) >= TEMP_HEIGHT) { // Reached bottom or dead
+		if ((asteroid->y >> 6) >= config->winH || asteroid->lives <= 0) { // Reached bottom or dead
 			blitAsteroid(asteroid, ERASE);
 
 			asteroid->active = 0;
@@ -65,44 +118,44 @@ void updateAsteroids() {
 
 
 /* ----------- UFOS ---------- */
-static ufo_t ufoArray[MAX_UFOS] = {0};
-
-void addUfo() {
-	for (uint8_t i = 0; i < MAX_UFOS; i++) {
+static void addUfo(const gameConfig_t *config, ufo_t *ufoArray) {
+	for (uint8_t i = 0; i < config->maxUfos; i++) {
 		ufo_t *ufo = &ufoArray[i];
 
 
-		if (!ufo->active) {
-			uint8_t randType = (uint8_t)randomRange(0, 4);
+		if (ufo->active) continue; // Skip if index already initialized
 
-			ufo->active = 1;
-			ufo->x = (int16_t)randomRange(1 << 6, TEMP_WIDTH << 6); // Spawn within 1 -> width
-			ufo->y = 0;
-			ufo->vX = 0;
-			ufo->vY = (int16_t)randomRange(1 << 3, 0x40); // Fastest speed is 1/16, slowest is 1/32 cells per frame.
-			ufo->type = randType;
-			ufo->shotDelay = (randType + 1) << 4; // Aggressiveness based of type
+		uint8_t randType = (uint8_t)randomRange(0, 4);
 
-			break; // Stop looking for empty spot, as we have added the ufo
-		}
+		ufo->active = 1;
+		ufo->lives = 3;
+		ufo->x = (int16_t)randomRange(1 << 6, config->winW << 6);	// Spawn within 1 -> width
+		ufo->y = 0;
+		ufo->vX = 0;
+		ufo->vY = (int16_t)randomRange(1<<2, 1<<3);					// speed: 1/32 -> 1/16
+		ufo->type = randType;
+		ufo->shotDelay = (randType + 1) << 5;						// Aggressiveness based of type
+
+		break; // Stop after initialization
+
 	}
 }
 
 
-void updateUfos() {
-	for (uint8_t i = 0; i < MAX_UFOS; i++) {
+static void updateUfos(const gameConfig_t *config, ufo_t *ufoArray, bullet_t *bulletArray) {
+	for (uint8_t i = 0; i < config->maxUfos; i++) {
 		ufo_t *ufo = &ufoArray[i];
 
 
-		if (!ufo->active) continue; // Skip non-active UFOS
+		if (!ufo->active) continue; // Skip non-initialized UFO's
 
+		// Detect if UFO should be redrawn in a different cell
 		int16_t oldXCell = ufo->x >> 6;
 		int16_t oldYCell = ufo->y >> 6;
-
 		uint8_t xMoved = oldXCell != ((ufo->x += ufo->vX) >> 6);
-		uint8_t yMoved = oldYCell  != ((ufo->y += ufo->vY) >> 6);
+		uint8_t yMoved = oldYCell != ((ufo->y += ufo->vY) >> 6);
 
-		if ((ufo->y >> 6) >= TEMP_HEIGHT) { // Reached bottom or dead
+		if ((ufo->y >> 6) >= config->winH || ufo->lives <= 0) { // Reached bottom or dead
 			blitUfo(ufo, ERASE);
 
 			ufo->active = 0;
@@ -113,9 +166,12 @@ void updateUfos() {
 			}
 			ufo->shotDelay--;
 			if (ufo->shotDelay == 0) {
-				addBullet(ufo->x + ((int16_t)1 << 6), ufo->y + ((int16_t)2 << 6), ufo->vY);
+				int16_t bulletX = ufo->x + (1 << 6);
+				int16_t bulletY = ufo->y + (2 << 6);
 
-				ufo->shotDelay = (ufo->type + 1) << 4;
+				addBullet(config, bulletArray, bulletX , bulletY, ufo->vY);
+
+				ufo->shotDelay = (ufo->type + 1) << 4; // Reset shotDelay
 			}
 		}
 	}
@@ -123,42 +179,47 @@ void updateUfos() {
 
 
 /* ----------- BULLETS ---------- */
-static bullet_t bulletArray[MAX_BULLETS] = {0};
+static void addBullet(const gameConfig_t *config, bullet_t *bulletArray, int16_t x, int16_t y, int16_t vY) {
+    for (uint8_t i = 0; i < config->maxBullets; i++) {
+        bullet_t *bullet = &bulletArray[i];
 
+        if (bullet->active) continue; // Skip if index already initialized
 
-// VERY SIMPLE: SHOULD BE CHANGED
-void addBullet(int16_t x, int16_t y, int16_t vY) {
-	for (uint8_t i = 0; i < MAX_BULLETS; i++) {
-		bullet_t *bullet = &bulletArray[i];
+        bullet->active = 1;
+        bullet->x = x;
+        bullet->y = y;
+        bullet->vX = 0;
+        bullet->vY = (vY < 0) ? -(3 << 5) : (3 << 5); // Make bullet move 1.5 cells per frame
 
-		if (!bullet->active) {
-			vY &= 0x8000; // make bullet move 2 cells in speed based on direction vY is in;
-			vY +=2 << 6;
-
-			bullet->active = 1;
-			bullet->x = x;
-			bullet->y = y;
-			bullet->vX = 0;
-			bullet->vY = vY;
-
-			break;
-		}
-	}
+        break;
+    }
 }
 
-void updateBullets() {
-	for (uint8_t i = 0; i < MAX_BULLETS; i++) {
-		bullet_t *bullet = &bulletArray[i];
+static void updateBullets(const gameConfig_t *config, gameState_t *state) {
+	for (uint8_t i = 0; i < config->maxBullets; i++) {
+		bullet_t *bullet = &state->bulletArray[i];
 
-		if (!bullet->active) continue;
+		if (!bullet->active) continue; 			// Skip non-initialized bullets
 
+
+
+		for (uint8_t astIndex = 0; astIndex < config->maxAsteroids; astIndex++) {
+		    asteroid_t *asteroid = &state->asteroidArray[astIndex];
+
+		    if (!asteroid->active) continue;	// Skip non-initialized asteroids
+
+		    applyAsteroidGravity(bullet, asteroid);
+		}
+
+		// Detect if bullet should be redrawn in a new cell
 		int16_t oldXCell = bullet->x >> 6;
 		int16_t oldYCell = bullet->y >> 6;
-
 		uint8_t xMoved = oldXCell != ((bullet->x += bullet->vX) >> 6);
-		uint8_t yMoved = oldYCell  != ((bullet->y += bullet->vY) >> 6);
+		uint8_t yMoved = oldYCell != ((bullet->y += bullet->vY) >> 6);
 
-		if ((bullet->y >> 6) >= TEMP_HEIGHT) { // Reached bottom or dead
+		if ((bullet->y >> 6) >= config->winH ||
+			detectHit(config, state, bullet))
+		{ // Reached bottom or dead
 			blitBullet(bullet, ERASE);
 
 			bullet->active = 0;
@@ -170,3 +231,41 @@ void updateBullets() {
 		}
 	}
 }
+
+static uint8_t detectHit(const gameConfig_t *config, gameState_t *state, bullet_t *bullet) {
+
+	/* Check for ufo hit */
+	for (uint8_t i = 0; i < config->maxUfos; i++) {
+		ufo_t *ufo = &state->ufoArray[i];
+
+		if (!ufo->active || ufo->lives <= 0) continue; // Skip non-initialized or dead UFO's
+
+		if (bullet->x >= ufo->x &&
+		    bullet->x <  ufo->x + (SPRITE_UFO_W<< 6) &&
+		    bullet->y >= ufo->y &&
+		    bullet->y <  ufo->y + (SPRITE_UFO_H << 6))
+		{
+		    ufo->lives--;
+		    return 1;
+		}
+	}
+
+	/* Check for asteroid hit */
+	for (uint8_t i = 0; i < config->maxAsteroids; i++) {
+		asteroid_t *asteroid = &state->asteroidArray[i];
+
+		if (!asteroid->active || asteroid->lives <= 0) continue; // Skip non-initialized or dead asteroids
+
+		if (bullet->x >= asteroid->x &&
+		    bullet->x <  asteroid->x + (SPRITE_AST_W << 6) &&
+		    bullet->y >= asteroid->y &&
+		    bullet->y <  asteroid->y + (SPRITE_AST_H << 6))
+		{
+		    asteroid->lives--;
+		    return 1;
+		}
+	}
+
+	return 0;
+}
+

@@ -1,73 +1,87 @@
 #include "render.h"
+#include "ansi.h"
 
 
 /* ---------- ASTEROID ---------- */
-#define AST_H 6 // REMEMBER TO UPDATE IN SPRITES.H
-#define AST_W 8 // REMEMBER TO UPDATE IN SPRITES.H
-
 void blitAsteroid(const asteroid_t *asteroid, blitMode_t mode) {
-	const uint8_t (*astroidSprite)[AST_W];
 
-	// Find level sprite in LUT
-	uint8_t safeAsteroid = asteroid->type > 1 ? 1 : asteroid->type; // cap at 2 types
-	astroidSprite = asteroidSprites[safeAsteroid];
+    // Validate type
+    uint8_t safeType = asteroid->type;
+    if (safeType >= SPRITE_AST_TYPES) {
+        safeType = SPRITE_AST_TYPES - 1; // Zero indexed
+    }
 
-   // Render sprite, we only update non-zero pixels for efficiency
-	for (int16_t row = 0; row < AST_H; row++) {
+    // Find type in sprite LUT
+    const uint8_t (*asteroidSprite)[SPRITE_AST_W] = asteroidSprites[safeType];
 
-		int16_t fpRow = row<<6; // Only calc fixed point row once every row
+    // Compute base position once
+    int16_t baseX = asteroid->x;
+    int16_t baseY = asteroid->y;
 
-		for (int16_t col = 0; col < AST_W; col++) {
-			uint8_t color = astroidSprite[row][col];
+    if (mode == ERASE) {
+        baseX = (int16_t)(baseX - asteroid->vX);
+        baseY = (int16_t)(baseY - asteroid->vY);
+        resetBgColor(); // Only write to terminal once, for efficiency
+    }
 
-			if (color == 0) continue;  // transparent -> do nothing
+    for (int16_t row = 0; row < SPRITE_AST_H; row++) {
+        int16_t fpRow = (int16_t)(row << 6); // Only calculate row position once per row
 
+        for (int16_t col = 0; col < SPRITE_AST_W; col++) {
+            uint8_t color = asteroidSprite[row][col];
 
-			int16_t nextX = asteroid->x;
-			int16_t nextY = asteroid->y;
+            if (color == 0) continue;  // transparent
 
-			if (mode == ERASE) {
+            if (mode == DRAW) {
+                bgColor(color);
+            }
 
-				// Go to last position
-				nextX -= asteroid->vX;
-				nextY -= asteroid->vY;
-
-				resetBgColor();
-			} else {
-				bgColor(color);
-			}
-
-			// Also convert col to Q10.6
-			goToCoords(nextX + (col << 6), nextY + fpRow);
-			printf(" ");
-		}
-	}
+            goToCoords((int16_t)(baseX + (col << 6)), (int16_t)(baseY + fpRow));
+            printf(" ");
+        }
+    }
 }
 
 
 /* ---------- SPACESHIP ---------- */
-#define SHIP_H 4 // REMEMBER TO UPDATE IN SPRITES.H
-#define SHIP_W 7 // REMEMBER TO UPDATE IN SPRITES.H
-
 void blitSpaceship(const spaceship_t *ship, blitMode_t mode) {
-	const uint8_t (*shipSprite)[SHIP_W];
-	const uint8_t (*powerUpSprite)[SHIP_W] = NULL;
 
 	// Only look up sprite if power up is active
-	if (ship->powerUp) {
-		// Find power up sprite in LUT
-		uint8_t safePowerUp = ship->powerUp  > 4 ? 4 : ship->powerUp; // cap at 4 powerUps
-		powerUpSprite = shipPowerUpSprites[--safePowerUp]; // Array is zero-index, so we detract one
+	const uint8_t (*powerUpSprite)[SPRITE_SHIP_W] = NULL;
+
+	if (ship->powerUp != 0) {
+
+	    uint8_t safePowerUp = ship->powerUp - 1; // Zero indexed
+
+	    if (safePowerUp > SPRITE_SHIP_POWER_UPS) {
+	        safePowerUp = SPRITE_SHIP_POWER_UPS - 1; // Zero indexed
+	    }
+
+	    powerUpSprite = shipPowerUpSprites[safePowerUp];
 	}
 
 	// Find level sprite in LUT
-	uint8_t safeLevel = ship->lvl > 3 ? 3 : ship->lvl; // cap at level 3
-	shipSprite = shipLevelSprites[safeLevel]; // Your allowed to be level 0 here, so no -1
+	uint8_t safeLevel = ship->lvl;
+	if (safeLevel >= SPRITE_SHIP_LEVELS) {
+		safeLevel = SPRITE_SHIP_LEVELS - 1;
+	}
+	const uint8_t (*shipSprite)[SPRITE_SHIP_W] = shipLevelSprites[safeLevel];
 
+    // Compute base position once
+    int16_t baseX = ship->x;
+    int16_t baseY = ship->y;
+
+    if (mode == ERASE) {
+        baseX = (int16_t)(baseX - ship->vX);
+        baseY = (int16_t)(baseY - ship->vY);
+        resetBgColor(); // Only write to terminal once, for efficiency
+    }
 
     // Render sprite, we only update non-zero pixels for efficiency
-    for (uint8_t row = 0; row < SHIP_H; row++) {
-        for (uint8_t col = 0; col < SHIP_W; col++) {
+    for (uint8_t row = 0; row < SPRITE_SHIP_H; row++) {
+    	int16_t fpRow = (int16_t)(row << 6); // Only calculate row position once per row
+
+        for (uint8_t col = 0; col < SPRITE_SHIP_W; col++) {
 
             uint8_t color;
 
@@ -78,10 +92,13 @@ void blitSpaceship(const spaceship_t *ship, blitMode_t mode) {
                 color = shipSprite[row][col];
             }
 
-            if (color == 0) continue;  // transparent -> do nothing
+            if (color == 0) continue;  // transparent
 
-            goTo(ship->x + col, ship->y + row);
-            mode == DRAW ? bgColor(color) : resetBgColor();
+            if (mode == DRAW) {
+                bgColor(color);
+            }
+
+            goToCoords(baseX + (col << 6), baseY + fpRow);
             printf(" ");
         }
     }
@@ -89,40 +106,40 @@ void blitSpaceship(const spaceship_t *ship, blitMode_t mode) {
 
 
 /* ---------- UFO ---------- */
-#define UFO_H 2 // REMEMBER TO UPDATE IN SPRITES.H
-#define UFO_W 3 // REMEMBER TO UPDATE IN SPRITES.H
-
 void blitUfo(const ufo_t *ufo, blitMode_t mode) {
-	const uint8_t (*ufoSprite)[UFO_W];
 
 	// Find level sprite in LUT
-	uint8_t safeType = ufo->type > 4 ? 4 : ufo->type; // cap at 5 types
-	ufoSprite = ufoSprites[safeType]; // Your allowed to be level 0 here, so no -1
+	uint8_t safeType = ufo->type;
+	if (ufo->type >= SPRITE_UFO_TYPES) {
+		safeType = SPRITE_UFO_TYPES - 1; // Zero indexed
+	}
+
+	const uint8_t (*ufoSprite)[SPRITE_UFO_W] = ufoSprites[safeType];
+
+	// Compute base position once
+	int16_t baseX = ufo->x;
+	int16_t baseY = ufo->y;
+
+	if (mode == ERASE) {
+		baseX = (int16_t)(baseX - ufo->vX);
+		baseY = (int16_t)(baseY - ufo->vY);
+		resetBgColor(); // Only write to terminal once, for efficiency
+	}
 
     // Render sprite, we only update non-zero pixels for efficiency
-    for (uint8_t row = 0; row < UFO_H; row++) {
+    for (uint8_t row = 0; row < SPRITE_UFO_H; row++) {
     	int16_t fpRow = row << 6;
 
-        for (uint8_t col = 0; col < UFO_W; col++) {
-
+        for (uint8_t col = 0; col < SPRITE_UFO_W; col++) {
             uint8_t color = ufoSprite[row][col];
 
-            if (color == 0) continue;  // transparent -> do nothing
+            if (color == 0) continue;  // transparent
 
-			int16_t nextX = ufo->x;
-			int16_t nextY = ufo->y;
+            if (mode == DRAW) {
+                bgColor(color);
+            }
 
-			if (mode == ERASE) {
-				// Go to last position
-				nextX -= ufo->vX;
-				nextY -= ufo->vY;
-
-				resetBgColor();
-			} else {
-				bgColor(color);
-			}
-
-            goToCoords(nextX + (col << 6), nextY + fpRow);
+            goToCoords(baseX + (col << 6), baseY + fpRow);
             printf(" ");
         }
     }
@@ -130,32 +147,55 @@ void blitUfo(const ufo_t *ufo, blitMode_t mode) {
 
 
 /* ---------- BULLET ---------- */
+/* ---------- BULLET ---------- */
 void blitBullet(const bullet_t *bullet, blitMode_t mode) {
 
-	int16_t nextX = bullet->x;
-	int16_t nextY = bullet->y;
+    int16_t nextX = bullet->x;
+    int16_t nextY = bullet->y;
 
-	if (mode == ERASE) {
-		// Go to last position
-		nextX -= bullet->vX;
-		nextY -= bullet->vY;
+    if (mode == ERASE) {
+        // Go to last position
+        nextX = (nextX - bullet->vX);
+        nextY = (nextY - bullet->vY);
+        resetBgColor();
+    } else {
+        fgColor(7);
+        resetBgColor();
+    }
 
-		resetBgColor();
-	} else {
-		fgColor(7);
-		resetBgColor();
-	}
+    goToCoords(nextX, nextY);
 
-	goToCoords(nextX, nextY);
+    if (mode == ERASE) {
+        putchar(' ');
+        return;
+    }
 
-	if (mode == ERASE) {
-		putchar(' ');				// Delete bullet
-	}
-	else if (bullet->vX > 0) {
-		putchar('/');				// If bullet is going to the right, turn bullet right
-	} else if (bullet->vX < 0) {
-		putchar('\\');				// If bullet is going to the left, turn bullet left
-	} else {
-		putchar('|');				// If bullet is going straight, straighten bullet
-	}
+    // Determination of direction. We ignore small changes
+    int16_t vx = (bullet->vX >> 2);
+    int16_t vy = (bullet->vY >> 2);
+
+    int8_t dirX = 0;
+    int8_t dirY = 0;
+
+    if (vx > 0) dirX = 1;
+    else if (vx < 0) dirX = -1;
+
+    if (vy > 0) dirY = 1;
+    else if (vy < 0) dirY = -1;
+
+    // Determine bullet "sprite"
+    char c;
+    if (dirX == 0 && dirY == 0) {
+        c = '.';                 // Not moving
+    } else if (dirX == 0) {
+        c = '|';                 // vertical
+    } else if (dirY == 0) {
+        c = '-';                 // horizontal
+    } else if (dirX == dirY) {
+        c = '\\';                // down-right or up-left
+    } else {
+        c = '/';                 // up-right or down-left
+    }
+
+    putchar(c);
 }

@@ -141,14 +141,38 @@ void rotateShotAngle(int32_t angleDeg) {
     shot.vy = v.y << 16;
 }
 
-void applyAsteroidGravity(shot_t *s, asteroid_t *a) {
-	//distance between bullet and asteroid
-	int32_t vx = (a->x) - (s->x);
-    int32_t vy = (a->y) - (s->y);
+void applyAsteroidGravity(bullet_t *b, const asteroid_t *a) {
+	int16_t asteroidCenterX = a->x + (SPRITE_AST_W << 5); // We want to divide the width with 2
+	int16_t asteroidCenterY = a->y + (SPRITE_AST_H << 5); // We want to divide the height with 2
 
-    // small pull
-    s->vx += vx >> 10;
-    s->vy += vy >> 10;
+	int16_t bulletDeltaX = b->x - asteroidCenterX;
+	int16_t bulletDeltaY = b->y - asteroidCenterY;
+
+	int16_t absDx = (bulletDeltaX < 0) ? -bulletDeltaX : bulletDeltaX;
+	int16_t absDy = (bulletDeltaY < 0) ? -bulletDeltaY : bulletDeltaY;
+
+	int16_t gravityRange = 7 << 6; // cells
+
+	if (absDx <= gravityRange && absDy <= gravityRange) {
+
+	    int16_t g = a->gravity;
+	    int16_t d = (absDx > absDy) ? absDx : absDy;
+
+	    if (d <= (int16_t)(1 << 6)) {
+	        g = (int16_t)(g << 2);
+	    } else if (d <= (int16_t)(2 << 6)) {
+	        g = (int16_t)(g << 1);
+	    } else {
+	        g = (int16_t)(g >> 1);
+	        if (g == 0) g = 1;
+	    }
+
+	    if (bulletDeltaX < 0)      b->vX += g;
+	    else if (bulletDeltaX > 0) b->vX -= g;
+
+	    if (bulletDeltaY < 0)      b->vY += g;
+	    else if (bulletDeltaY > 0) b->vY -= g;
+	}
 }
 
 void applyLorentzForce(shot_t *s, int32_t k) { //EGG

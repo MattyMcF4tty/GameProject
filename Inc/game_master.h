@@ -17,24 +17,12 @@
 	#include <stdint.h>
 	#include <stdlib.h>
 
-	/* ----- Config ----- */
-	#define MAX_ASTEROIDS	20
-	#define MAX_UFOS		40
-	#define MAX_BULLETS		100
-
 	/* ----- Type definitions ----- */
-	typedef struct {
-		uint8_t lives;
-		uint32_t score;
-		uint32_t highScore;
-		uint8_t level;
-		uint8_t spawnRate;
-	} gameState_t;
-
 	typedef struct {
 		int16_t x, y; 	// Q10.6 Fixed point
 		int16_t vX, vY; // Q10.6 Fixed point
 		uint8_t lvl;
+		uint8_t shotAngle;
 		uint8_t powerUp;
 	} spaceship_t;
 
@@ -52,6 +40,7 @@
 		int16_t vX, vY; // Q10.6 Fixed point
 		uint8_t lives;
 		uint8_t type;
+		int16_t gravity;
 	} asteroid_t;
 
 	typedef struct {
@@ -63,15 +52,29 @@
 		uint8_t shotDelay; // Number of ticks before alien shoots again
 	} ufo_t;
 
+	typedef struct {
+		uint8_t maxBullets;
+		uint8_t maxUfos;
+		uint8_t maxAsteroids;
+		uint8_t difficulty;		// Difficulty multiplier
+		uint8_t winW;			// Window width
+		uint8_t winH;			// Window height
+	} gameConfig_t;
+
+	typedef struct {
+		uint8_t 	lives;
+		uint32_t	score;
+		uint32_t 	highScore;
+		uint8_t 	level;
+		uint8_t 	spawnRate;
+		ufo_t 		*ufoArray;
+		asteroid_t 	*asteroidArray;
+		bullet_t 	*bulletArray;
+	} gameState_t;
+
 
 	/* ----- Functions ----- */
-	void addAsteroid();
-	void updateAsteroids();
-
-	void addUfo();
-	void updateUfos();
-
-	void addBullet(int16_t x, int16_t y, int16_t vY);
-	void updateBullets();
+	uint8_t initGameState(const gameConfig_t *config, gameState_t *state);
+	void updateGameState(const gameConfig_t *config, gameState_t *state);
 
 #endif

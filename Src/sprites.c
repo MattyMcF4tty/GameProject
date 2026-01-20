@@ -1,7 +1,8 @@
 #include "sprites.h"
+#include "ansi.h"
 
 /* ---------- ASTEROID ---------- */
-const uint8_t asteroidSprites[2][AST_H][AST_W] = {
+const uint8_t asteroidSprites[SPRITE_AST_TYPES][SPRITE_AST_H][SPRITE_AST_W] = {
 		{		// TYPE 0
 			    {0, 0, 0, 7, 7, 7, 0, 0},
 			    {0, 7, 7, 7, 7, 7, 7, 0},
@@ -21,7 +22,7 @@ const uint8_t asteroidSprites[2][AST_H][AST_W] = {
 };
 
 /* ---------- SPACESHIP ---------- */
-const uint8_t shipLevelSprites[4][SHIP_H][SHIP_W] = {
+const uint8_t shipLevelSprites[SPRITE_SHIP_LEVELS][SPRITE_SHIP_H][SPRITE_SHIP_W] = {
 		{		// LEVEL 0
 			    {0, 0, 0, 1, 0, 0, 0},
 			    {0, 0, 1, 6, 1, 0, 0},
@@ -48,7 +49,7 @@ const uint8_t shipLevelSprites[4][SHIP_H][SHIP_W] = {
 		},
 };
 
-const uint8_t shipPowerUpSprites[4][SHIP_H][SHIP_W] = {
+const uint8_t shipPowerUpSprites[SPRITE_SHIP_POWER_UPS][SPRITE_SHIP_H][SPRITE_SHIP_W] = {
 		{		// POWER UP 1: MORE DAMAGE
 			    {0, 0, 0, 0, 0, 0, 0},
 			    {7, 0, 0, 0, 0, 0, 7},
@@ -61,22 +62,10 @@ const uint8_t shipPowerUpSprites[4][SHIP_H][SHIP_W] = {
 			    {0, 0, 0, 0, 0, 0, 0},
 			    {3, 0, 3, 0, 3, 0, 3}
 		},
-		{		// POWER UP 3: UNDEFINED
-			    {0, 0, 0, 0, 0, 0, 0},
-			    {0, 0, 0, 0, 0, 0, 0},
-			    {0, 0, 0, 0, 0, 0, 0},
-			    {0, 0, 0, 0, 0, 0, 0}
-		},
-		{		// POWER UP 4: UNDEFINED
-			    {0, 0, 0, 0, 0, 0, 0},
-			    {0, 0, 0, 0, 0, 0, 0},
-			    {0, 0, 0, 0, 0, 0, 0},
-			    {0, 0, 0, 0, 0, 0, 0}
-		},
 };
 
 /* ---------- UFO ---------- */
-const uint8_t ufoSprites[5][UFO_H][UFO_W] = {
+const uint8_t ufoSprites[5][SPRITE_UFO_H][SPRITE_UFO_W] = {
 		{		// TYPE 0
 			    {0, 6, 0},
 			    {1, 1, 1},
