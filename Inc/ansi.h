@@ -14,5 +14,8 @@
 	void fgColor(uint8_t foreground);
 	void bgColor(uint8_t background);
 	void resetBgColor();
+	void blink(uint8_t on);
+	void up();
+	void down();
 
 #endif

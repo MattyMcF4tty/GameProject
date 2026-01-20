@@ -74,3 +74,22 @@ void resetBgColor() {
 // gray on black text, no underline, no blink, no reverse
   printf("%c[m", ESC);
 }
+
+
+void blink(uint8_t on) {
+	if (on) {
+		printf("\x1B[5m");
+	}
+	else {
+		printf("\x1B[25m");
+	}
+}
+
+
+void up() {                   //Rykker cursoren 1 op og 1 til højre
+	printf("%c[1A", ESC);
+}
+
+void down() {
+	printf("%c[1B", ESC);    //Rykker cursoren 1 ned og 1 til højre
+}
