@@ -9,6 +9,7 @@
 	#include "ansi.h"
 	#include "render.h"
 	#include "game_master.h"
+	#include "joystick30010.h"
 
 	/* ----- Functions ----- */
 	int main();

@@ -8,6 +8,7 @@ static void initBoard() {
 	gpioEnable(GPIOB);	// Joystick,
 	gpioEnable(GPIOC);	// Joystick,
 
+	enableJoystick();
 	return;
 }
 
