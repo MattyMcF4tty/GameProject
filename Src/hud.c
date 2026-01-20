@@ -37,14 +37,25 @@ void drawHud(void)
     printf("Lives: ");
 
     for (uint8_t i = 0; i < currentLives; i++) {
-        //printf("♥ ");   sprite heart here
+        //printf("♥ ");   sprite heart here not added yet
     }
+}
+
+void hudLoseLife(void)
+{
+    if (currentLives > 0)
+        currentLives--;
+}
+
+uint8_t hudGetLives(void)
+{
+    return currentLives;
 }
 
 //------------------------------------------------------
 // Update lives when an asteroid hits the bottom
 //------------------------------------------------------
-void updateLives(uint8_t lives)
+void updateLives(uint8_t lives) //****move into gamemaster see c****
 {
 	if (invader.y > SCREEN_HEIGHT) {
 	        lives--;
@@ -53,7 +64,7 @@ void updateLives(uint8_t lives)
 	                lives--;
 	}
 
-	//Bullet hit player too
+	//Bullet hit player too (not added?)
 
 	currentLives = lives;
 }
