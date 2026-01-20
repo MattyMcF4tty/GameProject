@@ -73,6 +73,7 @@
 		ufo_t 		*ufoArray;
 		asteroid_t 	*asteroidArray;
 		bullet_t 	*bulletArray;
+		spaceship_t *ship;
 	} gameState_t;
 
 

@@ -32,6 +32,7 @@ uint8_t initGameState(const gameConfig_t *config, gameState_t *state) {
     state->ufoArray = calloc(config->maxUfos, sizeof(ufo_t));
     state->asteroidArray = calloc(config->maxAsteroids, sizeof(asteroid_t));
     state->bulletArray = calloc(config->maxBullets, sizeof(bullet_t));
+    state->ship = calloc(1, sizeof(spaceship_t));
 
     if (!state->ufoArray || !state->asteroidArray || !state->bulletArray) {
     	// Allocation failed, clean up
@@ -39,26 +40,22 @@ uint8_t initGameState(const gameConfig_t *config, gameState_t *state) {
     	free(state->ufoArray);
 		free(state->asteroidArray);
 		free(state->bulletArray);
+		free(state->ship);
 
     	return 1;
     }
 
+    addSpaceship(state->ship,
+                 (int16_t)(0 << 6),
+                 (int16_t)((config->winH - SPRITE_SHIP_H) << 6));
+
     return 0;
 }
-
-static spaceship_t ship;
-static uint8_t shipActive = 0;
 
 void updateGameState(const gameConfig_t *config, gameState_t *state) {
     entitySpawner(config, state);
 
-    if (!shipActive) {
-        addSpaceship(&ship, 0, config->winH - (SPRITE_SHIP_H<<6));
-        shipActive = 1;
-    } else {
-        updateSpaceship(config, &ship, state->bulletArray);
-    }
-
+    updateSpaceship(config, state->ship, state->bulletArray);
     updateAsteroids(config, state->asteroidArray);
     updateUfos(config, state->ufoArray, state->bulletArray);
     updateBullets(config, state);
@@ -302,8 +299,7 @@ void updateSpaceshipShotAngle(spaceship_t *ship)
 }
 
 
-void addSpaceship(spaceship_t *ship, int16_t startX, int16_t startY)
-{
+void addSpaceship(spaceship_t *ship, int16_t startX, int16_t startY) {
     // Initialize position
     ship->x = startX;
     ship->y = startY;
@@ -328,24 +324,17 @@ void updateSpaceship(const gameConfig_t *config, spaceship_t *ship, bullet_t *bu
 {
     blitSpaceship(ship, ERASE);
 
-    /* Default: stop */
-    ship->vX = 0;
 
     /* Read joystick */
     uint8_t inputX = readPotXaxis();
     uint8_t inputY = readPotYaxis();
     uint8_t inputWhiteButton = readButton(1);
 
-    /* Spaceship movement */
-    if (inputX == 0) { //Joystick right
-        ship->vX = 1;
-    }
+    if (inputX == 0)      ship->vX = (int16_t)( 1 << 6);
+    else if (inputX == 1) ship->vX = (int16_t)(-1 << 6);
+    else                  ship->vX = 0; /* Default: stop */
 
-    else if (inputX == 1) { //Joystick left
-        ship->vX = -1;
-    }
-
-    ship->x += ship->vX; //Integrate position
+    ship->x = (int16_t)(ship->x + ship->vX);
 
     blitSpaceship(ship, DRAW); // Draw updated position
 
