@@ -2,6 +2,7 @@
 #include "render.h"
 #include "math.h"
 #include "sprites.h"
+#include "hud.h"
 
 /* ----------- Static function definitions ---------- */
 static void entitySpawner(const gameConfig_t *config, gameState_t *state);
@@ -9,7 +10,7 @@ static void addAsteroid(const gameConfig_t *config, asteroid_t *asteroidArray);
 static void updateAsteroids(const gameConfig_t *config, asteroid_t *asteroidArray);
 static void addUfo(const gameConfig_t *config, ufo_t *ufoArray);
 static void updateUfos(const gameConfig_t *config, ufo_t *ufoArray, bullet_t *bulletArray);
-static void addBullet(const gameConfig_t *config, bullet_t *bulletArray, int16_t x, int16_t y, int16_t vY);
+static void addBullet(const gameConfig_t *config, bullet_t *bulletArray, int16_t x, int16_t y, int16_t vX, int16_t vY);
 static uint8_t detectHit(const gameConfig_t *config, gameState_t *state, bullet_t *bullet);
 static void updateBullets(const gameConfig_t *config, gameState_t *state);
 
@@ -45,12 +46,22 @@ uint8_t initGameState(const gameConfig_t *config, gameState_t *state) {
     return 0;
 }
 
-void updateGameState(const gameConfig_t *config, gameState_t *state) {
-	entitySpawner(config, state);
+static spaceship_t ship;
+static uint8_t shipActive = 0;
 
-	updateAsteroids(config, state->asteroidArray);
-	updateUfos(config, state->ufoArray, state->bulletArray);
-	updateBullets(config, state);
+void updateGameState(const gameConfig_t *config, gameState_t *state) {
+    entitySpawner(config, state);
+
+    if (!shipActive) {
+        addSpaceship(&ship, 0, config->winH - (SPRITE_SHIP_H<<6));
+        shipActive = 1;
+    } else {
+        updateSpaceship(config, &ship, state->bulletArray);
+    }
+
+    updateAsteroids(config, state->asteroidArray);
+    updateUfos(config, state->ufoArray, state->bulletArray);
+    updateBullets(config, state);
 }
 
 /*------------ Local functions ---------- */
@@ -107,6 +118,8 @@ static void updateAsteroids(const gameConfig_t *config, asteroid_t *asteroidArra
 			blitAsteroid(asteroid, ERASE);
 
 			asteroid->active = 0;
+
+			hudLoseLife();
 		} else {
 			if (xMoved || yMoved) {
 				blitAsteroid(asteroid, ERASE);
@@ -159,6 +172,8 @@ static void updateUfos(const gameConfig_t *config, ufo_t *ufoArray, bullet_t *bu
 			blitUfo(ufo, ERASE);
 
 			ufo->active = 0;
+
+			hudLoseLife();
 		} else {
 			if (xMoved || yMoved) {
 				blitUfo(ufo, ERASE);
@@ -223,12 +238,14 @@ static void updateBullets(const gameConfig_t *config, gameState_t *state) {
 			blitBullet(bullet, ERASE);
 		}
 
-        if ((bullet->y >> 6) <= 0 || (bullet->y >> 6) >= TEMP_HEIGHT_B ||
-            (bullet->x >> 6) <  0 || (bullet->x >> 6) >= TEMP_WIDTH_B) {
+        if ((bullet->y >> 6) <= 0 || (bullet->y >> 6) >= config->winH ||
+            (bullet->x >> 6) <  0 || (bullet->x >> 6) >= config->winW) {
             blitBullet(bullet, ERASE);
             bullet->active = 0;
         }
-        else {
+        else if (xMoved || yMoved)
+        {
+        	blitBullet(bullet, ERASE);
             blitBullet(bullet, DRAW);
         }
     }
@@ -307,7 +324,7 @@ void addSpaceship(spaceship_t *ship, int16_t startX, int16_t startY)
 
 
 
-void updateSpaceship(spaceship_t *ship)
+void updateSpaceship(const gameConfig_t *config, spaceship_t *ship, bullet_t *bulletArray)
 {
     blitSpaceship(ship, ERASE);
 
@@ -356,6 +373,8 @@ void updateSpaceship(spaceship_t *ship)
         }
 
         addBullet(
+        	config,
+			bulletArray,
             (ship->x + 3) << 6,
             ship->y << 6,
             vX,

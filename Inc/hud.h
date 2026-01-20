@@ -12,8 +12,11 @@
 #ifndef HUD_H_
 #define HUD_H_
 
-drawHud(void);
-updateLives(uint8_t *lives);
-updateScores(uint8_t *score);
+uint8_t hudGetLives(void);
+void hudLoseLife(void);
+
+void drawHud(void);
+// void updateLives(uint8_t *lives);
+void updateScores(uint8_t *score);
 
 #endif /* HUD_H_ */

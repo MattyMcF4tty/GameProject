@@ -81,7 +81,7 @@
 	void updateGameState(const gameConfig_t *config, gameState_t *state);
 
 	void addSpaceship(spaceship_t *ship, int16_t startX, int16_t startY);
-	void updateSpaceship(spaceship_t *ship);
+	void updateSpaceship(const gameConfig_t *config, spaceship_t *ship, bullet_t *bulletArray);
 	void updateSpaceshipShotAngle(spaceship_t *ship);
 
 #endif
