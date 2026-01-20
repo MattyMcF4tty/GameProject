@@ -16,6 +16,8 @@
 	/* ----- Dependencies ----- */
 	#include <stdint.h>
 	#include <stdlib.h>
+    #include "joystick30010.h"
+
 
 	/* ----- Type definitions ----- */
 	typedef struct {
@@ -24,6 +26,7 @@
 		uint8_t lvl;
 		uint8_t shotAngle;
 		uint8_t powerUp;
+		uint8_t shot_Angle;
 	} spaceship_t;
 
 	typedef struct {
@@ -76,5 +79,9 @@
 	/* ----- Functions ----- */
 	uint8_t initGameState(const gameConfig_t *config, gameState_t *state);
 	void updateGameState(const gameConfig_t *config, gameState_t *state);
+
+	void addSpaceship(spaceship_t *ship, int16_t startX, int16_t startY);
+	void updateSpaceship(spaceship_t *ship);
+	void updateSpaceshipShotAngle(spaceship_t *ship);
 
 #endif

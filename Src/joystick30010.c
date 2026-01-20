@@ -88,7 +88,7 @@ int8_t readPotYaxis(void){
 	while (ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC) == 0); // Wait for ADC read
 	uint16_t x = ADC_GetConversionValue(ADC1); // Read the ADC value
 
-	if (x > 4060)
+	if (x > 4040)
 		return 0; //Joystick moved up
 
 	else if (x < 3500)
@@ -114,6 +114,7 @@ int16_t readButton(int8_t pin) {
 	else if (pin == 1) {
 	button_value = ((GPIOC->IDR & (0x0001 << 1)) >> 1); // Read PC1 and shift the result to be either 1 or 0
 	}
+
 	return button_value;
 }
 

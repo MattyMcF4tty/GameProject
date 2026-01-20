@@ -169,7 +169,7 @@ static void updateUfos(const gameConfig_t *config, ufo_t *ufoArray, bullet_t *bu
 				int16_t bulletX = ufo->x + (1 << 6);
 				int16_t bulletY = ufo->y + (2 << 6);
 
-				addBullet(config, bulletArray, bulletX , bulletY, ufo->vY);
+				addBullet(config, bulletArray, bulletX , bulletY, 0, ufo->vY);
 
 				ufo->shotDelay = (ufo->type + 1) << 4; // Reset shotDelay
 			}
@@ -179,7 +179,7 @@ static void updateUfos(const gameConfig_t *config, ufo_t *ufoArray, bullet_t *bu
 
 
 /* ----------- BULLETS ---------- */
-static void addBullet(const gameConfig_t *config, bullet_t *bulletArray, int16_t x, int16_t y, int16_t vY) {
+static void addBullet(const gameConfig_t *config, bullet_t *bulletArray, int16_t x, int16_t y, int16_t vX, int16_t vY) {
     for (uint8_t i = 0; i < config->maxBullets; i++) {
         bullet_t *bullet = &bulletArray[i];
 
@@ -188,7 +188,7 @@ static void addBullet(const gameConfig_t *config, bullet_t *bulletArray, int16_t
         bullet->active = 1;
         bullet->x = x;
         bullet->y = y;
-        bullet->vX = 0;
+        bullet->vX = vX;
         bullet->vY = (vY < 0) ? -(3 << 5) : (3 << 5); // Make bullet move 1.5 cells per frame
 
         break;
@@ -221,15 +221,17 @@ static void updateBullets(const gameConfig_t *config, gameState_t *state) {
 			detectHit(config, state, bullet))
 		{ // Reached bottom or dead
 			blitBullet(bullet, ERASE);
-
-			bullet->active = 0;
-		} else {
-			if (xMoved || yMoved) {
-				blitBullet(bullet, ERASE);
-				blitBullet(bullet, DRAW);
-			}
 		}
-	}
+
+        if ((bullet->y >> 6) <= 0 || (bullet->y >> 6) >= TEMP_HEIGHT_B ||
+            (bullet->x >> 6) <  0 || (bullet->x >> 6) >= TEMP_WIDTH_B) {
+            blitBullet(bullet, ERASE);
+            bullet->active = 0;
+        }
+        else {
+            blitBullet(bullet, DRAW);
+        }
+    }
 }
 
 static uint8_t detectHit(const gameConfig_t *config, gameState_t *state, bullet_t *bullet) {
@@ -268,4 +270,106 @@ static uint8_t detectHit(const gameConfig_t *config, gameState_t *state, bullet_
 
 	return 0;
 }
+
+
+/* ----------- SPACESHIP ---------- */
+
+
+void updateSpaceshipShotAngle(spaceship_t *ship)
+{
+    ship->shot_Angle++;
+
+    if (ship->shot_Angle > 4) {
+        ship->shot_Angle = 0;
+    }
+}
+
+
+void addSpaceship(spaceship_t *ship, int16_t startX, int16_t startY)
+{
+    // Initialize position
+    ship->x = startX;
+    ship->y = startY;
+
+    // Initialize movement
+    ship->vX = 0;
+    ship->vY = 0;
+
+    // Initial state
+    ship->lvl = 0;
+    ship->powerUp = 0;
+    ship->shot_Angle = 0;
+
+    // Draw spaceship
+    blitSpaceship(ship, DRAW);
+}
+
+
+
+
+void updateSpaceship(spaceship_t *ship)
+{
+    blitSpaceship(ship, ERASE);
+
+    /* Default: stop */
+    ship->vX = 0;
+
+    /* Read joystick */
+    uint8_t inputX = readPotXaxis();
+    uint8_t inputY = readPotYaxis();
+    uint8_t inputWhiteButton = readButton(1);
+
+    /* Spaceship movement */
+    if (inputX == 0) { //Joystick right
+        ship->vX = 1;
+    }
+
+    else if (inputX == 1) { //Joystick left
+        ship->vX = -1;
+    }
+
+    ship->x += ship->vX; //Integrate position
+
+    blitSpaceship(ship, DRAW); // Draw updated position
+
+    /* Shooting ability */
+    static uint8_t prevWhiteButton = 0;
+    static uint8_t prevInputY = 2;
+
+    if (inputY == 0 && prevInputY != 0) {
+        updateSpaceshipShotAngle(ship);
+    }
+
+    prevInputY = inputY;
+
+    if (inputWhiteButton && !prevWhiteButton) {
+
+        int16_t vX = 0;
+        int16_t vY = -2 << 6;
+
+        switch (ship->shot_Angle) {
+            case 0: vX = 0; break;
+            case 1: vX = 1 << 6; break;
+            case 2: vX = 3 << 6; break;
+            case 3: vX = -1 << 6; break;
+            case 4: vX = -3 << 6; break;
+        }
+
+        addBullet(
+            (ship->x + 3) << 6,
+            ship->y << 6,
+            vX,
+            vY
+        );
+    }
+    prevWhiteButton = inputWhiteButton;
+}
+
+
+
+
+
+
+
+
 
