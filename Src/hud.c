@@ -19,6 +19,7 @@
 static uint8_t currentLives = 3;
 static uint16_t currentScore = 0;
 
+
 //------------------------------------------------------
 // Draw the entire HUD (score + lives)
 //------------------------------------------------------
@@ -52,22 +53,6 @@ uint8_t hudGetLives(void)
     return currentLives;
 }
 
-//------------------------------------------------------
-// Update lives when an asteroid hits the bottom
-//------------------------------------------------------
-void updateLives(uint8_t lives) //****move into gamemaster see c****
-{
-	if (invader.y > SCREEN_HEIGHT) {
-	        lives--;
-	}
-	if (asteroid.y > SCREEN_HEIGHT) {
-	                lives--;
-	}
-
-	//Bullet hit player too (not added?)
-
-	currentLives = lives;
-}
 
 //------------------------------------------------------
 // Update score using the timer

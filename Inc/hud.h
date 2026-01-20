@@ -17,6 +17,9 @@ void hudLoseLife(void);
 uint8_t hudGetLives(void);
 
 void updateLives(uint8_t lives); //***Remove see ch***
-updateScores(uint8_t *score);
+
+// void updateLives(uint8_t *lives);
+void updateScores(uint8_t *score);
+
 
 #endif /* HUD_H_ */
