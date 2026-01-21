@@ -7,9 +7,11 @@
 	#include <stdio.h>
 	#include "game_master.h"
 
-	/* ----- Functions ----- */
-	void DrawBordersMenu(uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2, const char *title);
-	void DrawBox(uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2);
+/* ----- Functions ----- */
+
+
+void DrawBordersMenu(uint8_t winStartX, uint8_t winStartY, uint8_t winW, uint8_t winH);
+void DrawBox(uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2);
 
 	void DrawLineVertical(uint8_t x,uint8_t y);
 	void DrawLineHorizontal(uint8_t x, uint8_t y);
@@ -21,14 +23,14 @@
 	void DrawLetterN();
 	void DrawLetterU();
 
-	void DrawPixelS(uint8_t x, uint8_t y);
-	void DrawPixelT(uint8_t x, uint8_t y);
-	void DrawPixelA();
-	void DrawPixelR();
-	void DrawPixelH(uint8_t x, uint8_t y);
-	void DrawPixelE(uint8_t x, uint8_t y);
-	void DrawPixelL(uint8_t x, uint8_t y);
-	void DrawPixelP(uint8_t x, uint8_t y);
+void DrawPixelS(uint8_t x, uint8_t y);
+void DrawPixelT(uint8_t x, uint8_t y);
+void DrawPixelA(uint8_t x, uint8_t y);
+void DrawPixelR(uint8_t x, uint8_t y);
+void DrawPixelH(uint8_t x, uint8_t y);
+void DrawPixelE(uint8_t x, uint8_t y);
+void DrawPixelL(uint8_t x, uint8_t y);
+void DrawPixelP(uint8_t x, uint8_t y);
 
 	void DrawPixelM(uint8_t x, uint8_t y);
 
@@ -46,5 +48,10 @@
 	void ShowMenu(const gameConfig_t *config, const joystick_input_t *joyInput);
 	void ShowDeathScreen(const gameConfig_t *config, gameState_t *state, const joystick_input_t *joyInput);
 
+void DrawTitleScreen(uint8_t startX, uint8_t startY);
+
+void DrawMenuBorderAndTitle();
+void MenuButtons();
+void DrawHelpScreen();
 
 #endif
