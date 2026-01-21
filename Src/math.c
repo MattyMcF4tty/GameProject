@@ -85,15 +85,6 @@ const int16_t lut[512] = {
  -1606, -1406, -1205, -1005,  -804,  -603,  -402,
   -201 };
 
-void printFix(int32_t i) {
-// Prints a signed 16.16 fixed point number
-	if ((i & 0x80000000) != 0) { // Handle negative numbers
-			printf("-");
-			i = ~i + 1;
-	}
-	printf("%ld.%04ld\n", i >> 16, 10000 * (uint32_t)(i & 0xFFFF) >> 16);
-// Print a maximum of 4 decimal digits to avoid overflow
-}
 
 void rotateVector(vector_t *v, int32_t angleDeg) {
 
@@ -123,8 +114,6 @@ void rotateVector(vector_t *v, int32_t angleDeg) {
     //int32_t newX16 = newX18 << 2;
     //int32_t newY16 = newY18 << 2;
 
-    //printFix(newX16);
-    //printFix(newY16);
 }
 
 extern shot_t shot;

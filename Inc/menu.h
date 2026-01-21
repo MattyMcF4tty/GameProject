@@ -43,6 +43,7 @@ int Getchoice(void);
 void Draw_Text_MENU();
 
 void ShowMenu();
+void ShowDeathScreen(void);
 
 
 #endif /* MENU_H_ */

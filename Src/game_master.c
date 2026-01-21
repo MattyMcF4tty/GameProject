@@ -4,6 +4,9 @@
 #include "sprites.h"
 #include "hud.h"
 
+
+
+
 /* ----------- Static function definitions ---------- */
 static void entitySpawner(const gameConfig_t *config, gameState_t *state);
 static void addAsteroid(const gameConfig_t *config, asteroid_t *asteroidArray);
@@ -13,6 +16,9 @@ static void updateUfos(const gameConfig_t *config, ufo_t *ufoArray, bullet_t *bu
 static void addBullet(const gameConfig_t *config, bullet_t *bulletArray, int16_t x, int16_t y, int16_t vX, int16_t vY);
 static uint8_t detectHit(const gameConfig_t *config, gameState_t *state, bullet_t *bullet);
 static void updateBullets(const gameConfig_t *config, gameState_t *state);
+
+GameMode gameMode = STATE_MENU;
+
 
 /* ----------- RANDOMNESS ---------- */
 // Should use pin noise and should be in stm helpers

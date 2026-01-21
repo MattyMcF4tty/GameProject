@@ -75,6 +75,15 @@
 		bullet_t 	*bulletArray;
 	} gameState_t;
 
+	typedef enum {
+	    STATE_MENU,
+	    STATE_GAME,
+	    STATE_GAME_OVER
+	} GameMode;
+
+	extern GameMode gameMode;
+
+
 
 	/* ----- Functions ----- */
 	uint8_t initGameState(const gameConfig_t *config, gameState_t *state);

@@ -36,5 +36,12 @@
 
 		extern const uint8_t ufoSprites[SPRITE_UFO_TYPES][SPRITE_UFO_H][SPRITE_UFO_W];
 
+		/* ----- HEART ----- */
+		#define SPRITE_HEART_W 5
+		#define SPRITE_HEART_H 5
+
+		extern const uint8_t heartSprite[SPRITE_HEART_H][SPRITE_HEART_W];
+
+
 
 #endif
