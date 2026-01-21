@@ -1,4 +1,5 @@
 #include "main.h"
+#include "LED.h"
 
 static void initBoard() {
 	uart_init(115200); // Set UART
@@ -7,6 +8,7 @@ static void initBoard() {
 	gpioEnable(GPIOA);	// Joystick,
 	gpioEnable(GPIOB);	// Joystick,
 	gpioEnable(GPIOC);	// Joystick,
+	LEDinitializer();
 
 	return;
 }
@@ -19,6 +21,7 @@ int main() {
     resetBgColor();
 	clearScreen();
 	goHome();
+
 
 	// settings
 	gameConfig_t gameConfig;
@@ -42,9 +45,14 @@ int main() {
 		// Game started correctly
 
 	    while (1) {
+
 	    	updateGameState(&gameConfig, &gameState);
+	    	LEDLives(gameState.lives);
 	    }
 	}
+
+
+
 
 	// Make terminal run indefinently
     while (1) {}
