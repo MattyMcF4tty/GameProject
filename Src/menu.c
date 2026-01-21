@@ -6,7 +6,6 @@
 #include "game_master.h"
 
 
-
 void DrawBordersMenu(uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2, const char *title) {
 	uint8_t x, y;
 		int ASCII_character_top = 205;
@@ -625,105 +624,102 @@ void joystick_inputs_init() // Sæt pins som input
 
 
 void Joystick_Toggle() {     //Uses the onboard STM_32 Joystick, can toggle left, right and click by pressing center
-joystick_inputs_init();
+	joystick_inputs_init();
 
-while (1)
-	   {
- uint8_t left = (GPIOC->IDR >> 1) & 1u;  // PC1
- uint8_t right = (GPIOC->IDR >> 0) & 1u;  // PC0
- uint8_t center = (GPIOB->IDR >> 5) & 1u;  // PB5
+	while (1) {
+		 uint8_t left = (GPIOC->IDR >> 1) & 1u;  // PC1
+		 uint8_t right = (GPIOC->IDR >> 0) & 1u;  // PC0
+		 uint8_t center = (GPIOB->IDR >> 5) & 1u;  // PB5
+
+		static int choice = 0;
+
+		void Setchoice (int value) {
+			choice = value;
+		}
+
+		int Getchoice(void) {
+		return choice;
+		}
 
 
+		if (left) {                            //Toggle to START
+			DrawHelpText(0);
+			DrawStartText(1);
+			Setchoice(0);
 
-static int choice = 0;
+			// simple delay to avoid flooding PuTTY
+			for (volatile uint32_t i = 0; i < 9000; i++) { }
+		}
 
-void Setchoice (int value) {
-	choice = value;
+		if (right) {                           //Toggle to HELP
+			DrawStartText(0);
+			DrawHelpText(1);
+			Setchoice(1);
+			// simple delay to avoid flooding PuTTY
+			for (volatile uint32_t i = 0; i < 9000; i++) { }
+		}
+
+		if (center && Getchoice()) {        // HELP Clicked
+			DrawStartText(0);
+			DrawHelpText(0);
+			clearScreen();
+			// simple delay to avoid flooding PuTTY
+				for (volatile uint32_t i = 0; i < 9000; i++) { }
+			// HELP screen:
+					DrawPixelH(95,10);   //60,20
+					DrawPixelE(105,10);   // 70,20
+					DrawPixelL(112,10);   //77,20
+					DrawPixelP(120,10);   //85,20
+
+		goTo(30,30);
+		printf("How To Play");
+		goTo(30,32);
+		printf("Controls: Joystick UP = Change shot angle");
+		goTo(30,34);
+		printf("Joystick LEFT = Travel left");
+		goTo(30,36);
+		printf("Joystick RIGHT = Travel right");
+		goTo(30,38);
+		printf("Red Button = Shoot");
+		goTo(30,40);
+		printf("? Button = Boss Key");
+	}
+
+	if (center && Getchoice() != 1) {   // START game Clicked
+		DrawStartText(0);
+		DrawHelpText(0);
+		clearScreen();
+		// Game Start and play here:
+		//
+		//
+
+		}
+	}
 }
 
-int Getchoice(void) {
-return choice;
-}
 
 
-if (left) {                            //Toggle to START
-	DrawHelpText(0);
-	DrawStartText(1);
-	Setchoice(0);
 
-// simple delay to avoid flooding PuTTY
-	for (volatile uint32_t i = 0; i < 9000; i++) { }
-}
-
-if (right) {                           //Toggle to HELP
-	DrawStartText(0);
-	DrawHelpText(1);
-	Setchoice(1);
-// simple delay to avoid flooding PuTTY
-	for (volatile uint32_t i = 0; i < 9000; i++) { }
-}
-
-if (center && Getchoice()) {        // HELP Clicked
-	DrawStartText(0);
-	DrawHelpText(0);
+void ShowMenu(const gameConfig_t *config, const joystick_input_t *joyInput) {    //Starts and runs the Menu
 	clearScreen();
-	// simple delay to avoid flooding PuTTY
-		for (volatile uint32_t i = 0; i < 9000; i++) { }
-	// HELP screen:
-			DrawPixelH(95,10);   //60,20
-			DrawPixelE(105,10);   // 70,20
-			DrawPixelL(112,10);   //77,20
-			DrawPixelP(120,10);   //85,20
-
-goTo(30,30);
-printf("How To Play");
-goTo(30,32);
-printf("Controls: Joystick UP = Change shot angle");
-goTo(30,34);
-printf("Joystick LEFT = Travel left");
-goTo(30,36);
-printf("Joystick RIGHT = Travel right");
-goTo(30,38);
-printf("Red Button = Shoot");
-goTo(30,40);
-printf("? Button = Boss Key");
-
-
-}
-
-if (center && Getchoice() != 1) {   // START game Clicked
-	DrawStartText(0);
-	DrawHelpText(0);
-	clearScreen();
-// Game Start and play here:
-//
-//
-
-}
-  }
-    }
-
-
-
-
-void ShowMenu() {    //Starts and runs the Menu
-	clearScreen();
+	resetBgColor();
 	goHome();
-	DrawBordersMenu(1,1,235,65," SPACE-INVADERS ");
+	DrawBordersMenu(1,1,config->winW,config->winH," SPACE-INVADERS ");
 	StartAndHelp();
 	Draw_Text_MENU();
 	DrawHelpText(0);    // Parameter is blink ON or OFF, 1 for ON and 0 for OFF
 	DrawStartText(0);   // Parameter is blink ON or OFF, 1 for ON and 0 for OFF
 	Joystick_Toggle();
+	while(1) {};
 }
 
 
-void ShowDeathScreen(void)
+void ShowDeathScreen(const gameConfig_t *config, gameState_t *state, const joystick_input_t *joyInput)
 {
     clearScreen();
     goHome();
 
-    DrawBordersMenu(1,1,235,65," GAME OVER ");
+    DrawBordersMenu(1,1,config->winW,config->winH," GAME OVER ");
 
     fgColor(1);
     goTo(95,20);
@@ -756,13 +752,13 @@ void ShowDeathScreen(void)
         uint8_t center = (GPIOB->IDR >> 5) & 1u;
 
         if (left) {
-            gameMode = STATE_MENU;
+            state->gameMode = MENU;
             return;
         }
 
         if (center) {
-            reset_game();     // <-- your game reset function
-            gameMode = STATE_GAME;
+            initGameState(config, state);     // <-- your game reset function
+            state->gameMode = GAME;
             return;
         }
     }

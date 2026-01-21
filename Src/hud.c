@@ -24,13 +24,13 @@ static uint32_t lastTotalSeconds = 0;
 //------------------------------------------------------
 // Draw the entire HUD (score + lives)
 //------------------------------------------------------
-void drawHud(void)
+void drawHud(const gameState_t *state)
 {
     // --- Draw score ---
     clearLine(HUD_SCORE_Y);
     goTo(1, HUD_SCORE_Y);
 
-    printf("Score: %u", currentScore);
+    printf("Score: %u", state->score);
 
     // --- Draw lives ---
     clearLine(HUD_LIVES_Y);
@@ -38,7 +38,7 @@ void drawHud(void)
 
     printf("Lives: ");
 
-    for (uint8_t i = 0; i < currentLives; i++) {
+    for (uint8_t i = 0; i < state->lives; i++) {
         printf("♥ ");   //sprite heart here not added yet
     }
 }
@@ -58,7 +58,7 @@ uint8_t hudGetLives(void)
 //------------------------------------------------------
 // Update score using the timer
 //------------------------------------------------------
-void updateScore(void)
+void updateScore(uint32_t *score)
 {
     stopwatch_time_t t;
     timerGetTimer(&t);
@@ -68,7 +68,7 @@ void updateScore(void)
 
     if (totalSeconds > lastTotalSeconds) {
         // Quadratic growth: score increases faster as time passes
-        currentScore += (totalSeconds * totalSeconds - lastTotalSeconds * lastTotalSeconds) / 10;
+        *score += (totalSeconds * totalSeconds - lastTotalSeconds * lastTotalSeconds) / 10;
 
         lastTotalSeconds = totalSeconds; // update for next second
     }

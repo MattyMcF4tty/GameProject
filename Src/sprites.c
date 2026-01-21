@@ -93,27 +93,29 @@ const uint8_t ufoSprites[SPRITE_UFO_TYPES][SPRITE_UFO_H][SPRITE_UFO_W] = {
 /* ---------- POWERUP ---------- */
 const char powerUpSpritesChar[SPRITE_POWER_UP_TYPES][SPRITE_POWER_UP_H][SPRITE_POWER_UP_W] = {
 		{
-				{ '/', ' ' },
-				{ '-', '-' },
-				{ ' ', '/' },
-		},
-		{
 				{ ' ', '^' },
 				{ ' ', '#' },
 				{ ' ', '#' },
 		},
+		{
+				{ '/', ' ' },
+				{ '-', '-' },
+				{ ' ', '/' },
+		},
+
 };
 
 const uint8_t powerUpSpritesColor[SPRITE_POWER_UP_TYPES][SPRITE_POWER_UP_H][SPRITE_POWER_UP_W] = {
-		{
-				{ 3, 0 },
-				{ 3, 3 },
-				{ 0, 3 },
-		},
 		{
 				{ 0, 1 },
 				{ 0, 7 },
 				{ 0, 7 },
 		},
+		{
+				{ 3, 0 },
+				{ 3, 3 },
+				{ 0, 3 },
+		},
+
 };
 

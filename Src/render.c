@@ -44,14 +44,17 @@ void blitAsteroid(const asteroid_t *asteroid, blitMode_t mode) {
 
 
 /* ---------- SPACESHIP ---------- */
-void blitSpaceship(const spaceship_t *ship, blitMode_t mode) {
+void blitSpaceship(const spaceship_t *ship, blitMode_t mode, uint8_t prevPowerUp) {
+
+
+    uint8_t powerUpState = (mode == ERASE) ? prevPowerUp : ship->powerUp;
 
 	// Only look up sprite if power up is active
 	const uint8_t (*powerUpSprite)[SPRITE_SHIP_W] = NULL;
 
-	if (ship->powerUp != 0) {
+	if (powerUpState != 0) {
 
-	    uint8_t safePowerUp = ship->powerUp - 1; // Zero indexed
+	    uint8_t safePowerUp = powerUpState - 1; // Zero indexed
 
 	    if (safePowerUp > SPRITE_SHIP_POWER_UPS) {
 	        safePowerUp = SPRITE_SHIP_POWER_UPS - 1; // Zero indexed
@@ -157,9 +160,13 @@ void blitBullet(const bullet_t *bullet, blitMode_t mode) {
         nextX = (nextX - bullet->vX);
         nextY = (nextY - bullet->vY);
         resetBgColor();
+
     } else {
         resetBgColor();
     	switch (bullet->type) {
+    	case (0):
+			fgColor(7);
+			break;
     	case (1): // MORE DAMAGE
 			fgColor(1);
     		break;
@@ -175,7 +182,7 @@ void blitBullet(const bullet_t *bullet, blitMode_t mode) {
     goToCoords(nextX, nextY);
 
     if (mode == ERASE) {
-        putchar(' ');
+        printf(" ");
         return;
     }
 
@@ -206,7 +213,7 @@ void blitBullet(const bullet_t *bullet, blitMode_t mode) {
         c = '/';                 // up-right or down-left
     }
 
-    putchar(c);
+    printf("%c", c);
 }
 
 /* ---------- POWERUP ---------- */
@@ -229,8 +236,8 @@ void blitPowerUp(const power_up_t *powerUp, blitMode_t mode) {
 	char cellChar = ' ';
 
 	if (mode == ERASE) {
-		baseX = (int16_t)(baseX - powerUp->vX);
-		baseY = (int16_t)(baseY - powerUp->vY);
+		baseX = baseX - powerUp->vX;
+		baseY = baseY - powerUp->vY;
 	}
 
     // Render sprite, we only update non-zero pixels for efficiency

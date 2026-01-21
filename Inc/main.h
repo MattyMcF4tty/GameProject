@@ -4,7 +4,8 @@
 	/* ----- Dependencies ----- */
 	#include <stdint.h>
 	#include <stdlib.h>
-	#include "30010_io.h" 		// Input/output library for this course
+
+	#include "30010_io.h"        // Input/output library for this course
 	#include "stm32_helpers.h"
 	#include "ansi.h"
 	#include "render.h"
@@ -14,7 +15,9 @@
 	#include "timer.h"
 	#include "display_lcd.h"
 	#include "menu.h"
-	//#include "LCD.h"
+	#include "LED.h"
+	#include "LCD.h"
+	#include "boss_key.h"
 
 	/* ----- Functions ----- */
 	int main();

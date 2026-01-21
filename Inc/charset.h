@@ -41,4 +41,4 @@ Note:
 	#include <stdint.h>
 	extern const uint8_t character_data[95][5];
 
-#endif /*! _ACHARSET_H_ */
+#endif

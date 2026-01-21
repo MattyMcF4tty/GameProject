@@ -9,26 +9,24 @@
 #include "LCD.h"
 
 
-
-
 /* ----------- Static function definitions ---------- */
 static void entitySpawner(const gameConfig_t *config, gameState_t *state);
+
 static void addAsteroid(const gameConfig_t *config, asteroid_t *asteroidArray);
-static void updateAsteroids(const gameConfig_t *config, asteroid_t *asteroidArray);
+static void updateAsteroids(const gameConfig_t *config, asteroid_t *asteroidArray, power_up_t *powerUpArray);
+
 static void addUfo(const gameConfig_t *config, ufo_t *ufoArray);
-static void updateUfos(const gameConfig_t *config, ufo_t *ufoArray, bullet_t *bulletArray);
+static void updateUfos(const gameConfig_t *config, ufo_t *ufoArray, bullet_t *bulletArray, uint8_t *lives, uint32_t *score);
+
 static void addBullet(const gameConfig_t *config, bullet_t *bulletArray, uint8_t type, int16_t x, int16_t y, int16_t vX, int16_t vY);
-static uint8_t detectHit(const gameConfig_t *config, gameState_t *state, bullet_t *bullet);
-static void updateBullets(const gameConfig_t *config, gameState_t *state);
+static void updateBullets(const gameConfig_t *config, gameState_t *state, spaceship_t *ship, uint8_t *lives);
+static uint8_t detectHit(const gameConfig_t *config, gameState_t *state, bullet_t *bullet, spaceship_t *ship);
+
+static void addSpaceship(spaceship_t *ship, int16_t startX, int16_t startY);
+static void updateSpaceship(const gameConfig_t *config, spaceship_t *ship, bullet_t *bulletArray, const joystick_input_t *joyInput);
+
 static void addPowerUp(const gameConfig_t *config, power_up_t *powerUpArray, uint8_t type, int16_t x, int16_t y);
 static void updatePowerUps(const gameConfig_t *config, power_up_t *powerUpArray, spaceship_t *ship);
-static void updateUfos(const gameConfig_t *config, ufo_t *ufoArray, bullet_t *bulletArray, uint8_t *lives, uint32_t *score);
-static void addBullet(const gameConfig_t *config, bullet_t *bulletArray, int16_t x, int16_t y, int16_t vX, int16_t vY);
-static uint8_t detectHit(const gameConfig_t *config, gameState_t *state, bullet_t *bullet, spaceship_t *ship);
-static void updateBullets(const gameConfig_t *config, gameState_t *state, spaceship_t *ship, uint8_t *lives);
-static void updateLCD(const gameState_t *gameState);
-
-GameMode gameMode = STATE_MENU;
 
 
 /* ----------- RANDOMNESS ---------- */
@@ -49,13 +47,13 @@ uint8_t initGameState(const gameConfig_t *config, gameState_t *state)
 {
 
 	// We allocate the needed memory for game
-	state->ufoArray = calloc(config->maxUfos, sizeof(ufo_t));
-	state->asteroidArray = calloc(config->maxAsteroids, sizeof(asteroid_t));
-	state->bulletArray = calloc(config->maxBullets, sizeof(bullet_t));
-	state->powerUpArray = calloc(config->maxPowerUps, sizeof(power_up_t));
-	state->ship = calloc(1, sizeof(spaceship_t));
+	state->ufoArray 		= calloc(config->maxUfos, sizeof(ufo_t));
+	state->asteroidArray 	= calloc(config->maxAsteroids, sizeof(asteroid_t));
+	state->bulletArray 		= calloc(config->maxBullets, sizeof(bullet_t));
+	state->powerUpArray 	= calloc(config->maxPowerUps, sizeof(power_up_t));
+	state->ship 			= calloc(1, sizeof(spaceship_t));
 
-	if (!state->ufoArray || !state->asteroidArray || !state->bulletArray)
+	if (!state->ufoArray || !state->asteroidArray || !state->bulletArray || !state->ship)
 	{
 		// Allocation failed, clean up
 
@@ -67,67 +65,36 @@ uint8_t initGameState(const gameConfig_t *config, gameState_t *state)
 		return 1;
 	}
 
+	// Init spaceship
 	addSpaceship(state->ship,
 				 (int16_t)(0 << 6),
 				 (int16_t)((config->winH - SPRITE_SHIP_H) << 6));
-	state->lives = 3;
+
+	// Set game values
+	state->lives = 100;
 	state->score = 0;
+	state->gameMode = GAME;
+
 	lcdTextInit();
 
 	return 0;
 }
 
-void updateGameState(const gameConfig_t *config, gameState_t *state)
+void updateGameState(const gameConfig_t *config, gameState_t *state, const joystick_input_t *joyInput)
 {
-	// Read button state
-	if (readButton(0))
-	{
-		state->bossKeyPressed = 1;
+	entitySpawner(config, state); // Spawn asteroids and UFO's
+
+	updateSpaceship(config, state->ship, state->bulletArray, joyInput);
+	updateAsteroids(config, state->asteroidArray, state->powerUpArray);
+	updateUfos(config, state->ufoArray, state->bulletArray, &state->lives, &state->score);
+	updateBullets(config, state, state->ship, &state->lives);
+	updatePowerUps(config, state->powerUpArray, state->ship);
+
+	if (state->lives <= 0) { // Game over if player is dead
+		state->gameMode = GAME_OVER;
+
+		if (state->score > state->highScore) state->highScore = state->score; // update highscore
 	}
-	else
-	{
-		state->bossKeyPressed = 0;
-	}
-
-	// Boss key mode
-	if (state->bossKeyPressed && !state->bossModeActive)
-	{
-		bossKey();
-		state->bossModeActive = 1;
-	}
-	else if (state->bossKeyPressed && state->bossModeActive)
-	{
-		state->bossModeActive = 0;
-	}
-	// Normal gamemode
-	else if (!state->bossModeActive)
-	{
-		entitySpawner(config, state);
-		updateSpaceship(config, state->ship, state->bulletArray);
-		updateAsteroids(config, state->asteroidArray);
-		updateUfos(config, state->ufoArray, state->bulletArray, &state->lives, &state->score);
-		updateBullets(config, state, state->ship, state->lives);
-		updatePowerUps(config, state->powerUpArray, state->ship);
-		updateLCD(state);
-	}
-
-	// Save button state for next frame
-	state->prevBossKeyPressed = state->bossKeyPressed;
-}
-
-void updateLCD(const gameState_t *gameState)
-{
-	char text[32];
-
-	memset(lcd_buffer, 0x00, sizeof(lcd_buffer)); // Clear entire LCD buffer
-
-	snprintf(text, sizeof(text), "Lives: %u", gameState->lives);
-	lcdWriteString(text, 0, 0);
-
-	snprintf(text, sizeof(text), "Score: %lu", gameState->score);
-	lcdWriteString(text, 0, 1);
-
-	lcd_push_buffer(lcd_buffer);
 }
 
 /*------------ Local functions ---------- */
@@ -135,12 +102,12 @@ static void entitySpawner(const gameConfig_t *config, gameState_t *state)
 {
 	uint16_t spawn = (uint16_t)randomRange(0, 1000);
 
-	if (spawn <= 3)
-	{ // 0.3% spawn change
+	if (spawn <= 100)
+	{ // 10% spawn change
 		addAsteroid(config, state->asteroidArray);
 	}
-	if (spawn <= 10)
-	{ // 1.0% spawn change
+	if (spawn <= 5)
+	{ // 0.5% spawn change
 		addUfo(config, state->ufoArray);
 	}
 }
@@ -170,7 +137,7 @@ static void addAsteroid(const gameConfig_t *config, asteroid_t *asteroidArray)
 	}
 }
 
-static void updateAsteroids(const gameConfig_t *config, asteroid_t *asteroidArray)
+static void updateAsteroids(const gameConfig_t *config, asteroid_t *asteroidArray, power_up_t *powerUpArray)
 {
 	for (uint8_t i = 0; i < config->maxAsteroids; i++)
 	{
@@ -188,13 +155,27 @@ static void updateAsteroids(const gameConfig_t *config, asteroid_t *asteroidArra
 		uint8_t xMoved = oldXCell != (asteroid->x >> 6);
 		uint8_t yMoved = oldYCell != (asteroid->y >> 6);
 
-		if ((asteroid->y >> 6) >= config->winH || asteroid->lives <= 0)
-		{ // Reached bottom or dead
+		if (asteroid->lives <= 0)
+		{ // dead
+
+			switch (asteroid->type) {
+				case (0): // Asteroid -> MORE DAMAGE
+					addPowerUp(config, powerUpArray, 0, asteroid->x, asteroid->y);
+					break;
+				case (1): // Satellite -> MORE DAMAGE
+					addPowerUp(config, powerUpArray, 1, asteroid->x, asteroid->y);
+					break;
+			}
+
 			blitAsteroid(asteroid, ERASE);
 
 			asteroid->active = 0;
+		}
+		else if ((asteroid->y >> 6) >= config->winH)
+		{ // Reached bottom
+			blitAsteroid(asteroid, ERASE);
 
-			hudLoseLife();
+			asteroid->active = 0;
 		}
 		else
 		{
@@ -226,7 +207,7 @@ static void addUfo(const gameConfig_t *config, ufo_t *ufoArray)
 		ufo->vX = 0;
 		ufo->vY = (int16_t)randomRange(1 << 2, 1 << 3); // speed: 1/32 -> 1/16
 		ufo->type = randType;
-		ufo->shotDelay = (randType + 1) << 5; // Aggressiveness based of type
+		ufo->shotDelay = (randType + 1) << 6; // Aggressiveness based of type
 
 		break; // Stop after initialization
 	}
@@ -252,6 +233,7 @@ static void updateUfos(const gameConfig_t *config, ufo_t *ufoArray, bullet_t *bu
 			blitUfo(ufo, ERASE);
 			ufo->active = 0;
 			*score += 10;
+
 		}
 
 		else if ((ufo->y >> 6) >= config->winH)
@@ -280,7 +262,7 @@ static void updateUfos(const gameConfig_t *config, ufo_t *ufoArray, bullet_t *bu
 				int16_t bulletX = ufo->x + (1 << 6);
 				int16_t bulletY = ufo->y + (2 << 6);
 
-				addBullet(config, bulletArray, 1, bulletX, bulletY, 0, ufo->vY);
+				addBullet(config, bulletArray, 0, bulletX, bulletY, 0, ufo->vY);
 
 				ufo->shotDelay = (ufo->type + 1) << 4; // Reset shotDelay
 			}
@@ -289,28 +271,32 @@ static void updateUfos(const gameConfig_t *config, ufo_t *ufoArray, bullet_t *bu
 }
 
 /* ----------- BULLETS ---------- */
-static void addBullet(const gameConfig_t *config, bullet_t *bulletArray, uint8_t type, int16_t x, int16_t y, int16_t vX, int16_t vY)
+static void addBullet(const gameConfig_t *config, bullet_t *bulletArray, uint8_t type,
+                      int16_t x, int16_t y, int16_t vX, int16_t vY)
 {
-	for (uint8_t i = 0; i < config->maxBullets; i++)
-	{
-		bullet_t *bullet = &bulletArray[i];
+    for (uint8_t i = 0; i < config->maxBullets; i++)
+    {
+        bullet_t *bullet = &bulletArray[i];
+        if (bullet->active) continue;
 
-		if (bullet->active)
-			continue; // Skip if index already initialized
+        // Base speed is 1 cell/frame in the same direction as the input vY sign
+        int16_t speed = (1 << 6);
 
-		if (type == 1)
-			vY += (1 << 6);
+        // MORE SPEED (type==2): increase speed by 0.5 cell/frame
+        if (type == 2) speed = (int16_t)(speed + (1 << 5));
 
-		bullet->active = 1;
-		bullet->type = type;
-		bullet->dmg = type == 2 ? 2 : 1;
-		bullet->x = x;
-		bullet->y = y;
-		bullet->vX = vX;
-		bullet->vY = (vY < 0) ? -(3 << 5) : (3 << 5); // Make bullet move 1.5 cells per frame
+        // Keep direction from caller: ship passes negative, UFO passes positive
+        bullet->vY = (vY < 0) ? (int16_t)(-speed) : (int16_t)(+speed);
 
-		break;
-	}
+        bullet->active = 1;
+        bullet->type   = type;
+        bullet->dmg    = (type == 1) ? 2 : 1;  // MORE DAMAGE (type==1)
+        bullet->x      = x;
+        bullet->y      = y;
+        bullet->vX     = vX;
+
+        break;
+    }
 }
 
 static void updateBullets(const gameConfig_t *config, gameState_t *state, spaceship_t *ship, uint8_t *lives)
@@ -371,7 +357,12 @@ static uint8_t detectHit(const gameConfig_t *config, gameState_t *state, bullet_
 			bullet->y >= ufo->y &&
 			bullet->y < ufo->y + (SPRITE_UFO_H << 6))
 		{
-			ufo->lives -= bullet->dmg;
+			if (bullet->dmg >= ufo->lives) {
+			    ufo->lives = 0;
+			} else {
+			    ufo->lives -= bullet->dmg;
+			}
+
 			return 1;
 		}
 	}
@@ -389,7 +380,11 @@ static uint8_t detectHit(const gameConfig_t *config, gameState_t *state, bullet_
 			bullet->y >= asteroid->y &&
 			bullet->y < asteroid->y + (SPRITE_AST_H << 6))
 		{
-			asteroid->lives--;
+			if (bullet->dmg >= asteroid->lives) {
+				asteroid->lives = 0;
+			} else {
+				asteroid->lives -= bullet->dmg;
+			}
 			return 1;
 		}
 	}
@@ -400,9 +395,10 @@ static uint8_t detectHit(const gameConfig_t *config, gameState_t *state, bullet_
 		bullet->y >= ship->y &&
 		bullet->y < ship->y + (SPRITE_SHIP_H << 6))
 	{
-		if (state->lives > 0)
-		{
-			state->lives--;
+		if (bullet->dmg >= state->lives) {
+			state->lives = 0;
+		} else {
+			state->lives -= bullet->dmg;
 		}
 
 		hudLoseLife();
@@ -413,101 +409,92 @@ static uint8_t detectHit(const gameConfig_t *config, gameState_t *state, bullet_
 }
 
 /* ----------- SPACESHIP ---------- */
-void updateSpaceshipShotAngle(spaceship_t *ship)
-{
-	ship->shot_Angle++;
-
-	if (ship->shot_Angle > 4)
-	{
-		ship->shot_Angle = 0;
-	}
-}
-
-void addSpaceship(spaceship_t *ship, int16_t startX, int16_t startY)
+static void addSpaceship(spaceship_t *ship, int16_t startX, int16_t startY)
 {
 	// Initialize position
 	ship->x = startX;
 	ship->y = startY;
 
 	// Initialize movement
-	ship->vX = 0;
+	ship->vX = 1 << 7;
 	ship->vY = 0;
 
 	// Initial state
 	ship->lvl = 0;
-	ship->powerUp = 2;
-	ship->shot_Angle = 0;
+	ship->powerUp = 0;
+	ship->shotAngle = 2;  // Straight
 
 	// Draw spaceship
-	blitSpaceship(ship, DRAW);
+	blitSpaceship(ship, DRAW, 0);
 }
 
-void updateSpaceship(const gameConfig_t *config, spaceship_t *ship, bullet_t *bulletArray)
+static void updateSpaceship(const gameConfig_t *config, spaceship_t *ship, bullet_t *bulletArray, const joystick_input_t *joyInput)
 {
 	/* Read joystick */
-	uint8_t inputX = readPotXaxis();
-	uint8_t inputY = readPotYaxis();
-	uint8_t inputWhiteButton = readButton(1);
+	joystick_x_t inputX = joyInput->xAxis;
+	joystick_y_t inputY = joyInput->yAxis;
+	joystick_btn_t inputBtn = joyInput->button;
 
-	if (inputX == 0)
-		ship->vX = (int16_t)(1 << 6);
-	else if (inputX == 1)
-		ship->vX = (int16_t)(-1 << 6);
-	else
-		ship->vX = 0; /* Default: stop */
+	uint8_t prevPowerUp = ship->powerUp;
+	if (ship->powerUp != 0) {
 
-	if (ship->vX != 0)
-	{
-		ship->x = (int16_t)(ship->x + ship->vX);
-		blitSpaceship(ship, ERASE);
-		blitSpaceship(ship, DRAW); // Draw updated position
+		if (ship->powerUp == 2) ship->vX = 3 << 6; // set ship to move 3 cells per frame
+		else ship->vX = 3 << 5; // set ship to move 1.5 cells per frame (default)
+
+		if (ship->powerUpTime > 0) {
+			ship->powerUpTime--;
+		} else {
+			ship->powerUp = 0;
+		}
 	}
 
-	/* Shooting ability */
-	static uint8_t prevWhiteButton = 0;
-	static uint8_t prevInputY = 2;
+	// Movement
+	if (inputX != JOY_X_NONE) {
 
-	if (inputY == 0 && prevInputY != 0)
-	{
-		updateSpaceshipShotAngle(ship);
+		if (inputX == JOY_X_RIGHT) 		ship->vX = abs(ship->vX);	// Force positive
+		else if (inputX == JOY_X_LEFT)	ship->vX = -abs(ship->vX); 	// Force negative
+
+		ship->x += ship->vX;
+		blitSpaceship(ship, ERASE, prevPowerUp);
+		blitSpaceship(ship, DRAW, prevPowerUp);
 	}
 
-	prevInputY = inputY;
+	/* Shooting Angle */
+	if (inputY != JOY_Y_NONE) {
+		if (inputY == JOY_Y_UP) {
+		    ship->shotAngle++;
+		    if (ship->shotAngle > 4) ship->shotAngle = 0;
+		}
 
-	if (inputWhiteButton && !prevWhiteButton)
+		else if (inputY == JOY_Y_DOWN) {
+		    if (ship->shotAngle == 0) ship->shotAngle = 4;
+		    else ship->shotAngle--;
+		}
+	}
+
+	/* Shooting */
+	if (inputBtn == BTN_WHITE) // Remember to guard against user holding button down
 	{
 
 		int16_t vX = 0;
 		int16_t vY = -1 << 5;
 
-		switch (ship->shot_Angle)
+		/*switch (ship->shotAngle)
 		{
-		case 0:
-			vX = 0;
-			break;
-		case 1:
-			vX = 1 << 6;
-			break;
-		case 2:
-			vX = 3 << 6;
-			break;
-		case 3:
-			vX = -1 << 6;
-			break;
-		case 4:
-			vX = -3 << 6;
-			break;
-		}
+		    case 4:  vX = -(3 << 6); break; // big left
+		    case 3:  vX = -(1 << 6); break; // small left
+		    case 2:  vX = 0;         break; // straight
+		    case 1:  vX = +(1 << 6); break; // small right
+		    case 0:  vX = +(3 << 6); break; // big right
+		}*/
 
-		addBullet(
-			config,
-			bulletArray,
-			ship->x + (SPRITE_SHIP_W << 5),
-			ship->y - (1 << 6),
-			vX,
-			vY);
+		addBullet(config, bulletArray, ship->powerUp,
+		          ship->x + (SPRITE_SHIP_W << 5), 	// Middle of ship sprite
+		          ship->y - (1 << 6),				// 1 cell above ship sprite
+		          vX, vY);
 	}
-	prevWhiteButton = inputWhiteButton;
+
+
 }
 
 /* ---------- POWERUP ---------- */
@@ -525,7 +512,7 @@ static void addPowerUp(const gameConfig_t *config, power_up_t *powerUpArray, uin
 		powerUp->x = x;
 		powerUp->y = y;
 		powerUp->vX = 0;
-		powerUp->vY = -(3 << 5); // Power up moves 1.5 cells per frame
+		powerUp->vY = 1 << 6; // Power up moves 1 cell per frame
 
 		break;
 	}
@@ -533,37 +520,53 @@ static void addPowerUp(const gameConfig_t *config, power_up_t *powerUpArray, uin
 
 static void updatePowerUps(const gameConfig_t *config, power_up_t *powerUpArray, spaceship_t *ship)
 {
-	for (uint8_t i = 0; i < config->maxPowerUps; i++)
-	{
-		power_up_t *powerUp = &powerUpArray[i];
+    // Ship AABB in cell space
+    int16_t shipL = (int16_t)(ship->x >> 6);
+    int16_t shipT = (int16_t)(ship->y >> 6);
+    int16_t shipR = (int16_t)(shipL + SPRITE_SHIP_W);
+    int16_t shipB = (int16_t)(shipT + SPRITE_SHIP_H);
 
-		if (!powerUp->active)
-			continue; // Skip non-initialized power ups
+    // Last valid top-left Y for the power-up (Q10.6)
+    const int16_t bottomY = (int16_t)((config->winH - SPRITE_POWER_UP_H) << 6);
 
-		int16_t oldXCell = powerUp->x >> 6;
-		int16_t oldYCell = powerUp->y >> 6;
+    for (uint8_t i = 0; i < config->maxPowerUps; i++)
+    {
+        power_up_t *powerUp = &powerUpArray[i];
+        if (!powerUp->active) continue;
 
-		// Detect if asteroid should be redrawn in a different cell
-		powerUp->x += powerUp->vX;
-		powerUp->y += powerUp->vY;
-		uint8_t xMoved = oldXCell != (powerUp->x >> 6);
-		uint8_t yMoved = oldYCell != (powerUp->y >> 6);
+        int16_t oldXCell = powerUp->x >> 6;
+        int16_t oldYCell = powerUp->y >> 6;
 
-		uint8_t hitBottom = ((powerUp->y + SPRITE_POWER_UP_H) >> 6) >= config->winH;
+        // Move
+        if (powerUp->y < bottomY) {
+            powerUp->x += powerUp->vX;
+            powerUp->y += powerUp->vY;
+        }
 
-		if ((ship->x <= powerUp->x) &&
-			((ship->x + SPRITE_SHIP_W) >= powerUp->x) &&
-			((ship->y >= powerUp->y)) &&
-			((ship->y + SPRITE_SHIP_H) >= powerUp->y))
-		{
-			blitPowerUp(powerUp, ERASE);
-			powerUp->active = 0;
-			ship->powerUp = powerUp->type + 1; // Update ship power up, which is not zero indexed
-		}
-		else if (!hitBottom && (xMoved || yMoved))
-		{
-			blitPowerUp(powerUp, ERASE);
-			blitPowerUp(powerUp, DRAW);
-		}
-	}
+
+        const uint8_t xMoved = (oldXCell != (powerUp->x >> 6));
+        const uint8_t yMoved = (oldYCell != (powerUp->y >> 6));
+
+        // Power-up AABB in cell space
+        const int16_t puL = (int16_t)(powerUp->x >> 6);
+        const int16_t puT = (int16_t)(powerUp->y >> 6);
+        const int16_t puR = (int16_t)(puL + SPRITE_POWER_UP_W);
+        const int16_t puB = (int16_t)(puT + SPRITE_POWER_UP_H);
+
+
+        // Redraw if changed cell
+        if (xMoved || yMoved) {
+            blitPowerUp(powerUp, ERASE);
+            blitPowerUp(powerUp, DRAW);
+        }
+
+        // Check if powerUp is getting picked up
+        if (shipL < puR && shipR > puL && shipT < puB && shipB > puT) {
+            blitPowerUp(powerUp, ERASE);
+            powerUp->active = 0;
+            ship->powerUp = powerUp->type + 1;
+            ship->powerUpTime = 300; // 30 fps / 300 f = 10 seconds
+            continue;
+        }
+    }
 }

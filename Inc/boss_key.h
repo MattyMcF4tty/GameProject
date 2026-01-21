@@ -1,10 +1,12 @@
 
-#ifndef BOSS_KEY_H_
-#define BOSS_KEY_H_
+#ifndef _BOSS_KEY_H_
+#define _BOSS_KEY_H_
 
-#include "ansi.h"
+	/* ----- Dependencies ----- */
+	#include "ansi.h"
 
-void bossKey (void);
+	/* ----- Functions ----- */
+	void bossKey (void);
 
 
-#endif /* BOSS_KEY_H_ */
+#endif

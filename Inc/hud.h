@@ -5,19 +5,23 @@
  *      Author: oscar
  */
 
-#include <stdint.h>
-#include <stdio.h>
-#include "stm32f30x_conf.h"
-
-#ifndef HUD_H_
-#define HUD_H_
-
-void drawHud(void);
-void hudLoseLife(void);
-uint8_t hudGetLives(void);
-void updateScore(void);
-uint16_t hudGetScore(void);
 
 
+#ifndef _HUD_H_
+#define _HUD_H_
 
-#endif /* HUD_H_ */
+	/* ----- Dependencies ----- */
+	#include <stdint.h>
+	#include <stdio.h>
+	#include "stm32f30x_conf.h"
+	#include "game_master.h"
+
+	/* ----- Functions ----- */
+	void drawHud(const gameState_t *state);
+	void hudLoseLife(void);
+	uint8_t hudGetLives(void);
+	void updateScore(uint32_t *score);
+	uint16_t hudGetScore(void);
+
+
+#endif

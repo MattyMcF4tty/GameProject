@@ -1,17 +1,18 @@
-#ifndef LCD_H
-#define LCD_H
+#ifndef _LCD_H
+#define _LCD_H
 
-#include <stdint.h>
-#include "30010_io.h"
-#include "charset.h"
-#include "timer.h"
-#include <string.h>
-#include <stdio.h>
-#include "charset.h"
+	/* ----- Dependencies ----- */
+	#include <stdint.h>
+	#include "30010_io.h"
+	#include "charset.h"
+	#include "timer.h"
+	#include "game_master.h"
+	#include <string.h>
+	#include <stdio.h>
 
-void lcdTextInit(void);
-void lcdWriteString(const char *str, uint16_t slice, uint8_t line);
-void lcdUpdate(void);
-static uint8_t lcd_buffer[512];
+	/* ----- Functions ----- */
+	void lcdTextInit(void);
+	void lcdWriteString(const char *str, uint16_t slice, uint8_t line);
+	void updateLCD(const gameState_t *gameState);
 
 #endif

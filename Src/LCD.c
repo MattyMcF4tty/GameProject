@@ -7,7 +7,7 @@
 
 #include <LCD.h>
 
-
+static uint8_t lcd_buffer[512];
 
 void lcdTextInit(void)
 {
@@ -58,6 +58,21 @@ void lcdWriteString(const char *str, uint16_t slice, uint8_t line)
     }
 
     lcd_push_buffer(lcd_buffer);
+}
+
+void updateLCD(const gameState_t *gameState)
+{
+	char text[32];
+
+	memset(lcd_buffer, 0x00, sizeof(lcd_buffer)); // Clear entire LCD buffer
+
+	snprintf(text, sizeof(text), "Lives: %u", gameState->lives);
+	lcdWriteString(text, 0, 0);
+
+	snprintf(text, sizeof(text), "Score: %lu", gameState->score);
+	lcdWriteString(text, 0, 1);
+
+	lcd_push_buffer(lcd_buffer);
 }
 
 /*
