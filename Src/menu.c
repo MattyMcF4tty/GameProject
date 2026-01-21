@@ -615,19 +615,33 @@ void DrawHelpScreen() {  // Draws the help screen only
 	DrawPixelL(112,10);   //77,20
 	DrawPixelP(120,10);   //85,20
 
-	goTo(30,30);
-	printf("How To Play");
-	goTo(30,32);
-	printf("Controls: Joystick UP = Change shot angle");
-	goTo(30,34);
-	printf("Joystick LEFT = Travel left");
-	goTo(30,36);
-	printf("Joystick RIGHT = Travel right");
-	goTo(30,38);
-	printf("Red Button = Shoot");
-	goTo(30,40);
-	printf("? Button = Boss Key");
-}
+	    goTo(30,30);
+	    fgColor(2);
+		printf("How To Play");
+		resetBgColor();
+		goTo(30,32);
+		printf("Controls:");
+		goTo(30,34);
+		printf("Joystick UP = Change shot angle");
+		goTo(30,36);
+		printf("Joystick LEFT = Move left");
+		goTo(30,38);
+		printf("Joystick RIGHT = Move right");
+		goTo(30,40);
+		printf("Red Button = Shoot");
+		goTo(30,42);
+		printf("White Button = Boss Key");
+
+		goTo(100,30);
+		fgColor(4);
+		printf("Objective");
+		resetBgColor();
+		goTo(100,32);
+		printf("Alien forces have come to take the Earth and all its minerals");
+		goTo(100,34);
+		printf("you are earths last defender, destroy all the aliens and make sure none of their asteroids hit Earth");
+		goTo(100,36);
+		printf("Good Luck");
 
 
 

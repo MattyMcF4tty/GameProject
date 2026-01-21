@@ -26,6 +26,7 @@ int main() {
     clearScreen();
     ShowMenu();
 
+
 	//Midlertidigt deaktiveret:
 /*
     srand(122);   // Init randomness
