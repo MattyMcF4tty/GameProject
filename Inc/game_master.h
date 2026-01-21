@@ -16,7 +16,7 @@
 	/* ----- Dependencies ----- */
 	#include <stdint.h>
 	#include <stdlib.h>
-    #include "joystick30010.h"
+
 
 
 	/* ----- Type definitions ----- */
@@ -83,8 +83,12 @@
 		bullet_t 	*bulletArray;
 		power_up_t 	*powerUpArray;
 		spaceship_t *ship;
+		uint8_t bossKeyPressed;
+		uint8_t prevBossKeyPressed;
+		uint8_t bossModeActive;
 	} gameState_t;
 
+	static uint8_t lcd_buffer[512];
 
 	/* ----- Functions ----- */
 	uint8_t initGameState(const gameConfig_t *config, gameState_t *state);
