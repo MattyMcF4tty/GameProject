@@ -1,6 +1,7 @@
 #include "sprites.h"
 #include "ansi.h"
 
+
 /* ---------- ASTEROID ---------- */
 const uint8_t asteroidSprites[SPRITE_AST_TYPES][SPRITE_AST_H][SPRITE_AST_W] = {
 		{		// TYPE 0
@@ -65,7 +66,7 @@ const uint8_t shipPowerUpSprites[SPRITE_SHIP_POWER_UPS][SPRITE_SHIP_H][SPRITE_SH
 };
 
 /* ---------- UFO ---------- */
-const uint8_t ufoSprites[5][SPRITE_UFO_H][SPRITE_UFO_W] = {
+const uint8_t ufoSprites[SPRITE_UFO_TYPES][SPRITE_UFO_H][SPRITE_UFO_W] = {
 		{		// TYPE 0
 			    {0, 6, 0},
 			    {1, 1, 1},
@@ -87,3 +88,32 @@ const uint8_t ufoSprites[5][SPRITE_UFO_H][SPRITE_UFO_W] = {
 			    {4, 4, 4},
 		},
 };
+
+
+/* ---------- POWERUP ---------- */
+const char powerUpSpritesChar[SPRITE_POWER_UP_TYPES][SPRITE_POWER_UP_H][SPRITE_POWER_UP_W] = {
+		{
+				{ '/', ' ' },
+				{ '-', '-' },
+				{ ' ', '/' },
+		},
+		{
+				{ ' ', '^' },
+				{ ' ', '#' },
+				{ ' ', '#' },
+		},
+};
+
+const uint8_t powerUpSpritesColor[SPRITE_POWER_UP_TYPES][SPRITE_POWER_UP_H][SPRITE_POWER_UP_W] = {
+		{
+				{ 3, 0 },
+				{ 3, 3 },
+				{ 0, 3 },
+		},
+		{
+				{ 0, 1 },
+				{ 0, 7 },
+				{ 0, 7 },
+		},
+};
+

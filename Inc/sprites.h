@@ -36,5 +36,11 @@
 
 		extern const uint8_t ufoSprites[SPRITE_UFO_TYPES][SPRITE_UFO_H][SPRITE_UFO_W];
 
+		/* ----- POWERUP ----- */
+		#define SPRITE_POWER_UP_TYPES 2
+		#define SPRITE_POWER_UP_H 3
+		#define SPRITE_POWER_UP_W 2
 
+		extern const char powerUpSpritesChar[SPRITE_POWER_UP_TYPES][SPRITE_POWER_UP_H][SPRITE_POWER_UP_W];
+		extern const uint8_t powerUpSpritesColor[SPRITE_POWER_UP_TYPES][SPRITE_POWER_UP_H][SPRITE_POWER_UP_W];
 #endif

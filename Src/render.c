@@ -147,7 +147,6 @@ void blitUfo(const ufo_t *ufo, blitMode_t mode) {
 
 
 /* ---------- BULLET ---------- */
-/* ---------- BULLET ---------- */
 void blitBullet(const bullet_t *bullet, blitMode_t mode) {
 
     int16_t nextX = bullet->x;
@@ -159,8 +158,18 @@ void blitBullet(const bullet_t *bullet, blitMode_t mode) {
         nextY = (nextY - bullet->vY);
         resetBgColor();
     } else {
-        fgColor(7);
         resetBgColor();
+    	switch (bullet->type) {
+    	case (1): // MORE DAMAGE
+			fgColor(1);
+    		break;
+    	case (2): // MORE SPEED
+			fgColor(6);
+    		break;
+    	default:
+            fgColor(7);
+    		break;
+    	}
     }
 
     goToCoords(nextX, nextY);
@@ -198,4 +207,49 @@ void blitBullet(const bullet_t *bullet, blitMode_t mode) {
     }
 
     putchar(c);
+}
+
+/* ---------- POWERUP ---------- */
+void blitPowerUp(const power_up_t *powerUp, blitMode_t mode) {
+	resetBgColor();
+
+	// Find powerUp sprite in LUT
+	uint8_t safeType = powerUp->type;
+	if (powerUp->type >= SPRITE_POWER_UP_TYPES) {
+		safeType = SPRITE_POWER_UP_TYPES - 1; // Zero indexed
+	}
+
+	const char (*powerUpSpriteChar)[SPRITE_POWER_UP_W] = powerUpSpritesChar[safeType];
+	const uint8_t (*powerUpSpriteColor)[SPRITE_POWER_UP_W] = powerUpSpritesColor[safeType];
+
+	// Compute base position once
+	int16_t baseX = powerUp->x;
+	int16_t baseY = powerUp->y;
+
+	char cellChar = ' ';
+
+	if (mode == ERASE) {
+		baseX = (int16_t)(baseX - powerUp->vX);
+		baseY = (int16_t)(baseY - powerUp->vY);
+	}
+
+    // Render sprite, we only update non-zero pixels for efficiency
+    for (uint8_t row = 0; row < SPRITE_POWER_UP_H; row++) {
+    	int16_t fpRow = row << 6;
+
+        for (uint8_t col = 0; col < SPRITE_POWER_UP_W; col++) {
+        	char c = powerUpSpriteChar[row][col];
+
+            if (c == ' ') continue;  // transparent
+
+            if (mode == DRAW) {
+            	cellChar = c;
+            	uint8_t color = powerUpSpriteColor[row][col];
+                fgColor(color);
+            }
+
+            goToCoords(baseX + (col << 6), baseY + fpRow);
+            printf("%c", cellChar);
+        }
+    }
 }

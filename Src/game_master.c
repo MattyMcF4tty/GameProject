@@ -10,9 +10,12 @@ static void addAsteroid(const gameConfig_t *config, asteroid_t *asteroidArray);
 static void updateAsteroids(const gameConfig_t *config, asteroid_t *asteroidArray);
 static void addUfo(const gameConfig_t *config, ufo_t *ufoArray);
 static void updateUfos(const gameConfig_t *config, ufo_t *ufoArray, bullet_t *bulletArray);
-static void addBullet(const gameConfig_t *config, bullet_t *bulletArray, int16_t x, int16_t y, int16_t vX, int16_t vY);
+static void addBullet(const gameConfig_t *config, bullet_t *bulletArray, uint8_t type, int16_t x, int16_t y, int16_t vX, int16_t vY);
 static uint8_t detectHit(const gameConfig_t *config, gameState_t *state, bullet_t *bullet);
 static void updateBullets(const gameConfig_t *config, gameState_t *state);
+static void addPowerUp(const gameConfig_t *config, power_up_t *powerUpArray, uint8_t type, int16_t x, int16_t y);
+static void updatePowerUps(const gameConfig_t *config, power_up_t *powerUpArray, spaceship_t *ship);
+
 
 /* ----------- RANDOMNESS ---------- */
 // Should use pin noise and should be in stm helpers
@@ -32,6 +35,7 @@ uint8_t initGameState(const gameConfig_t *config, gameState_t *state) {
     state->ufoArray = calloc(config->maxUfos, sizeof(ufo_t));
     state->asteroidArray = calloc(config->maxAsteroids, sizeof(asteroid_t));
     state->bulletArray = calloc(config->maxBullets, sizeof(bullet_t));
+    state->powerUpArray = calloc(config->maxPowerUps, sizeof(power_up_t));
     state->ship = calloc(1, sizeof(spaceship_t));
 
     if (!state->ufoArray || !state->asteroidArray || !state->bulletArray) {
@@ -55,10 +59,11 @@ uint8_t initGameState(const gameConfig_t *config, gameState_t *state) {
 void updateGameState(const gameConfig_t *config, gameState_t *state) {
     entitySpawner(config, state);
 
-    updateSpaceship(config, state->ship, state->bulletArray);
+    //updateSpaceship(config, state->ship, state->bulletArray);
     updateAsteroids(config, state->asteroidArray);
     updateUfos(config, state->ufoArray, state->bulletArray);
     updateBullets(config, state);
+    updatePowerUps(config, state->powerUpArray, state->ship);
 }
 
 /*------------ Local functions ---------- */
@@ -71,6 +76,7 @@ static void entitySpawner(const gameConfig_t *config, gameState_t *state) {
 	if (spawn <= 10) { //1.0% spawn change
 		addUfo(config, state->ufoArray);
 	}
+
 }
 
 /* ----------- ASTEROID ---------- */
@@ -181,7 +187,7 @@ static void updateUfos(const gameConfig_t *config, ufo_t *ufoArray, bullet_t *bu
 				int16_t bulletX = ufo->x + (1 << 6);
 				int16_t bulletY = ufo->y + (2 << 6);
 
-				addBullet(config, bulletArray, bulletX , bulletY, 0, ufo->vY);
+				addBullet(config, bulletArray, 1, bulletX , bulletY, 0, ufo->vY);
 
 				ufo->shotDelay = (ufo->type + 1) << 4; // Reset shotDelay
 			}
@@ -191,13 +197,17 @@ static void updateUfos(const gameConfig_t *config, ufo_t *ufoArray, bullet_t *bu
 
 
 /* ----------- BULLETS ---------- */
-static void addBullet(const gameConfig_t *config, bullet_t *bulletArray, int16_t x, int16_t y, int16_t vX, int16_t vY) {
+static void addBullet(const gameConfig_t *config, bullet_t *bulletArray, uint8_t type, int16_t x, int16_t y, int16_t vX, int16_t vY) {
     for (uint8_t i = 0; i < config->maxBullets; i++) {
         bullet_t *bullet = &bulletArray[i];
 
         if (bullet->active) continue; // Skip if index already initialized
 
+        if (type == 1) vY += (1 << 6);
+
         bullet->active = 1;
+        bullet->type = type;
+        bullet->dmg = type == 2 ? 2 : 1;
         bullet->x = x;
         bullet->y = y;
         bullet->vX = vX;
@@ -229,22 +239,21 @@ static void updateBullets(const gameConfig_t *config, gameState_t *state) {
 		uint8_t xMoved = oldXCell != ((bullet->x += bullet->vX) >> 6);
 		uint8_t yMoved = oldYCell != ((bullet->y += bullet->vY) >> 6);
 
-		if ((bullet->y >> 6) >= config->winH ||
-			detectHit(config, state, bullet))
-		{ // Reached bottom or dead
-			blitBullet(bullet, ERASE);
-		}
+		int16_t bx = (int16_t)(bullet->x >> 6);
+		int16_t by = (int16_t)(bullet->y >> 6);
 
-        if ((bullet->y >> 6) <= 0 || (bullet->y >> 6) >= config->winH ||
-            (bullet->x >> 6) <  0 || (bullet->x >> 6) >= config->winW) {
-            blitBullet(bullet, ERASE);
-            bullet->active = 0;
-        }
-        else if (xMoved || yMoved)
-        {
-        	blitBullet(bullet, ERASE);
-            blitBullet(bullet, DRAW);
-        }
+		if ( detectHit(config, state, bullet) ||
+		     by <= 0 || by >= config->winH ||
+		     bx <  0 || bx >= config->winW )
+		{
+		    blitBullet(bullet, ERASE);
+		    bullet->active = 0;
+		}
+		else if (xMoved || yMoved)
+		{
+		    blitBullet(bullet, ERASE);
+		    blitBullet(bullet, DRAW);
+		}
     }
 }
 
@@ -261,7 +270,7 @@ static uint8_t detectHit(const gameConfig_t *config, gameState_t *state, bullet_
 		    bullet->y >= ufo->y &&
 		    bullet->y <  ufo->y + (SPRITE_UFO_H << 6))
 		{
-		    ufo->lives--;
+		    ufo->lives -= bullet->dmg;
 		    return 1;
 		}
 	}
@@ -287,8 +296,6 @@ static uint8_t detectHit(const gameConfig_t *config, gameState_t *state, bullet_
 
 
 /* ----------- SPACESHIP ---------- */
-
-
 void updateSpaceshipShotAngle(spaceship_t *ship)
 {
     ship->shot_Angle++;
@@ -310,7 +317,7 @@ void addSpaceship(spaceship_t *ship, int16_t startX, int16_t startY) {
 
     // Initial state
     ship->lvl = 0;
-    ship->powerUp = 0;
+    ship->powerUp = 2;
     ship->shot_Angle = 0;
 
     // Draw spaceship
@@ -364,6 +371,7 @@ void updateSpaceship(const gameConfig_t *config, spaceship_t *ship, bullet_t *bu
         addBullet(
         	config,
 			bulletArray,
+			ship->powerUp,
             (ship->x + 3) << 6,
             ship->y << 6,
             vX,
@@ -374,10 +382,58 @@ void updateSpaceship(const gameConfig_t *config, spaceship_t *ship, bullet_t *bu
 }
 
 
+/* ---------- POWERUP ---------- */
+static void addPowerUp(const gameConfig_t *config, power_up_t *powerUpArray, uint8_t type, int16_t x, int16_t y) {
+	for (uint8_t i = 0; i < config->maxPowerUps; i++) {
+		power_up_t *powerUp = &powerUpArray[i];
+
+		if (powerUp->active) continue; // Skip if index already initialized
 
 
+		powerUp->active = 1;
+		powerUp->type = type;
+		powerUp->x = x;
+		powerUp->y = y;
+		powerUp->vX = 0;
+		powerUp->vY = -(3 << 5); // Power up moves 1.5 cells per frame
+
+		break;
+	}
+}
 
 
+static void updatePowerUps(const gameConfig_t *config, power_up_t *powerUpArray, spaceship_t *ship) {
+	for (uint8_t i = 0; i < config->maxPowerUps; i++) {
+		power_up_t *powerUp = &powerUpArray[i];
+
+		if (!powerUp->active) continue; // Skip non-initialized power ups
+
+		int16_t oldXCell = powerUp->x >> 6;
+		int16_t oldYCell = powerUp->y >> 6;
+
+		// Detect if asteroid should be redrawn in a different cell
+		powerUp->x += powerUp->vX;
+		powerUp->y += powerUp->vY;
+		uint8_t xMoved = oldXCell != (powerUp->x >> 6);
+		uint8_t yMoved = oldYCell != (powerUp->y >> 6);
+
+		uint8_t hitBottom = ((powerUp->y+SPRITE_POWER_UP_H) >> 6) >= config->winH;
+
+		if ((ship->x <= powerUp->x) &&
+			((ship->x+SPRITE_SHIP_W) >= powerUp->x) &&
+			((ship->y >= powerUp->y)) &&
+			((ship->y+SPRITE_SHIP_H) >= powerUp->y))
+		{
+			blitPowerUp(powerUp, ERASE);
+			powerUp->active = 0;
+			ship->powerUp = powerUp->type+1; // Update ship power up, which is not zero indexed
+		}
+		else if (!hitBottom && (xMoved || yMoved)) {
+			blitPowerUp(powerUp, ERASE);
+			blitPowerUp(powerUp, DRAW);
+		}
+	}
+}
 
 
 

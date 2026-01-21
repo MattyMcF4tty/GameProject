@@ -26,6 +26,7 @@ int main() {
 	gameConfig.maxBullets = 100;
 	gameConfig.maxAsteroids = 20;
 	gameConfig.maxUfos = 40;
+	gameConfig.maxPowerUps = 5;
 	gameConfig.difficulty = 1;
 	gameConfig.winH = 50;
 	gameConfig.winW = 200;

@@ -56,9 +56,17 @@
 	} ufo_t;
 
 	typedef struct {
+		uint8_t active;
+		int16_t x, y; 	// Q10.6 Fixed point
+		int16_t vX, vY; // Q10.6 Fixed point
+		uint8_t type;
+	} power_up_t;
+
+	typedef struct {
 		uint8_t maxBullets;
 		uint8_t maxUfos;
 		uint8_t maxAsteroids;
+		uint8_t maxPowerUps;
 		uint8_t difficulty;		// Difficulty multiplier
 		uint8_t winW;			// Window width
 		uint8_t winH;			// Window height
@@ -73,6 +81,7 @@
 		ufo_t 		*ufoArray;
 		asteroid_t 	*asteroidArray;
 		bullet_t 	*bulletArray;
+		power_up_t 	*powerUpArray;
 		spaceship_t *ship;
 	} gameState_t;
 
