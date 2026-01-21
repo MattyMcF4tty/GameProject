@@ -89,6 +89,15 @@
 	} gameState_t;
 
 	static uint8_t lcd_buffer[512];
+	typedef enum {
+	    STATE_MENU,
+	    STATE_GAME,
+	    STATE_GAME_OVER
+	} GameMode;
+
+	extern GameMode gameMode;
+
+
 
 	/* ----- Functions ----- */
 	uint8_t initGameState(const gameConfig_t *config, gameState_t *state);

@@ -1,28 +1,23 @@
 #include "main.h"
 #include "LED.h"
 
-static void initBoard() {
+static void initBoard()
+{
 	uart_init(115200); // Set UART
 
 	/* ---- Enable necessary GPIO's ----- */
-	gpioEnable(GPIOA);	// Joystick,
-	gpioEnable(GPIOB);	// Joystick,
-	gpioEnable(GPIOC);	// Joystick,
+	gpioEnable(GPIOA); // Joystick,
+	gpioEnable(GPIOB); // Joystick,
+	gpioEnable(GPIOC); // Joystick,
 	LEDinitializer();
 
 	enableJoystick();
 	return;
 }
 
-int main() {
-    initBoard(); // Should always be first
-
-    srand(122);   // Init randomness
-
-    resetBgColor();
-	clearScreen();
-	goHome();
-
+int main()
+{
+	initBoard(); // Should always be first
 
 	// settings
 	gameConfig_t gameConfig;
@@ -34,30 +29,46 @@ int main() {
 	gameConfig.winH = 50;
 	gameConfig.winW = 200;
 
-
-
 	gameState_t gameState;
 
 	uint8_t initError = initGameState(&gameConfig, &gameState);
-	if (initError) {
+	if (initError)
+	{
 		// Error message
 
 		printf("It was not possible to allocate the needed amount of RAM based of your settings.\n");
 		printf("Please lower your settings or if possible allocate more RAM.");
 	}
-	else {
+	else
+	{
 		// Game started correctly
 
-	    while (1) {
+		while (1)
+		{
 
-	    	updateGameState(&gameConfig, &gameState);
-	    	LEDLives(gameState.lives);
-	    }
+			updateGameState(&gameConfig, &gameState);
+			LEDLives(gameState.lives);
+		}
 	}
 
-
-
+	while (1)
+	{
+		if (gameMode == STATE_MENU)
+		{
+			ShowMenu();
+		}
+		else if (gameMode == STATE_GAME)
+		{
+			updateGame();
+		}
+		else if (gameMode == STATE_GAME_OVER)
+		{
+			ShowDeathScreen();
+		}
+	}
 
 	// Make terminal run indefinently
-    while (1) {}
+	while (1)
+	{
+	}
 }

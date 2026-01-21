@@ -2,6 +2,8 @@
 #include "30010_io.h" // Input/output library for this course
 #include "menu.h"
 #include "ansi.h"
+#include "hud.h"
+#include "game_master.h"
 
 
 
@@ -714,4 +716,56 @@ void ShowMenu() {    //Starts and runs the Menu
 	DrawStartText(0);   // Parameter is blink ON or OFF, 1 for ON and 0 for OFF
 	Joystick_Toggle();
 }
+
+
+void ShowDeathScreen(void)
+{
+    clearScreen();
+    goHome();
+
+    DrawBordersMenu(1,1,235,65," GAME OVER ");
+
+    fgColor(1);
+    goTo(95,20);
+    printf("####    ###    ##   ##  #####");
+    goTo(95,21);
+    printf("#   #  #   #   ### ###  #");
+    goTo(95,22);
+    printf("####   #####   ## # ##  ####");
+    goTo(95,23);
+    printf("#     #     #  ##   ##  #");
+    goTo(95,24);
+    printf("#     #     #  ##   ##  #####");
+    resetBgColor();
+
+    // Score
+    goTo(100,35);
+    printf("Final Score: %lu", hudGetScore);
+
+    // Instructions
+    fgColor(2);
+    goTo(80,50);
+    printf("Left  = Return to MENU");
+    goTo(80,52);
+    printf("Center = Restart Game");
+    resetBgColor();
+
+    // Handle joystick input
+    while (1) {
+        uint8_t left = (GPIOC->IDR >> 1) & 1u;
+        uint8_t center = (GPIOB->IDR >> 5) & 1u;
+
+        if (left) {
+            gameMode = STATE_MENU;
+            return;
+        }
+
+        if (center) {
+            reset_game();     // <-- your game reset function
+            gameMode = STATE_GAME;
+            return;
+        }
+    }
+}
+
 

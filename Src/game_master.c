@@ -8,6 +8,9 @@
 #include "joystick30010.h"
 #include "LCD.h"
 
+
+
+
 /* ----------- Static function definitions ---------- */
 static void entitySpawner(const gameConfig_t *config, gameState_t *state);
 static void addAsteroid(const gameConfig_t *config, asteroid_t *asteroidArray);
@@ -24,6 +27,9 @@ static void addBullet(const gameConfig_t *config, bullet_t *bulletArray, int16_t
 static uint8_t detectHit(const gameConfig_t *config, gameState_t *state, bullet_t *bullet, spaceship_t *ship);
 static void updateBullets(const gameConfig_t *config, gameState_t *state, spaceship_t *ship, uint8_t *lives);
 static void updateLCD(const gameState_t *gameState);
+
+GameMode gameMode = STATE_MENU;
+
 
 /* ----------- RANDOMNESS ---------- */
 // Should use pin noise and should be in stm helpers

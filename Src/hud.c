@@ -16,8 +16,9 @@
 #define HUD_SCORE_Y   1     // top line
 #define HUD_LIVES_Y   2     // second line
 
-static uint8_t currentLives = 3;
-static uint16_t currentScore = 0;
+uint8_t currentLives = 3;
+uint16_t currentScore = 0;
+static uint32_t lastTotalSeconds = 0;
 
 
 //------------------------------------------------------
@@ -38,7 +39,7 @@ void drawHud(void)
     printf("Lives: ");
 
     for (uint8_t i = 0; i < currentLives; i++) {
-        //printf("♥ ");   sprite heart here not added yet
+        printf("♥ ");   //sprite heart here not added yet
     }
 }
 
@@ -62,6 +63,20 @@ void updateScore(void)
     stopwatch_time_t t;
     timerGetTimer(&t);
 
-    // score increases each second score = seconds + (minutes*60)
-    currentScore = t.s + (t.m * 60);
+    // Total seconds elapsed
+    uint32_t totalSeconds = t.h * 3600 + t.m * 60 + t.s;
+
+    if (totalSeconds > lastTotalSeconds) {
+        // Quadratic growth: score increases faster as time passes
+        currentScore += (totalSeconds * totalSeconds - lastTotalSeconds * lastTotalSeconds) / 10;
+
+        lastTotalSeconds = totalSeconds; // update for next second
+    }
 }
+
+uint16_t hudGetScore(void) {
+    return currentScore;
+}
+
+
+

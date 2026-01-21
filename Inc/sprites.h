@@ -43,4 +43,14 @@
 
 		extern const char powerUpSpritesChar[SPRITE_POWER_UP_TYPES][SPRITE_POWER_UP_H][SPRITE_POWER_UP_W];
 		extern const uint8_t powerUpSpritesColor[SPRITE_POWER_UP_TYPES][SPRITE_POWER_UP_H][SPRITE_POWER_UP_W];
+		
+		/* ----- HEART ----- */
+		#define SPRITE_HEART_W 5
+		#define SPRITE_HEART_H 5
+
+		extern const uint8_t heartSprite[SPRITE_HEART_H][SPRITE_HEART_W];
+
+
+
+
 #endif

@@ -10,6 +10,11 @@
 	#include "render.h"
 	#include "game_master.h"
 	#include "joystick30010.h"
+	#include "hud.h"
+	#include "timer.h"
+	#include "display_lcd.h"
+	#include "menu.h"
+	//#include "LCD.h"
 
 	/* ----- Functions ----- */
 	int main();

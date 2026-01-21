@@ -31,7 +31,7 @@ void timerInit(void) {
 	RCC->APB2ENR |= RCC_APB2Periph_TIM15;
 
     TIM15->CR1 = 0;
-    TIM15->ARR = 999;      // 100 ticks = 10ms if PSC gives 1kHz
+    TIM15->ARR = 199;      // 100 ticks = 10ms if PSC gives 1kHz
     TIM15->PSC = 6399;    // gives 1 kHz timer 1kHz/100 = 10ms (tick)
 
     TIM15->DIER |= 1;     // update interrupt enable
@@ -40,7 +40,7 @@ void timerInit(void) {
 
 }
 
-void TIM1_BRK_TIM15_IRQHandler(void) {  //ADD
+void TIM1_BRK_TIM15_IRQHandler(void) {
 	if (TIM15->SR & TIM_SR_UIF) {
 		TIM15->SR &= ~TIM_SR_UIF; //Clear Update
 

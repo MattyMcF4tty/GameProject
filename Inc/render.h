@@ -20,5 +20,6 @@
 	void blitUfo(const ufo_t *ufo, blitMode_t mode);
 	void blitBullet(const bullet_t *bullet, blitMode_t mode);
 	void blitPowerUp(const power_up_t *powerUp, blitMode_t mode);
+	void blitHeart(int16_t x, int16_t y, blitMode_t mode);
 
 #endif
