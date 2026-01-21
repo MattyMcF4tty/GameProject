@@ -665,6 +665,8 @@ if (center && Getchoice()) {        // HELP Clicked
 	DrawStartText(0);
 	DrawHelpText(0);
 	clearScreen();
+	// simple delay to avoid flooding PuTTY
+		for (volatile uint32_t i = 0; i < 9000; i++) { }
 	// HELP screen:
 			DrawPixelH(95,10);   //60,20
 			DrawPixelE(105,10);   // 70,20
@@ -683,11 +685,6 @@ goTo(30,38);
 printf("Red Button = Shoot");
 goTo(30,40);
 printf("? Button = Boss Key");
-
-
-
-
-
 
 
 }
