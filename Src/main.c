@@ -1,7 +1,8 @@
 #include "main.h"
 #include "LED.h"
 
-static void initBoard() {
+
+    static void initBoard() {
 	uart_init(115200); // Set UART
 
 	/* ---- Enable necessary GPIO's ----- */
@@ -13,9 +14,20 @@ static void initBoard() {
 	return;
 }
 
+
+
 int main() {
+
+
+
+
     initBoard(); // Should always be first
 
+    clearScreen();
+    ShowMenu();
+
+	//Midlertidigt deaktiveret:
+/*
     srand(122);   // Init randomness
 
     resetBgColor();
@@ -51,6 +63,7 @@ int main() {
 	    }
 	}
 
+*/
 
 
 

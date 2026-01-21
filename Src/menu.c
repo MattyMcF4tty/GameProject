@@ -2,46 +2,62 @@
 #include "30010_io.h" // Input/output library for this course
 #include "menu.h"
 #include "ansi.h"
+#include "game_master.h"
 
 
+void DrawTitleScreen(uint8_t startX, uint8_t startY)  //(70,10)
+	{
+	fgColor(6);
 
-void DrawBordersMenu(uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2, const char *title) {
+	    const char *TitleScreen[] = {
+	    		 " ____                         ____  _                                                    _",
+	    		 "/ ___| _ __   __ _  ___ ___  |  _ \\(_)___  __ _  __ _ _ __ ___  ___ _ __ ___   ___ _ __ | |_",
+	    		 "\\___ \\| '_ \\ / _` |/ __/ _ \\ | | | | / __|/ _` |/ _` | '__/ _ \\/ _ \\ '_ ` _ \\ / _ \\ '_ \\| __|",
+	    		 " ___) | |_) | (_| | (_|  __/ | |_| | \\__ \\ (_| | (_| | | |  __/  __/ | | | | |  __/ | | | |_ ",
+	    		 "|____/| .__/ \\__,_|\\___\\___| |____/|_|___/\\__,_|\\__, |_|  \\___|\\___|_| |_| |_|\\___|_| |_|\\__|",
+"      |_|                                       |___/",
+                 "              "
+
+	    };
+
+	    for (uint8_t i = 0; i < sizeof(TitleScreen)/sizeof(TitleScreen[0]); i++) {
+	    	goTo(startX, startY + i);
+	        printf("%s\r\n", TitleScreen[i]);
+	    }
+	    resetBgColor();
+	}
+
+
+void DrawBordersMenu(uint8_t winStartX, uint8_t winStartY, uint8_t winW, uint8_t winH) {
+/*
+  		uint8_t winStartX;      // Start position X
+		uint8_t winStartY;      // Start position Y
+  		uint8_t winW;			// Window width
+		uint8_t winH;			// Window height
+ */
+
 	uint8_t x, y;
 		int ASCII_character_top = 205;
 		int ASCII_character_sides = 186;
 
-		goTo(x1,y1);                      /*Toppen*/
+		goTo(winStartX,winStartY);                      /*Toppen*/
 		printf("%c", (char)201);
-		for (x = x1 + 1; x < x2; x++) {
+		for (x = winStartX + 1; x < winW; x++) {
 			printf("%c", (char)ASCII_character_top);
 		}
 		printf("%c", (char)187);
 
 
-		int length = x2-x1 -1;
-		int title_len = 0;
-		while (title[title_len] != '\0') {
-			title_len++;
-		}
-		int title_centered = x1 + 1 + (length - title_len)/2;
-
-
-		goTo(title_centered,y1);            //title y1
-		printf("%s", title);
-
-
-
-
-		for (y = y1 + 1; y < y2; y++) {       /* Siderne  */
-			goTo(x1,y);
+		for (y = winStartY + 1; y < winH; y++) {       /* Siderne  */
+			goTo(winStartX,y);
 			printf("%c",(char)ASCII_character_sides);  //186 ASCII
-			goTo(x2,y);
+			goTo(winW,y);
 			printf("%c",(char)ASCII_character_sides);
 		}
 
-		goTo(x1,y2);
+		goTo(winStartX,winH);
 		printf("%c", (char)200);
-		for (x = x1 + 1; x < x2; x++) {       /* Bunden */
+		for (x = winStartX + 1; x < winW; x++) {       /* Bunden */
 			printf("%c", (char)205);
 		}
 		printf("%c", (char)188);
@@ -261,9 +277,10 @@ void DrawPixelT(uint8_t x, uint8_t y) {   //x = 50, y = 42
 	resetBgColor();
 }
 
-void DrawPixelA() {
+void DrawPixelA(uint8_t x, uint8_t y) {
 	//Draw A
-	goTo(59,42);   //63,
+
+	goTo(x,y);   //(59,42)
 	fgColor(7);
 	printf("%c",(unsigned char)219);
 	printf("%c",(unsigned char)219);
@@ -272,27 +289,27 @@ void DrawPixelA() {
 	printf("%c",(unsigned char)219);
 	printf("%c",(unsigned char)219);
 
-	goTo(57,43);  //61,
+	goTo(x-2,y+1);
 	printf("%c",(unsigned char)219);
 	printf("%c",(unsigned char)219);
 	printf("%c",(unsigned char)219);
 
-	goTo(64,43);   //68,
+	goTo(64,y+1);
 	printf("%c",(unsigned char)219);
 	printf("%c",(unsigned char)219);
 	printf("%c",(unsigned char)219);
 
-	goTo(57,44); //61,
+	goTo(57,y+2);
 	printf("%c",(unsigned char)219);
 	printf("%c",(unsigned char)219);
 	printf("%c",(unsigned char)219);
 
-	goTo(64,44); //68,
+	goTo(64,y+2);
 	printf("%c",(unsigned char)219);
 	printf("%c",(unsigned char)219);
 	printf("%c",(unsigned char)219);
 
-	goTo(57,45);  //61,
+	goTo(57,y+3);
 	printf("%c",(unsigned char)219);
 	printf("%c",(unsigned char)219);
 	printf("%c",(unsigned char)219);
@@ -304,27 +321,28 @@ void DrawPixelA() {
     printf("%c",(unsigned char)219);
     printf("%c",(unsigned char)219);
 
-	goTo(57,46);  //61,
+	goTo(57,y+4);
 	printf("%c",(unsigned char)219);
 	printf("%c",(unsigned char)219);
 
-	goTo(65,46);  //69,
+	goTo(65,y+4);
 	printf("%c",(unsigned char)219);
 	printf("%c",(unsigned char)219);
 
-	goTo(57,47); //61,
+	goTo(57,y+5);
 	printf("%c",(unsigned char)219);
 	printf("%c",(unsigned char)219);
 
-	goTo(65,47); //69,
+	goTo(65,y+5);
 	printf("%c",(unsigned char)219);
 	printf("%c",(unsigned char)219);
 	resetBgColor();
 }
 
-void DrawPixelR() {
+void DrawPixelR(uint8_t x, uint8_t y) {
 	// Draw Pixel R
-		goTo(70,42);
+
+		goTo(x,y);   // Original position: (70,42)
 		fgColor(7);
 		printf("%c",(unsigned char)219);
 		printf("%c",(unsigned char)219);
@@ -333,43 +351,43 @@ void DrawPixelR() {
 		printf("%c",(unsigned char)219);
 		printf("%c",(unsigned char)219);
 
-		goTo(70,43);
+		goTo(x,y+1);
 		printf("%c",(unsigned char)219);
 		printf("%c",(unsigned char)219);
-		goTo(75,43);
-		printf("%c",(unsigned char)219);
-		printf("%c",(unsigned char)219);
-
-		goTo(70,44);
-		printf("%c",(unsigned char)219);
-		printf("%c",(unsigned char)219);
-		goTo(75,44);
+		goTo(x+5,y+1);
 		printf("%c",(unsigned char)219);
 		printf("%c",(unsigned char)219);
 
-		goTo(70,45);
+		goTo(x,y+2);
 		printf("%c",(unsigned char)219);
 		printf("%c",(unsigned char)219);
-		printf("%c",(unsigned char)219);
+		goTo(x+5,y+2);
 		printf("%c",(unsigned char)219);
 		printf("%c",(unsigned char)219);
 
-		goTo(70,46);
-		printf("%c",(unsigned char)219);
-		printf("%c",(unsigned char)219);
+		goTo(x,y+3);
 		printf("%c",(unsigned char)219);
 		printf("%c",(unsigned char)219);
 		printf("%c",(unsigned char)219);
 		printf("%c",(unsigned char)219);
 		printf("%c",(unsigned char)219);
 
+		goTo(x,y+4);
+		printf("%c",(unsigned char)219);
+		printf("%c",(unsigned char)219);
+		printf("%c",(unsigned char)219);
+		printf("%c",(unsigned char)219);
+		printf("%c",(unsigned char)219);
+		printf("%c",(unsigned char)219);
+		printf("%c",(unsigned char)219);
 
-		goTo(70,47);
+
+		goTo(x,y+5);
 		printf("%c",(unsigned char)219);
 		printf("%c",(unsigned char)219);
 
 
-		goTo(75,47);
+		goTo(x+5,y+5);
 		printf("%c",(unsigned char)219);
 		printf("%c",(unsigned char)219);
 		resetBgColor();
@@ -553,15 +571,6 @@ void DrawPixelP(uint8_t x, uint8_t y) {
 		resetBgColor();
 }
 
-/*
-void DrawPixelM() {
-	fgColor(7);
-    goTo(x,y);   //(180,42)
-    printf("%c",(unsigned char)219);
-	printf("%c",(unsigned char)219);
-
-}
-*/
 
 
 void StartAndHelp() {
@@ -572,15 +581,15 @@ void StartAndHelp() {
 
 void DrawStartText(uint8_t Selected) {    //If selected == 1, blink on else off.
 	blink(Selected);
-	DrawPixelS(43,42);
+	DrawPixelS(42,42);  //43,42
 	blink(Selected);
-	DrawPixelT(50,42);
+	DrawPixelT(49,42);  //50,42
 	blink(Selected);
-	DrawPixelA();
+	DrawPixelA(59,42);  //59,42
 	blink(Selected);
-	DrawPixelR();
+	DrawPixelR(70,42);  //70,42
 	blink(Selected);
-	DrawPixelT(80,42);
+	DrawPixelT(79,42);  //80,42
 	resetBgColor();
 }
 
@@ -588,14 +597,36 @@ void DrawStartText(uint8_t Selected) {    //If selected == 1, blink on else off.
 
 void DrawHelpText(uint8_t Selected) {    //If selected == 1, blink on else off.
 	blink(Selected);
-	DrawPixelH(155,42);
+	DrawPixelH(162,42);  //155,42
 	blink(Selected);
-	DrawPixelE(165,42);
+	DrawPixelE(172,42);  //165,42
 	blink(Selected);
-	DrawPixelL(172,42);
+	DrawPixelL(179,42);  //172,42
 	blink(Selected);
-	DrawPixelP(180,42);
+	DrawPixelP(187,42);  //180,42
 	resetBgColor();
+}
+
+
+void DrawHelpScreen() {  // Draws the help screen only
+	clearScreen();
+	DrawPixelH(95,10);   //60,20
+	DrawPixelE(105,10);   // 70,20
+	DrawPixelL(112,10);   //77,20
+	DrawPixelP(120,10);   //85,20
+
+	goTo(30,30);
+	printf("How To Play");
+	goTo(30,32);
+	printf("Controls: Joystick UP = Change shot angle");
+	goTo(30,34);
+	printf("Joystick LEFT = Travel left");
+	goTo(30,36);
+	printf("Joystick RIGHT = Travel right");
+	goTo(30,38);
+	printf("Red Button = Shoot");
+	goTo(30,40);
+	printf("? Button = Boss Key");
 }
 
 
@@ -667,24 +698,8 @@ if (center && Getchoice()) {        // HELP Clicked
 	clearScreen();
 	// simple delay to avoid flooding PuTTY
 		for (volatile uint32_t i = 0; i < 9000; i++) { }
-	// HELP screen:
-			DrawPixelH(95,10);   //60,20
-			DrawPixelE(105,10);   // 70,20
-			DrawPixelL(112,10);   //77,20
-			DrawPixelP(120,10);   //85,20
-
-goTo(30,30);
-printf("How To Play");
-goTo(30,32);
-printf("Controls: Joystick UP = Change shot angle");
-goTo(30,34);
-printf("Joystick LEFT = Travel left");
-goTo(30,36);
-printf("Joystick RIGHT = Travel right");
-goTo(30,38);
-printf("Red Button = Shoot");
-goTo(30,40);
-printf("? Button = Boss Key");
+	// HELP screen here...:
+		DrawHelpScreen();
 
 
 }
@@ -703,15 +718,34 @@ if (center && Getchoice() != 1) {   // START game Clicked
 
 
 
+void DrawMenuBorderAndTitle() {
+	DrawBordersMenu(2,2,230,60);
+	/*
+	  		uint8_t winStartX;      // Start position X
+			uint8_t winStartY;      // Start position Y
+	  		uint8_t winW;			// Window width
+			uint8_t winH;			// Window height
+	 */
+	DrawTitleScreen(70,10);
+}
+
+void MenuButtons() {    // Make START and HELP buttons/boxes
+	StartAndHelp();
+	DrawHelpText(0);    // Parameter is blink ON or OFF, 1 for ON and 0 for OFF
+	DrawStartText(0);   // Parameter is blink ON or OFF, 1 for ON and 0 for OFF
+}
+
 
 void ShowMenu() {    //Starts and runs the Menu
 	clearScreen();
 	goHome();
-	DrawBordersMenu(1,1,235,65," SPACE-INVADERS ");
-	StartAndHelp();
-	Draw_Text_MENU();
-	DrawHelpText(0);    // Parameter is blink ON or OFF, 1 for ON and 0 for OFF
-	DrawStartText(0);   // Parameter is blink ON or OFF, 1 for ON and 0 for OFF
+	DrawMenuBorderAndTitle();
+	MenuButtons();
 	Joystick_Toggle();
 }
 
+/*
+En funktion som tegner titlen og borderen: DrawMenuBorderAndTitle();
+En funktion som tegner START og HELP knapperne: MenuButtons();
+En funktion som tegner HELP skærmen efter man har trykket på HELP knappen: DrawHelpScreen()
+ */

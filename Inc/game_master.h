@@ -62,6 +62,8 @@
 		uint8_t difficulty;		// Difficulty multiplier
 		uint8_t winW;			// Window width
 		uint8_t winH;			// Window height
+		uint8_t winStartX;
+		uint8_t winStartY;
 	} gameConfig_t;
 
 	typedef struct {

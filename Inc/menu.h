@@ -7,7 +7,9 @@
 #include <stdio.h>
 
 /* ----- Functions ----- */
-void DrawBordersMenu(uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2, const char *title);
+
+
+void DrawBordersMenu(uint8_t winStartX, uint8_t winStartY, uint8_t winW, uint8_t winH);
 void DrawBox(uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2);
 
 void DrawLineVertical(uint8_t x,uint8_t y);
@@ -22,8 +24,8 @@ void DrawLetterU();
 
 void DrawPixelS(uint8_t x, uint8_t y);
 void DrawPixelT(uint8_t x, uint8_t y);
-void DrawPixelA();
-void DrawPixelR();
+void DrawPixelA(uint8_t x, uint8_t y);
+void DrawPixelR(uint8_t x, uint8_t y);
 void DrawPixelH(uint8_t x, uint8_t y);
 void DrawPixelE(uint8_t x, uint8_t y);
 void DrawPixelL(uint8_t x, uint8_t y);
@@ -44,5 +46,10 @@ void Draw_Text_MENU();
 
 void ShowMenu();
 
+void DrawTitleScreen(uint8_t startX, uint8_t startY);
+
+void DrawMenuBorderAndTitle();
+void MenuButtons();
+void DrawHelpScreen();
 
 #endif /* MENU_H_ */
