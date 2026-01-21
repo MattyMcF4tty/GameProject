@@ -30,6 +30,8 @@ int main() {
 	gameConfig.winH = 50;
 	gameConfig.winW = 200;
 
+
+
 	gameState_t gameState;
 
 	uint8_t initError = initGameState(&gameConfig, &gameState);

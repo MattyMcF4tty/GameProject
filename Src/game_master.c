@@ -1,18 +1,24 @@
 #include "game_master.h"
+#include "joystick30010.h"
 #include "render.h"
 #include "math.h"
 #include "sprites.h"
 #include "hud.h"
+#include "ansi.h"
+#include "joystick30010.h"
+#include "LCD.h"
 
 /* ----------- Static function definitions ---------- */
 static void entitySpawner(const gameConfig_t *config, gameState_t *state);
 static void addAsteroid(const gameConfig_t *config, asteroid_t *asteroidArray);
 static void updateAsteroids(const gameConfig_t *config, asteroid_t *asteroidArray);
 static void addUfo(const gameConfig_t *config, ufo_t *ufoArray);
-static void updateUfos(const gameConfig_t *config, ufo_t *ufoArray, bullet_t *bulletArray);
+static void updateUfos(const gameConfig_t *config, ufo_t *ufoArray, bullet_t *bulletArray, uint8_t *lives, uint32_t *score);
 static void addBullet(const gameConfig_t *config, bullet_t *bulletArray, int16_t x, int16_t y, int16_t vX, int16_t vY);
-static uint8_t detectHit(const gameConfig_t *config, gameState_t *state, bullet_t *bullet);
-static void updateBullets(const gameConfig_t *config, gameState_t *state);
+static uint8_t detectHit(const gameConfig_t *config, gameState_t *state, bullet_t *bullet, spaceship_t *ship);
+static void updateBullets(const gameConfig_t *config, gameState_t *state, spaceship_t *ship, uint8_t *lives);
+static void updateLCD(const gameState_t *gameState);
+
 
 /* ----------- RANDOMNESS ---------- */
 // Should use pin noise and should be in stm helpers
@@ -48,24 +54,67 @@ uint8_t initGameState(const gameConfig_t *config, gameState_t *state) {
     addSpaceship(state->ship,
                  (int16_t)(0 << 6),
                  (int16_t)((config->winH - SPRITE_SHIP_H) << 6));
+    state->lives = 3;
+    state->score = 0;
+    lcdTextInit();
 
     return 0;
 }
 
 void updateGameState(const gameConfig_t *config, gameState_t *state) {
-    entitySpawner(config, state);
+    // Read button state
+    if (readButton(0)) {
+        state->bossKeyPressed = 1;
+    } else {
+        state->bossKeyPressed = 0;
+    }
 
-    updateSpaceship(config, state->ship, state->bulletArray);
-    updateAsteroids(config, state->asteroidArray);
-    updateUfos(config, state->ufoArray, state->bulletArray);
-    updateBullets(config, state);
+    //Boss key mode
+    if (state->bossKeyPressed && !state->bossModeActive) {
+        bossKey();
+        state->bossModeActive = 1;
+
+    } else if (state->bossKeyPressed && state->bossModeActive) {
+    	state->bossModeActive = 0;
+
+    }
+    // Normal gamemode
+    else if (!state->bossModeActive) {
+        entitySpawner(config, state);
+        updateSpaceship(config, state->ship, state->bulletArray);
+        updateAsteroids(config, state->asteroidArray);
+        updateUfos(config, state->ufoArray, state->bulletArray, &state->lives, &state->score);
+        updateBullets(config, state, state->ship, state->lives);
+        updateLCD(state);
+    }
+
+    // Save button state for next frame
+    state->prevBossKeyPressed = state->bossKeyPressed;
 }
+
+void updateLCD(const gameState_t *gameState)
+{
+    char text[32];
+
+
+    memset(lcd_buffer, 0x00, sizeof(lcd_buffer)); // Clear entire LCD buffer
+
+    snprintf(text, sizeof(text), "Lives: %u", gameState->lives);
+    lcdWriteString(text, 0, 0);
+
+    snprintf(text, sizeof(text), "Score: %lu", gameState->score);
+    lcdWriteString(text, 0, 1);
+
+    lcd_push_buffer(lcd_buffer);
+}
+
+
 
 /*------------ Local functions ---------- */
 static void entitySpawner(const gameConfig_t *config, gameState_t *state) {
 	uint16_t spawn = (uint16_t)randomRange(0, 1000);
 
-	if (spawn <= 10) { // 0.3% spawn change
+	if (spawn <= 3) { // 0.3% spawn change
 		addAsteroid(config, state->asteroidArray);
 	}
 	if (spawn <= 10) { //1.0% spawn change
@@ -152,7 +201,7 @@ static void addUfo(const gameConfig_t *config, ufo_t *ufoArray) {
 }
 
 
-static void updateUfos(const gameConfig_t *config, ufo_t *ufoArray, bullet_t *bulletArray) {
+static void updateUfos(const gameConfig_t *config, ufo_t *ufoArray, bullet_t *bulletArray, uint8_t *lives, uint32_t *score) {
 	for (uint8_t i = 0; i < config->maxUfos; i++) {
 		ufo_t *ufo = &ufoArray[i];
 
@@ -165,13 +214,25 @@ static void updateUfos(const gameConfig_t *config, ufo_t *ufoArray, bullet_t *bu
 		uint8_t xMoved = oldXCell != ((ufo->x += ufo->vX) >> 6);
 		uint8_t yMoved = oldYCell != ((ufo->y += ufo->vY) >> 6);
 
-		if ((ufo->y >> 6) >= config->winH || ufo->lives <= 0) { // Reached bottom or dead
+		if (ufo->lives <= 0) { // Dead
 			blitUfo(ufo, ERASE);
+			ufo->active = 0;
+			*score += 10;
+		}
 
+		else if ((ufo->y >> 6) >= config->winH) { //Hit bottom
+			blitUfo(ufo, ERASE);
 			ufo->active = 0;
 
+			if (*lives > 0){
+				*lives -= 1;
+			}
+
 			hudLoseLife();
-		} else {
+
+		}
+
+	    else {
 			if (xMoved || yMoved) {
 				blitUfo(ufo, ERASE);
 				blitUfo(ufo, DRAW);
@@ -207,7 +268,7 @@ static void addBullet(const gameConfig_t *config, bullet_t *bulletArray, int16_t
     }
 }
 
-static void updateBullets(const gameConfig_t *config, gameState_t *state) {
+static void updateBullets(const gameConfig_t *config, gameState_t *state, spaceship_t *ship, uint8_t *lives) {
 	for (uint8_t i = 0; i < config->maxBullets; i++) {
 		bullet_t *bullet = &state->bulletArray[i];
 
@@ -230,7 +291,7 @@ static void updateBullets(const gameConfig_t *config, gameState_t *state) {
 		uint8_t yMoved = oldYCell != ((bullet->y += bullet->vY) >> 6);
 
 		if ((bullet->y >> 6) >= config->winH ||
-			detectHit(config, state, bullet))
+			detectHit(config, state, bullet, ship))
 		{ // Reached bottom or dead
 			blitBullet(bullet, ERASE);
 		}
@@ -248,7 +309,7 @@ static void updateBullets(const gameConfig_t *config, gameState_t *state) {
     }
 }
 
-static uint8_t detectHit(const gameConfig_t *config, gameState_t *state, bullet_t *bullet) {
+static uint8_t detectHit(const gameConfig_t *config, gameState_t *state, bullet_t *bullet, spaceship_t *ship) {
 
 	/* Check for ufo hit */
 	for (uint8_t i = 0; i < config->maxUfos; i++) {
@@ -281,6 +342,21 @@ static uint8_t detectHit(const gameConfig_t *config, gameState_t *state, bullet_
 		    return 1;
 		}
 	}
+	// Check for spaceship hit
+	if (bullet->x >= ship->x &&
+	    bullet->x <  ship->x + (SPRITE_SHIP_W << 6) &&
+	    bullet->y >= ship->y &&
+	    bullet->y <  ship->y + (SPRITE_SHIP_H << 6))
+	{
+	    if (state->lives > 0) {
+	        state->lives--;
+	    }
+
+	    hudLoseLife();
+	    return 1;
+	}
+
+
 
 	return 0;
 }
@@ -322,21 +398,22 @@ void addSpaceship(spaceship_t *ship, int16_t startX, int16_t startY) {
 
 void updateSpaceship(const gameConfig_t *config, spaceship_t *ship, bullet_t *bulletArray)
 {
-    blitSpaceship(ship, ERASE);
-
-
     /* Read joystick */
     uint8_t inputX = readPotXaxis();
     uint8_t inputY = readPotYaxis();
     uint8_t inputWhiteButton = readButton(1);
 
+
     if (inputX == 0)      ship->vX = (int16_t)( 1 << 6);
     else if (inputX == 1) ship->vX = (int16_t)(-1 << 6);
     else                  ship->vX = 0; /* Default: stop */
 
-    ship->x = (int16_t)(ship->x + ship->vX);
+    if (ship->vX != 0){
+    	ship->x = (int16_t)(ship->x + ship->vX);
+    	blitSpaceship(ship, ERASE);
+        blitSpaceship(ship, DRAW); // Draw updated position
 
-    blitSpaceship(ship, DRAW); // Draw updated position
+    }
 
     /* Shooting ability */
     static uint8_t prevWhiteButton = 0;
@@ -351,7 +428,7 @@ void updateSpaceship(const gameConfig_t *config, spaceship_t *ship, bullet_t *bu
     if (inputWhiteButton && !prevWhiteButton) {
 
         int16_t vX = 0;
-        int16_t vY = -2 << 6;
+        int16_t vY = -1 << 5;
 
         switch (ship->shot_Angle) {
             case 0: vX = 0; break;
@@ -364,8 +441,8 @@ void updateSpaceship(const gameConfig_t *config, spaceship_t *ship, bullet_t *bu
         addBullet(
         	config,
 			bulletArray,
-            (ship->x + 3) << 6,
-            ship->y << 6,
+            ship->x + (SPRITE_SHIP_W << 5),
+            ship->y-1,
             vX,
             vY
         );

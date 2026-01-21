@@ -6,6 +6,7 @@ void bossKey(void)
     int value = 1000;
 
     clearScreen();
+    resetBgColor();
     goTo(1,1);
 
     // Title

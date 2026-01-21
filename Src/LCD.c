@@ -5,11 +5,11 @@
  *      Author: tobia
  */
 
-#include "LCD.h"
+#include <LCD.h>
 
-static uint8_t lcd_buffer[512];
 
-void lcd_text_init(void)
+
+void lcdTextInit(void)
 {
     lcd_init();
     memset(lcd_buffer, 0x00, sizeof(lcd_buffer));
@@ -17,7 +17,7 @@ void lcd_text_init(void)
 }
 
 
-void lcd_write_string(const char *str, uint16_t slice, uint8_t line)
+void lcdWriteString(const char *str, uint16_t slice, uint8_t line)
 {
     uint16_t line_start = line * 128;
     uint16_t pixel = 0;

@@ -9,8 +9,9 @@
 #include <stdio.h>
 #include "charset.h"
 
-void lcd_text_init(void);
-void lcd_write_string(const char *str, uint16_t slice, uint8_t line);
-void lcd_update(void);
+void lcdTextInit(void);
+void lcdWriteString(const char *str, uint16_t slice, uint8_t line);
+void lcdUpdate(void);
+static uint8_t lcd_buffer[512];
 
 #endif

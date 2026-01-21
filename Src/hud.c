@@ -42,7 +42,7 @@ void drawHud(void)
     }
 }
 
-void hudLoseLife(void)
+void hudLoseLife()
 {
     if (currentLives > 0)
         currentLives--;
