@@ -658,9 +658,13 @@ joystick_inputs_init();
 
 while (1)
 	   {
+// These are for the onboard mini Joystick, not for the one we use:
+/*
  uint8_t left = (GPIOC->IDR >> 1) & 1u;  // PC1
  uint8_t right = (GPIOC->IDR >> 0) & 1u;  // PC0
  uint8_t center = (GPIOB->IDR >> 5) & 1u;  // PB5
+*/
+
 
 
 
@@ -675,7 +679,7 @@ return choice;
 }
 
 
-if (left) {                            //Toggle to START
+if (JOY_X_LEFT) {                            //Toggle to START
 	DrawHelpText(0);
 	DrawStartText(1);
 	Setchoice(0);
@@ -684,7 +688,7 @@ if (left) {                            //Toggle to START
 	for (volatile uint32_t i = 0; i < 9000; i++) { }
 }
 
-if (right) {                           //Toggle to HELP
+if (JOY_X_RIGHT) {                           //Toggle to HELP
 	DrawStartText(0);
 	DrawHelpText(1);
 	Setchoice(1);
@@ -692,7 +696,7 @@ if (right) {                           //Toggle to HELP
 	for (volatile uint32_t i = 0; i < 9000; i++) { }
 }
 
-if (center && Getchoice()) {        // HELP Clicked
+if (JOY_X_DEADZONE && Getchoice()) {         // HELP Clicked
 	DrawStartText(0);
 	DrawHelpText(0);
 	clearScreen();
@@ -704,7 +708,7 @@ if (center && Getchoice()) {        // HELP Clicked
 
 }
 
-if (center && Getchoice() != 1) {   // START game Clicked
+if (JOY_X_DEADZONE && Getchoice() != 1) {   // START game Clicked
 	DrawStartText(0);
 	DrawHelpText(0);
 	clearScreen();
