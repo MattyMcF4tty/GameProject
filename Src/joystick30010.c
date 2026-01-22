@@ -1,9 +1,11 @@
+
 /*
-X-axis potentiometer is connected to PA0
-Y-axis potentiometer is connected to PA1
+X-axis potentiometer is connected to PC2
+Y-axis potentiometer is connected to PC3
 Red button is connected to PC0
 White button is connected to PC1
  */
+
 
 #include "joystick30010.h"
 
@@ -38,10 +40,13 @@ void enableGpioClock(void) {
 }
 
 void enablePots(void) {
-	GPIOA->MODER &= ~(3 << (0 * 2));// Clear mode btis for PA0
-	GPIOA->MODER |= (3 << (0 * 2)); // PA0 Analog mode
-	GPIOA->MODER &= ~(3 << (0 * 2));// Clear mode btis for PA1
-	GPIOA->MODER |= (3 << (1 * 2)); // PA1 Analog mode
+	// PC2 analog
+	GPIOC->MODER &= ~(3 << (2 * 2));
+	GPIOC->MODER |=  (3 << (2 * 2));
+
+	// PC3 analog
+	GPIOC->MODER &= ~(3 << (3 * 2));
+	GPIOC->MODER |=  (3 << (3 * 2));
 
 	RCC->CFGR2 &= ~RCC_CFGR2_ADCPRE12; // Clear ADC12 prescaler bits
 	RCC->CFGR2 |= RCC_CFGR2_ADCPRE12_DIV6; // Set ADC12 prescaler to 6
@@ -84,31 +89,31 @@ void enableJoystick(){
 
 static joystick_x_t readPotXaxis() {
 
-	ADC_RegularChannelConfig(ADC1, ADC_Channel_1, 1, ADC_SampleTime_1Cycles5);
+	ADC_RegularChannelConfig(ADC1, ADC_Channel_8, 1, ADC_SampleTime_1Cycles5);
 
 	ADC_StartConversion(ADC1); // Start ADC read
 	while (ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC) == 0); // Wait for ADC read
 	uint16_t x = ADC_GetConversionValue(ADC1); // Read the ADC value
 
 
-	if (x > (ADC_MID + DEADZONE))
+	if (x > 3900)
 		return JOY_X_RIGHT; 			// Joystick moved to the right
-	else if (x < (ADC_MID - DEADZONE))
+	else if (x < 1500)
 		return JOY_X_LEFT; 				// Joystick moved to the left
 	else
 		return JOY_X_NONE; 				// Fallback
 }
 
 static joystick_y_t readPotYaxis() {
-	ADC_RegularChannelConfig(ADC1, ADC_Channel_2, 1, ADC_SampleTime_1Cycles5);
+	ADC_RegularChannelConfig(ADC1, ADC_Channel_9, 1, ADC_SampleTime_1Cycles5);
 
 	ADC_StartConversion(ADC1); // Start ADC read
 	while (ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC) == 0); // Wait for ADC read
 	uint16_t x = ADC_GetConversionValue(ADC1); // Read the ADC value
 
-	if (x > 4075)
+	if (x > 3900)
 		return JOY_Y_UP; 				//Joystick moved up
-	else if (x > 3600 &&  x < 3700)
+	else if (x < 1500)
 		return JOY_Y_DOWN; 				//Joystick moved down
 	else
 		return JOY_Y_NONE;				// Fallback
