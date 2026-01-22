@@ -67,13 +67,13 @@ uint8_t initGameState(const gameConfig_t *config, gameState_t *state)
 
 	// Init spaceship
 	addSpaceship(state->ship,
-				 (int16_t)(0 << 6),
-				 (int16_t)((config->winH - SPRITE_SHIP_H) << 6));
+				 (int16_t)((config->winStartX + config->winW) << 5),
+				 (int16_t)(config->winH - SPRITE_SHIP_H) << 6);
 
 	// Set game values
-	state->lives = 100;
+	state->lives = 3;
 	state->score = 0;
-	state->gameMode = GAME;
+	state->screen = MENU;
 
 	lcdTextInit();
 
@@ -91,7 +91,7 @@ void updateGameState(const gameConfig_t *config, gameState_t *state, const joyst
 	updatePowerUps(config, state->powerUpArray, state->ship);
 
 	if (state->lives <= 0) { // Game over if player is dead
-		state->gameMode = GAME_OVER;
+		state->screen = GAME_OVER;
 
 		if (state->score > state->highScore) state->highScore = state->score; // update highscore
 	}
@@ -124,10 +124,13 @@ static void addAsteroid(const gameConfig_t *config, asteroid_t *asteroidArray)
 
 		uint8_t randType = (uint8_t)randomRange(0, 1);
 
+		int16_t spawnArea = (int16_t)randomRange((config->winStartX+1) << 6,
+												 (config->winW-SPRITE_AST_W) << 6);
+
 		asteroid->active = 1;
 		asteroid->lives = 10;
-		asteroid->x = (int16_t)randomRange(1 << 6, config->winW << 6); // Spawn within 1 -> width
-		asteroid->y = 0;
+		asteroid->x = spawnArea; ; // Spawn within 1 -> width
+		asteroid->y = (config->winStartY-SPRITE_AST_H) << 6; // Q10.6
 		asteroid->vX = 0;
 		asteroid->vY = (int16_t)randomRange(1 << 2, 1 << 4); // speed: 1/32 -> 1/4
 		asteroid->type = randType;
@@ -167,13 +170,13 @@ static void updateAsteroids(const gameConfig_t *config, asteroid_t *asteroidArra
 					break;
 			}
 
-			blitAsteroid(asteroid, ERASE);
+			blitAsteroid(config, asteroid, ERASE);
 
 			asteroid->active = 0;
 		}
 		else if ((asteroid->y >> 6) >= config->winH)
 		{ // Reached bottom
-			blitAsteroid(asteroid, ERASE);
+			blitAsteroid(config, asteroid, ERASE);
 
 			asteroid->active = 0;
 		}
@@ -181,8 +184,8 @@ static void updateAsteroids(const gameConfig_t *config, asteroid_t *asteroidArra
 		{
 			if (xMoved || yMoved)
 			{
-				blitAsteroid(asteroid, ERASE);
-				blitAsteroid(asteroid, DRAW);
+				blitAsteroid(config, asteroid, ERASE);
+				blitAsteroid(config, asteroid, DRAW);
 			}
 		}
 	}
@@ -202,8 +205,8 @@ static void addUfo(const gameConfig_t *config, ufo_t *ufoArray)
 
 		ufo->active = 1;
 		ufo->lives = 3;
-		ufo->x = (int16_t)randomRange(1 << 6, config->winW << 6); // Spawn within 1 -> width
-		ufo->y = 0;
+		ufo->x = (int16_t)randomRange((config->winStartX+1) << 6, config->winW << 6); // Spawn within 1 -> width
+		ufo->y = (config->winStartY + 1) << 6; // Q10.6
 		ufo->vX = 0;
 		ufo->vY = (int16_t)randomRange(1 << 2, 1 << 3); // speed: 1/32 -> 1/16
 		ufo->type = randType;
@@ -230,7 +233,7 @@ static void updateUfos(const gameConfig_t *config, ufo_t *ufoArray, bullet_t *bu
 
 		if (ufo->lives <= 0)
 		{ // Dead
-			blitUfo(ufo, ERASE);
+			blitUfo(config, ufo, ERASE);
 			ufo->active = 0;
 			*score += 10;
 
@@ -238,7 +241,7 @@ static void updateUfos(const gameConfig_t *config, ufo_t *ufoArray, bullet_t *bu
 
 		else if ((ufo->y >> 6) >= config->winH)
 		{ // Hit bottom
-			blitUfo(ufo, ERASE);
+			blitUfo(config, ufo, ERASE);
 			ufo->active = 0;
 
 			if (*lives > 0)
@@ -253,8 +256,8 @@ static void updateUfos(const gameConfig_t *config, ufo_t *ufoArray, bullet_t *bu
 		{
 			if (xMoved || yMoved)
 			{
-				blitUfo(ufo, ERASE);
-				blitUfo(ufo, DRAW);
+				blitUfo(config, ufo, ERASE);
+				blitUfo(config, ufo, DRAW);
 			}
 			ufo->shotDelay--;
 			if (ufo->shotDelay == 0)
@@ -326,12 +329,20 @@ static void updateBullets(const gameConfig_t *config, gameState_t *state, spaces
 
 		int16_t bx = (int16_t)(bullet->x >> 6);
 		int16_t by = (int16_t)(bullet->y >> 6);
-		if (detectHit(config, state, bullet, ship) ||
-			by <= 0 || by >= config->winH ||
-			bx < 0 || bx >= config->winW)
+
+		const int16_t minX = (int16_t)(config->winStartX);
+		const int16_t maxX = (int16_t)(config->winStartX + config->winW - 2);
+		const int16_t minY = (int16_t)(config->winStartY);
+		const int16_t maxY = (int16_t)(config->winStartY + config->winH - 8);
+
+		const uint8_t outOfBounds =
+		    (bx <= minX) || (bx >= maxX) ||
+		    (by <= minY) || (by >= maxY);
+
+		if (detectHit(config, state, bullet, ship) || outOfBounds)
 		{
-			blitBullet(bullet, ERASE);
-			bullet->active = 0;
+		    blitBullet(bullet, ERASE);
+		    bullet->active = 0;
 		}
 		else if (xMoved || yMoved)
 		{
@@ -423,9 +434,6 @@ static void addSpaceship(spaceship_t *ship, int16_t startX, int16_t startY)
 	ship->lvl = 0;
 	ship->powerUp = 0;
 	ship->shotAngle = 2;  // Straight
-
-	// Draw spaceship
-	blitSpaceship(ship, DRAW, 0);
 }
 
 static void updateSpaceship(const gameConfig_t *config, spaceship_t *ship, bullet_t *bulletArray, const joystick_input_t *joyInput)
@@ -451,12 +459,24 @@ static void updateSpaceship(const gameConfig_t *config, spaceship_t *ship, bulle
 	// Movement
 	if (inputX != JOY_X_NONE) {
 
-		if (inputX == JOY_X_RIGHT) 		ship->vX = abs(ship->vX);	// Force positive
-		else if (inputX == JOY_X_LEFT)	ship->vX = -abs(ship->vX); 	// Force negative
+	    if (inputX == JOY_X_RIGHT)      ship->vX = abs(ship->vX);
+	    else if (inputX == JOY_X_LEFT)  ship->vX = -abs(ship->vX);
 
-		ship->x += ship->vX;
-		blitSpaceship(ship, ERASE, prevPowerUp);
-		blitSpaceship(ship, DRAW, prevPowerUp);
+	    // Window bounds in Q10.6, +2 we allow for the user to go a little out of bounds
+	    // THis is so they can shoot the edges
+	    const int16_t minX = (config->winStartX - 2) << 6;
+	    const int16_t maxX = (config->winStartX + config->winW + 2 - SPRITE_SHIP_W) << 6;
+
+	    int16_t newX = ship->x + ship->vX;
+
+	    if (newX < minX) newX = minX;
+	    else if (newX > maxX) newX = maxX;
+
+	    if (newX != ship->x) {
+	        ship->x = newX;
+	        blitSpaceship(config, ship, ERASE, prevPowerUp);
+	        blitSpaceship(config, ship, DRAW, prevPowerUp);
+	    }
 	}
 
 	/* Shooting Angle */

@@ -33,7 +33,7 @@
 	} joystick_input_t;
 
 	/* ----- Functions ----- */
-	void readJoystick(joystick_input_t *joyInput, joystick_input_t *prevJoyInput);
+	void readJoystick(joystick_input_t *joyInput);
 
 	void enableJoystick();
 	void enableGpioClock();

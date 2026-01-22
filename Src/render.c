@@ -3,40 +3,46 @@
 
 
 /* ---------- ASTEROID ---------- */
-void blitAsteroid(const asteroid_t *asteroid, blitMode_t mode) {
-
-    // Validate type
+void blitAsteroid(const gameConfig_t *config, const asteroid_t *asteroid, blitMode_t mode)
+{
     uint8_t safeType = asteroid->type;
-    if (safeType >= SPRITE_AST_TYPES) {
-        safeType = SPRITE_AST_TYPES - 1; // Zero indexed
-    }
+    if (safeType >= SPRITE_AST_TYPES) safeType = SPRITE_AST_TYPES - 1;
 
-    // Find type in sprite LUT
     const uint8_t (*asteroidSprite)[SPRITE_AST_W] = asteroidSprites[safeType];
 
-    // Compute base position once
     int16_t baseX = asteroid->x;
     int16_t baseY = asteroid->y;
 
     if (mode == ERASE) {
         baseX = (int16_t)(baseX - asteroid->vX);
         baseY = (int16_t)(baseY - asteroid->vY);
-        resetBgColor(); // Only write to terminal once, for efficiency
+        resetBgColor();
     }
 
+    // Clip rect in Q10.6 (interior of bordered window)
+    const int16_t leftX   = (config->winStartX + 1) << 6;
+    const int16_t rightX  = (config->winStartX + config->winW - 1) << 6;  // exclusive
+    const int16_t topY    = (config->winStartY + 1) << 6;
+    const int16_t bottomY = (config->winStartY + config->winH - SPRITE_AST_H - 2) << 6;  // exclusive
+
     for (int16_t row = 0; row < SPRITE_AST_H; row++) {
-        int16_t fpRow = (int16_t)(row << 6); // Only calculate row position once per row
+        const int16_t pixelY = (int16_t)(baseY + (row << 6));
+
+        // Skip entire row if outside vertically
+        if (pixelY <= topY || pixelY >= bottomY) continue;
 
         for (int16_t col = 0; col < SPRITE_AST_W; col++) {
-            uint8_t color = asteroidSprite[row][col];
+            const uint8_t color = asteroidSprite[row][col];
+            if (color == 0) continue;
 
-            if (color == 0) continue;  // transparent
+            const int16_t pixelX = (int16_t)(baseX + (col << 6));
 
-            if (mode == DRAW) {
-                bgColor(color);
-            }
+            // Skip pixel if outside horizontally
+            if (pixelX < leftX || pixelX >= rightX) continue;
 
-            goToCoords((int16_t)(baseX + (col << 6)), (int16_t)(baseY + fpRow));
+            if (mode == DRAW) bgColor(color);
+
+            goToCoords(pixelX, pixelY);
             printf(" ");
         }
     }
@@ -44,7 +50,7 @@ void blitAsteroid(const asteroid_t *asteroid, blitMode_t mode) {
 
 
 /* ---------- SPACESHIP ---------- */
-void blitSpaceship(const spaceship_t *ship, blitMode_t mode, uint8_t prevPowerUp) {
+void blitSpaceship(const gameConfig_t *config, const spaceship_t *ship, blitMode_t mode, uint8_t prevPowerUp) {
 
 
     uint8_t powerUpState = (mode == ERASE) ? prevPowerUp : ship->powerUp;
@@ -80,11 +86,23 @@ void blitSpaceship(const spaceship_t *ship, blitMode_t mode, uint8_t prevPowerUp
         resetBgColor(); // Only write to terminal once, for efficiency
     }
 
+    const int16_t leftX   = (int16_t)((config->winStartX + 1) << 6);
+    const int16_t rightX  = (int16_t)((config->winStartX + config->winW - 1) << 6);
+    const int16_t topY    = (int16_t)((config->winStartY + 1) << 6);
+    const int16_t bottomY = (int16_t)((config->winStartY + config->winH - 2) << 6);
+
     // Render sprite, we only update non-zero pixels for efficiency
     for (uint8_t row = 0; row < SPRITE_SHIP_H; row++) {
     	int16_t fpRow = (int16_t)(row << 6); // Only calculate row position once per row
+        const int16_t pixelY = (int16_t)(baseY + ((int16_t)row << 6));
+
+        if (pixelY < topY || pixelY >= bottomY) continue;
 
         for (uint8_t col = 0; col < SPRITE_SHIP_W; col++) {
+            const int16_t pixelX = (int16_t)(baseX + ((int16_t)col << 6));
+
+            // Clip horizontally
+            if (pixelX < leftX || pixelX >= rightX) continue;
 
             uint8_t color;
 
@@ -109,40 +127,51 @@ void blitSpaceship(const spaceship_t *ship, blitMode_t mode, uint8_t prevPowerUp
 
 
 /* ---------- UFO ---------- */
-void blitUfo(const ufo_t *ufo, blitMode_t mode) {
+void blitUfo(const gameConfig_t *config, const ufo_t *ufo, blitMode_t mode)
+{
+    // Validate type
+    uint8_t safeType = ufo->type;
+    if (safeType >= SPRITE_UFO_TYPES) {
+        safeType = SPRITE_UFO_TYPES - 1;
+    }
+    const uint8_t (*ufoSprite)[SPRITE_UFO_W] = ufoSprites[safeType];
 
-	// Find level sprite in LUT
-	uint8_t safeType = ufo->type;
-	if (ufo->type >= SPRITE_UFO_TYPES) {
-		safeType = SPRITE_UFO_TYPES - 1; // Zero indexed
-	}
+    // Base position (Q10.6)
+    int16_t baseX = ufo->x;
+    int16_t baseY = ufo->y;
 
-	const uint8_t (*ufoSprite)[SPRITE_UFO_W] = ufoSprites[safeType];
+    if (mode == ERASE) {
+        baseX = (int16_t)(baseX - ufo->vX);
+        baseY = (int16_t)(baseY - ufo->vY);
+        resetBgColor();
+    }
 
-	// Compute base position once
-	int16_t baseX = ufo->x;
-	int16_t baseY = ufo->y;
+    // Clip rect in Q10.6 (interior of bordered window)
+    const int16_t leftX   = (config->winStartX + 1) << 6;
+    const int16_t rightX  = (config->winStartX + config->winW - 1) << 6;  // exclusive
+    const int16_t topY    = (config->winStartY + 1) << 6;
+    const int16_t bottomY = (config->winStartY + config->winH - SPRITE_UFO_H - 6) << 6;  // exclusive
 
-	if (mode == ERASE) {
-		baseX = (int16_t)(baseX - ufo->vX);
-		baseY = (int16_t)(baseY - ufo->vY);
-		resetBgColor(); // Only write to terminal once, for efficiency
-	}
-
-    // Render sprite, we only update non-zero pixels for efficiency
     for (uint8_t row = 0; row < SPRITE_UFO_H; row++) {
-    	int16_t fpRow = row << 6;
+        const int16_t pixelY = baseY + (row << 6);
+
+        // Skip entire row if outside vertically
+        if (pixelY < topY || pixelY >= bottomY) continue;
 
         for (uint8_t col = 0; col < SPRITE_UFO_W; col++) {
-            uint8_t color = ufoSprite[row][col];
+            const uint8_t color = ufoSprite[row][col];
+            if (color == 0) continue;
 
-            if (color == 0) continue;  // transparent
+            const int16_t pixelX = baseX + (col << 6);
+
+            // Skip pixel if outside horizontally
+            if (pixelX < leftX || pixelX >= rightX) continue;
 
             if (mode == DRAW) {
                 bgColor(color);
             }
 
-            goToCoords(baseX + (col << 6), baseY + fpRow);
+            goToCoords(pixelX, pixelY);
             printf(" ");
         }
     }

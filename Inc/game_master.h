@@ -23,9 +23,11 @@
 	/* ----- Type definitions ----- */
 	typedef enum {
 	    MENU,
+		HELP,
 	    GAME,
 	    GAME_OVER,
-	} gameMode_t;
+		NO_SCREEN,
+	} screen_t;
 
 	typedef struct {
 		int16_t x, y; 	// Q10.6 Fixed point
@@ -93,7 +95,7 @@
 		power_up_t 	*powerUpArray;
 		spaceship_t *ship;
 		uint8_t 	bossModeActive;
-		gameMode_t 	gameMode;
+		screen_t 	screen;
 	} gameState_t;
 
 	/* ----- Functions ----- */

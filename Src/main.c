@@ -29,10 +29,13 @@ int main()
 	gameConfig.difficulty = 1;
 	gameConfig.winH = 64;
 	gameConfig.winW = 207;
+	gameConfig.winStartX = 1;
+	gameConfig.winStartY = 8;
 
 	gameState_t gameState;
 
 	uint8_t initError = initGameState(&gameConfig, &gameState);
+
 	if (initError)
 	{
 		// Error message
@@ -41,13 +44,14 @@ int main()
 	}
 	else
 	{
+		screen_t prevScreen = NO_SCREEN;
+		active_button_t button = NONE;
+		gameState.highScore = 0;
 		joystick_input_t joyInput;
-		joystick_input_t prevJoyInput;
 		timerStart(); // Start timer
 		while (1)
 		{
-
-			// Read joystick values
+			readJoystick(&joyInput);
 
 			// Allow for boss key click out of tick rate
 			if (joyInput.button == BTN_RED)
@@ -59,64 +63,83 @@ int main()
 				while (gameState.bossModeActive)
 				{
 					// listen for boss key click
-					readJoystick(&joyInput, &prevJoyInput);
-					gameState.bossModeActive = !joyInput.button == BTN_RED;
+					readJoystick(&joyInput);
+					gameState.bossModeActive = joyInput.button != BTN_RED;
 				}
+
+				clearScreen();
 			}
 
 			// Only update game on clock tick
 			else if (timerTickOccurred())
 			{
-				readJoystick(&joyInput, &prevJoyInput);
 
-				if (gameState.gameMode == MENU)
-				{
-					// Draw menu
-					printf("start");
-					while (1)
-					{
-						readJoystick(&joyInput, &prevJoyInput);
-						// Update button select
-					}
-				}
-				else if (gameState.gameMode == GAME)
-				{
-					updateGameState(&gameConfig, &gameState, &joyInput); // Handle next frame
+				switch(gameState.screen) {
 
-					updateScore(&gameState.score); // Give points for time alive
-					// drawHud(&gameState);
-					updateLCD(&gameState);	   // Update LCD
-					LEDLives(gameState.lives); // Update LED
-				}
-				else if (gameState.gameMode == GAME_OVER)
-				{
-					// Draw death screen
-					printf("dead");
-					while (1)
-					{
-						readJoystick(&joyInput, &prevJoyInput);
-						// Update button select
-
-						if (joyInput.xAxis != JOY_X_NONE)
-						{
-							// TEMP
-							initGameState(&gameConfig, &gameState);
+					case (GAME):
+						if (prevScreen != GAME) {
+							 drawBordersMenu(gameConfig.winStartX, gameConfig.winStartY, gameConfig.winW, gameConfig.winH);
+							 prevScreen = GAME;
 						}
-					}
+
+						updateGameState(&gameConfig, &gameState, &joyInput); // Handle next frame
+
+						updateScore(&gameState.score); // Give points for time alive
+						// drawHud(&gameState);
+						updateLCD(&gameState);	   // Update LCD
+						LEDLives(gameState.lives); // Update LED
+						break;
+
+					case (MENU):
+						if (prevScreen != MENU) {
+							DrawMenuBorderAndTitle(&gameConfig);
+							MenuButtons(&gameConfig);
+							prevScreen = MENU;
+						}
+
+						navigator(&gameState.screen, joyInput.xAxis,
+									joyInput.button == BTN_WHITE, &button);
+
+						break;
+
+					case (HELP):
+						drawHelpScreen(&gameConfig);
+
+						while (joyInput.button != BTN_WHITE) {
+							readJoystick(&joyInput);
+						}
+						gameState.screen = MENU;
+						break;
+
+					case (GAME_OVER):
+						// Draw death screen
+						drawDeathScreen(&gameConfig, &gameState);
+						while (1)
+						{
+							readJoystick(&joyInput);
+							// Update button select
+
+							if (gameState.screen == GAME_OVER)
+							{
+								// TEMP
+								initGameState(&gameConfig, &gameState);
+							}
+						}
+						break;
+
+					default:
+						gameState.screen = MENU; // Fallback
+						break;
 				}
 			}
 		}
 	}
 
-	*/
-
-		// Impossible, but at least they now know
-		clearScreen();
+	// Impossible, but at least they now know
+	clearScreen();
 	goHome();
 	printf("Something went wrong restart game");
 
 	// Make terminal run indefinitely
-	while (1)
-	{
-	}
+	while (1) {}
 }

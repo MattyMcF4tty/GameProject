@@ -17,32 +17,18 @@ static joystick_btn_t readButton();
 #define DEADZONE    200				// tune able
 
 /* ---------- Public joystick functions ---------- */
-void readJoystick(joystick_input_t *joyInput, joystick_input_t *prevJoyInput)
+void readJoystick(joystick_input_t *joyInput)
 {
+
+
     // 1) Read raw hardware state
     joystick_x_t   newX   = readPotXaxis();
     joystick_y_t   newY   = readPotYaxis();
     joystick_btn_t newBtn = readButton();
 
-    // 2) X = continuous state (always report it)
-    joyInput->xAxis = newX;
-
-    // 3) Y = event (only when it changes)
-    joyInput->yAxis = newY; //(newY != prevJoyInput->yAxis) ? newY : JOY_Y_NONE;
-
-    // 4) Button = event (only when it changes)
-    joyInput->button = (newBtn != prevJoyInput->button) ? newBtn : BTN_NONE;
-
-    // Optional: if you want "tap" only when pressed (and not when released),
-    // gate it here. Assumes BTN_NONE means released.
-    //
-    // if (joyInput->button == BTN_NONE) { /* ignore release events */ }
-    // if (newBtn == BTN_NONE) joyInput->button = BTN_NONE;
-
-    // 5) Update previous raw state AFTER generating events
-    prevJoyInput->xAxis  = newX;
-    prevJoyInput->yAxis  = newY;
-    prevJoyInput->button = newBtn;
+    if (newX != joyInput->xAxis) 	joyInput->xAxis = newX;
+    if (newY != joyInput->yAxis) 	joyInput->yAxis = newY;
+    if (newBtn != joyInput->button)	joyInput->button = newBtn;
 }
 
 // Enable clock for GPIO ports

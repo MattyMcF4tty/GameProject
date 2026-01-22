@@ -8,7 +8,7 @@ void DrawTitleScreen(uint8_t startX, uint8_t startY) //(70,10)
 {
 	fgColor(6);
 
-	const char *TitleScreen[] = {
+	const char *titleScreen[] = {
 		" ____                         ____  _                                                    _",
 		"/ ___| _ __   __ _  ___ ___  |  _ \\(_)___  __ _  __ _ _ __ ___  ___ _ __ ___   ___ _ __ | |_",
 		"\\___ \\| '_ \\ / _` |/ __/ _ \\ | | | | / __|/ _` |/ _` | '__/ _ \\/ _ \\ '_ ` _ \\ / _ \\ '_ \\| __|",
@@ -19,36 +19,32 @@ void DrawTitleScreen(uint8_t startX, uint8_t startY) //(70,10)
 
 	};
 
-	for (uint8_t i = 0; i < sizeof(TitleScreen) / sizeof(TitleScreen[0]); i++)
+	const uint8_t nLines = sizeof(titleScreen) / sizeof(titleScreen[0]);
+
+	for (uint8_t i = 0; i < nLines; i++)
 	{
-		goTo(startX, startY + i);
-		printf("%s\r\n", TitleScreen[i]);
+	    goTo(startX, startY + i);
+	    printf("%s\r\n", titleScreen[i]);
 	}
 	resetBgColor();
 }
 
-void DrawBordersMenu(uint8_t winStartX, uint8_t winStartY, uint8_t winW, uint8_t winH)
+void drawBordersMenu(uint8_t winStartX, uint8_t winStartY, uint8_t winW, uint8_t winH)
 {
-	/*
-			uint8_t winStartX;      // Start position X
-			uint8_t winStartY;      // Start position Y
-			uint8_t winW;			// Window width
-			uint8_t winH;			// Window height
-	 */
 
-	uint8_t x, y;
-	int ASCII_character_top = 205;
-	int ASCII_character_sides = 186;
+	fgColor(7);
+	char ASCII_character_top = 205;
+	char ASCII_character_sides = 186;
 
 	goTo(winStartX, winStartY); /*Toppen*/
-	printf("%c", (char)201);
-	for (x = winStartX + 1; x < winW; x++)
+	printf("%c", 201);
+	for (uint8_t x = winStartX + 1; x < winW; x++)
 	{
-		printf("%c", (char)ASCII_character_top);
+		printf("%c", ASCII_character_top);
 	}
-	printf("%c", (char)187);
+	printf("%c", 187);
 
-	for (y = winStartY + 1; y < winH; y++)
+	for (uint8_t y = winStartY + 1; y < winH; y++)
 	{ /* Siderne  */
 		goTo(winStartX, y);
 		printf("%c", (char)ASCII_character_sides); // 186 ASCII
@@ -58,7 +54,7 @@ void DrawBordersMenu(uint8_t winStartX, uint8_t winStartY, uint8_t winW, uint8_t
 
 	goTo(winStartX, winH);
 	printf("%c", (char)200);
-	for (x = winStartX + 1; x < winW; x++)
+	for (uint8_t x = winStartX + 1; x < winW; x++)
 	{ /* Bunden */
 		printf("%c", (char)205);
 	}
@@ -67,8 +63,9 @@ void DrawBordersMenu(uint8_t winStartX, uint8_t winStartY, uint8_t winW, uint8_t
 	// goTo(lenght,);               //MENU tekst
 }
 
-void DrawBox(uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2)
-{ // Create a simple box/square
+static void drawBox(uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2)
+{
+	// Create a simple box/square
 	uint8_t x, y;
 	goTo(x1, y1);			 /*The top line of the Box*/
 	printf("%c", (char)218); // Top Right Corner
@@ -581,10 +578,12 @@ void DrawPixelP(uint8_t x, uint8_t y)
 	resetBgColor();
 }
 
-void StartAndHelp()
+static void StartAndHelp(const gameConfig_t *config)
 {
-	DrawBox(150, 40, 205, 50); // Length of box = 55, Height of box = 10
-	DrawBox(35, 40, 90, 50);   // Length of box = x2-x1 = 55, Height of box = y2-y1 = 10
+	drawBox(config->winStartX + 150, config->winStartY + 40,
+			config->winStartX + 205, config->winStartY + 50); // Length of box = 55, Height of box = 10
+	drawBox(config->winStartX + 35, config->winStartY + 40,
+			config->winStartX + 90, config->winStartY + 50);   // Length of box = x2-x1 = 55, Height of box = y2-y1 = 10
 }
 
 void DrawStartText(uint8_t Selected)
@@ -615,15 +614,17 @@ void DrawHelpText(uint8_t Selected)
 	resetBgColor();
 }
 
-void DrawHelpScreen()
+void DrawHelpScreen(const gameConfig_t *config)
 { // Draws the help screen only
 	clearScreen();
-	DrawPixelH(95, 10);	 // 60,20
-	DrawPixelE(105, 10); // 70,20
-	DrawPixelL(112, 10); // 77,20
-	DrawPixelP(120, 10); // 85,20
+	DrawBordersMenu(config->winStartX, config->winStartY, config->winW, config->winH);
 
-	goTo(30, 30);
+	DrawPixelH(config->winStartX + 95, config->winStartY + 10);	 // 60,20
+	DrawPixelE(config->winStartX + 105, config->winStartY + 10); // 70,20
+	DrawPixelL(config->winStartX + 112, config->winStartY + 10); // 77,20
+	DrawPixelP(config->winStartX + 120, config->winStartY + 10); // 85,20
+
+	goTo(config->winStartX + 30, config->winStartY + 30);
 	fgColor(2);
 	printf("How To Play");
 	resetBgColor();
@@ -650,28 +651,9 @@ void DrawHelpScreen()
 	printf("you are earths last defender, destroy all the aliens and make sure none of their asteroids hit Earth");
 	goTo(100, 36);
 	printf("Good Luck");
+}
 
-	void joystick_inputs_init() // Sæt pins som input
-	{
-		// Enable clock til A, B, C
-		RCC->AHBENR |= RCC_AHBENR_GPIOAEN | RCC_AHBENR_GPIOBEN | RCC_AHBENR_GPIOCEN;
-
-		// MODER = 00 -> input
-		GPIOA->MODER &= ~(3u << (4u * 2u)); // PA4
-		GPIOB->MODER &= ~(3u << (0u * 2u)); // PB0
-		GPIOB->MODER &= ~(3u << (5u * 2u)); // PB5
-		GPIOC->MODER &= ~(3u << (0u * 2u)); // PC0
-		GPIOC->MODER &= ~(3u << (1u * 2u)); // PC1
-
-		// PUPDR: typisk eksterne pulldowns på boardet -> "no pull" (00) er fint
-		GPIOA->PUPDR &= ~(3u << (4u * 2u));
-		GPIOB->PUPDR &= ~(3u << (0u * 2u));
-		GPIOB->PUPDR &= ~(3u << (5u * 2u));
-		GPIOC->PUPDR &= ~(3u << (0u * 2u));
-		GPIOC->PUPDR &= ~(3u << (1u * 2u));
-	}
-
-	void Joystick_Toggle()
+void Joystick_Toggle()
 	{ // Uses the onboard STM_32 Joystick, can toggle left, right and click by pressing center
 		joystick_inputs_init();
 
@@ -683,7 +665,7 @@ void DrawHelpScreen()
 			 uint8_t right = (GPIOC->IDR >> 0) & 1u;  // PC0
 			 uint8_t center = (GPIOB->IDR >> 5) & 1u;  // PB5
 			*/
-
+/*
 			if (left)
 			{ // Toggle to START
 				DrawHelpText(0);
@@ -744,67 +726,60 @@ void DrawHelpScreen()
 				// Game Start and play here:
 				//
 				//
-			}
+			}*/
 		}
 	}
 
-	if (JOY_X_LEFT)
-	{ // Toggle to START
-		DrawHelpText(0);
-		DrawStartText(1);
-		Setchoice(0);
+// NEW
 
-		if (JOY_X_RIGHT)
-		{ // Toggle to HELP
-			DrawStartText(0);
-			DrawHelpText(1);
-			Setchoice(1);
-			// simple delay to avoid flooding PuTTY
-			for (volatile uint32_t i = 0; i < 9000; i++)
-			{
+void navigator(screen_t *screen, joystick_x_t joyX, uint8_t select, active_button_t *button) {
+
+	switch (*screen) {
+		case (MENU):
+			if (select) {
+				if (*button == RIGHT)
+				{ // HELP Clicked
+
+					*screen = HELP;
+				}
+				else if (*button == LEFT)
+				{ // START game Clicked
+					clearScreen();
+					*screen = GAME;
+				}
+			} else {
+				if (joyX == JOY_X_LEFT)
+				{ // Toggle to START
+					DrawHelpText(0);
+					DrawStartText(1);
+					*button = LEFT;
+				}
+				else if (joyX == JOY_X_RIGHT)
+				{ // Toggle to HELP
+					DrawStartText(0);
+					DrawHelpText(1);
+					*button = RIGHT;
+				}
 			}
-		}
-
-		if (JOY_X_DEADZONE && Getchoice())
-		{ // HELP Clicked
-			DrawStartText(0);
-			DrawHelpText(0);
-			clearScreen();
-			// simple delay to avoid flooding PuTTY
-			for (volatile uint32_t i = 0; i < 9000; i++)
-			{
-			}
-			// HELP screen here...:
-			DrawHelpScreen();
-		}
-
-		if (JOY_X_DEADZONE && Getchoice() != 1)
-		{ // START game Clicked
-			DrawStartText(0);
-			DrawHelpText(0);
-			clearScreen();
-			// Game Start and play here:
-			//
-			//
-		}
+			break;
+		default:
+			break;
 	}
+
+
 }
 
-void DrawMenuBorderAndTitle()
+void DrawMenuBorderAndTitle(const gameConfig_t *config)
 {
-	DrawBordersMenu(2, 2, 230, 60);
-	/*
-			uint8_t winStartX;      // Start position X
-			uint8_t winStartY;      // Start position Y
-			uint8_t winW;			// Window width
-			uint8_t winH;			// Window height
-	 */
-	DrawTitleScreen(70, 10);
+	clearScreen();
+	drawBordersMenu(config->winStartX, config->winStartY, config->winW, config->winH);
+
+	DrawTitleScreen(config->winStartX + 1, config->winStartY + 1);
 }
 
-void MenuButtons()
+void MenuButtons(const gameConfig_t *config)
 { // Make START and HELP buttons/boxes
-	StartAndHelp();
+	StartAndHelp(config);
 	DrawHelpText(0);  // Parameter is blink ON or OFF, 1 for ON and 0 for OFF
 	DrawStartText(0); // Parameter is blink ON or OFF, 1 for ON and 0 for OFF
 }
@@ -814,14 +789,53 @@ void ShowMenu()
 	clearScreen();
 	resetBgColor();
 	goHome();
-	DrawMenuBorderAndTitle();
-	MenuButtons();
+	//DrawMenuBorderAndTitle();
+	//MenuButtons();
 	Joystick_Toggle();
 	while (1)
 	{
 	};
 }
 
+void drawHelpScreen(const gameConfig_t *config) {
+
+}
+
+void drawDeathScreen(const gameConfig_t *config, const gameState_t *state)
+{
+    clearScreen();
+    goHome();
+
+    drawBordersMenu(config->winStartX, config->winStartY, config->winW, config->winH);
+
+    fgColor(1);
+    goTo(config->winStartX + 95, config->winStartY + 20);
+    printf(" ###    ###    ##   ##  #####");
+    goTo(config->winStartX + 95, config->winStartY + 21);
+    printf("#      #   #   ### ###  #");
+    goTo(config->winStartX + 95, config->winStartY + 22);
+    printf("#  ##  #####   ## # ##  ####");
+    goTo(config->winStartX + 95, config->winStartY + 23);
+    printf("#   # #     #  ##   ##  #");
+    goTo(config->winStartX + 95, config->winStartY + 24);
+    printf(" ###  #     #  ##   ##  #####");
+    resetBgColor();
+
+    // Score
+    goTo(config->winStartX + 100, config->winStartY + 35);
+    printf("Final Score: %lu", state->score);
+    goTo(config->winStartX + 100, config->winStartY + 37);
+    printf("High Score: %lu", state->highScore);
+
+    // Instructions
+    fgColor(2);
+    goTo(config->winStartX + 80, config->winStartY + 50);
+    printf("Left  = Return to MENU");
+    goTo(config->winStartX + 80, config->winStartY + 52);
+    printf("Center = Restart Game");
+    resetBgColor();
+
+}
 /*
 En funktion som tegner titlen og borderen: DrawMenuBorderAndTitle();
 En funktion som tegner START og HELP knapperne: MenuButtons();

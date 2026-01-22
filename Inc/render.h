@@ -15,9 +15,9 @@
 	} blitMode_t;
 
 	/* ----- Functions ----- */
-	void blitAsteroid(const asteroid_t *asteroid, blitMode_t mode);
-	void blitSpaceship(const spaceship_t *ship, blitMode_t mode, uint8_t prevPowerUp);
-	void blitUfo(const ufo_t *ufo, blitMode_t mode);
+	void blitAsteroid(const gameConfig_t *config, const asteroid_t *asteroid, blitMode_t mode);
+	void blitSpaceship(const gameConfig_t *config, const spaceship_t *ship, blitMode_t mode, uint8_t prevPowerUp);
+	void blitUfo(const gameConfig_t *config, const ufo_t *ufo, blitMode_t mode);
 	void blitBullet(const bullet_t *bullet, blitMode_t mode);
 	void blitPowerUp(const power_up_t *powerUp, blitMode_t mode);
 	void blitHeart(int16_t x, int16_t y, blitMode_t mode);
