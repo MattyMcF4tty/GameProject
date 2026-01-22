@@ -6,6 +6,7 @@ static void initBoard()
 
 	LEDinitializer(); // Init LED
 	enableJoystick(); // Init Joystick
+	initRandom();	  // Init random, MUST BE BELOW enableJoystick();
 	timerInit();	  // Init timer
 
 	__enable_irq();
@@ -34,111 +35,105 @@ int main()
 
 	gameState_t gameState;
 
-	uint8_t initError = initGameState(&gameConfig, &gameState);
 
-	if (initError)
+	uint8_t initError = 0;
+	gameState.screen = MENU;
+	screen_t prevScreen = NO_SCREEN;
+	joystick_btn_t prevButton = BTN_NONE;
+	active_button_t button = NONE;
+	gameState.highScore = 0;
+	joystick_input_t joyInput;
+	timerStart(); // Start timer
+
+	initError = initGameState(&gameConfig, &gameState);
+
+	while (!initError)
 	{
-		// Error message
-		printf("It was not possible to allocate the needed amount of RAM based of your settings.\n");
-		printf("Please restart game and lower your settings or if possible allocate more RAM.");
-	}
-	else
-	{
-		screen_t prevScreen = NO_SCREEN;
-		active_button_t button = NONE;
-		gameState.highScore = 0;
-		joystick_input_t joyInput;
-		timerStart(); // Start timer
-		while (1)
-		{
-			readJoystick(&joyInput);
+	    readJoystick(&joyInput);
 
-			// Allow for boss key click out of tick rate
-			if (joyInput.button == BTN_RED)
-			{ // Read boss key
+	    joystick_btn_t edgeBtn = (joyInput.button != prevButton) ? joyInput.button : BTN_NONE;
 
-				bossKey(); // Show boss screen
-				gameState.bossModeActive = 1;
+	    if (edgeBtn == BTN_RED)
+	    {
+	        bossKey();
+	        gameState.bossModeActive = 1;
 
-				while (gameState.bossModeActive)
+	        while (gameState.bossModeActive)
+	        {
+	            readJoystick(&joyInput);
+	            // exit on RED press (edge detect inside loop)
+	            static joystick_btn_t last = BTN_NONE;   // if you refuse static, do a local prev in this loop
+	            joystick_btn_t e = (joyInput.button != last) ? joyInput.button : BTN_NONE;
+	            last = joyInput.button;
+
+	            if (e == BTN_RED) gameState.bossModeActive = 0;
+	        }
+	        clearScreen();
+	    }
+	    else if (timerTickOccurred())
+	    {
+	    	if (gameState.screen == GAME)
 				{
-					// listen for boss key click
-					readJoystick(&joyInput);
-					gameState.bossModeActive = joyInput.button != BTN_RED;
+
+					if (prevScreen != GAME)
+					{
+						clearScreen();
+						prevScreen = GAME;
+						gameState.lives = 3;
+						gameState.level = 0;
+						gameState.score = 0;
+
+						drawBordersMenu(gameConfig.winStartX, gameConfig.winStartY,
+										gameConfig.winW, gameConfig.winH);
+					}
+
+					updateGameState(&gameConfig, &gameState, &joyInput);
+					updateScore(&gameState.score);
+					drawHud(&gameConfig, &gameState);
+					updateLCD(&gameState);
+					LEDLives(gameState.lives);
 				}
+	        else
+	        {
+	            if (gameState.screen != prevScreen || prevButton == BTN_RED)
+	            {
+	                clearScreen();
+	                prevScreen = gameState.screen;
 
-				clearScreen();
-			}
+	                switch (gameState.screen)
+	                {
+	                    case MENU:
+	                    	DrawMenuBorderAndTitle(&gameConfig);
+	                    	MenuButtons(&gameConfig);
+	                    	break;
+	                    case HELP:
+	                    	drawHelpScreen(&gameConfig);
+	                    	break;
+	                    case GAME_OVER:
+	                    	drawDeathScreen(&gameConfig, &gameState);
+	                    	break;
+	                    default:
+	                    	gameState.screen = MENU;
+	                    	break;
+	                }
+	            }
 
-			// Only update game on clock tick
-			else if (timerTickOccurred())
-			{
+	            navigator(&gameState.screen, joyInput.xAxis, edgeBtn, &button);
+	        }
+	    }
 
-				switch(gameState.screen) {
-
-					case (GAME):
-						if (prevScreen != GAME) {
-							 drawBordersMenu(gameConfig.winStartX, gameConfig.winStartY, gameConfig.winW, gameConfig.winH);
-							 prevScreen = GAME;
-						}
-
-						updateGameState(&gameConfig, &gameState, &joyInput); // Handle next frame
-
-						updateScore(&gameState.score); // Give points for time alive
-						// drawHud(&gameState);
-						updateLCD(&gameState);	   // Update LCD
-						LEDLives(gameState.lives); // Update LED
-						break;
-
-					case (MENU):
-						if (prevScreen != MENU) {
-							DrawMenuBorderAndTitle(&gameConfig);
-							MenuButtons(&gameConfig);
-							prevScreen = MENU;
-						}
-
-						navigator(&gameState.screen, joyInput.xAxis,
-									joyInput.button == BTN_WHITE, &button);
-
-						break;
-
-					case (HELP):
-						drawHelpScreen(&gameConfig);
-
-						while (joyInput.button != BTN_WHITE) {
-							readJoystick(&joyInput);
-						}
-						gameState.screen = MENU;
-						break;
-
-					case (GAME_OVER):
-						// Draw death screen
-						drawDeathScreen(&gameConfig, &gameState);
-						while (1)
-						{
-							readJoystick(&joyInput);
-							// Update button select
-
-							if (gameState.screen == GAME_OVER)
-							{
-								// TEMP
-								initGameState(&gameConfig, &gameState);
-							}
-						}
-						break;
-
-					default:
-						gameState.screen = MENU; // Fallback
-						break;
-				}
-			}
-		}
+	    prevButton = joyInput.button;  // CRITICAL
 	}
 
-	// Impossible, but at least they now know
+
+	// Ram allocation error. Crash game and tell player
+	resetBgColor();
 	clearScreen();
 	goHome();
-	printf("Something went wrong restart game");
+	fgColor(1);
+	bold(1);
+	printf("It was not possible to allocate the needed amount of RAM based of your settings.\n");
+	printf("Please restart game and lower your settings or if possible allocate more RAM.");
 
 	// Make terminal run indefinitely
 	while (1) {}

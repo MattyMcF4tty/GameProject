@@ -15,6 +15,7 @@
 	void bgColor(uint8_t background);
 	void resetBgColor();
 	void blink(uint8_t on);
+	void bold(uint8_t on);
 	void up();
 	void down();
 

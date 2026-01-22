@@ -4,6 +4,7 @@
 #include "ansi.h"
 #include "game_master.h"
 
+
 void DrawTitleScreen(uint8_t startX, uint8_t startY) //(70,10)
 {
 	fgColor(6);
@@ -581,43 +582,43 @@ void DrawPixelP(uint8_t x, uint8_t y)
 static void StartAndHelp(const gameConfig_t *config)
 {
 	drawBox(config->winStartX + 150, config->winStartY + 40,
-			config->winStartX + 205, config->winStartY + 50); // Length of box = 55, Height of box = 10
-	drawBox(config->winStartX + 35, config->winStartY + 40,
-			config->winStartX + 90, config->winStartY + 50);   // Length of box = x2-x1 = 55, Height of box = y2-y1 = 10
+			config->winStartX + 200, config->winStartY + 50); // Length of box = 55, Height of box = 10
+	drawBox(config->winStartX + 33, config->winStartY + 40,
+			config->winStartX + 87, config->winStartY + 50);   // Length of box = x2-x1 = 55, Height of box = y2-y1 = 10
 }
 
 void DrawStartText(uint8_t Selected)
 { // If selected == 1, blink on else off.
 	blink(Selected);
-	DrawPixelS(42, 42); // 43,42
+	DrawPixelS(42, 50); // 43,42
 	blink(Selected);
-	DrawPixelT(49, 42); // 50,42
+	DrawPixelT(49, 50); // 50,42
 	blink(Selected);
-	DrawPixelA(59, 42); // 59,42
+	DrawPixelA(59, 50); // 59,42
 	blink(Selected);
-	DrawPixelR(70, 42); // 70,42
+	DrawPixelR(70, 50); // 70,42
 	blink(Selected);
-	DrawPixelT(79, 42); // 80,42
+	DrawPixelT(79, 50); // 80,42
 	resetBgColor();
 }
 
 void DrawHelpText(uint8_t Selected)
 { // If selected == 1, blink on else off.
 	blink(Selected);
-	DrawPixelH(162, 42); // 155,42
+	DrawPixelH(162, 50); // 155,42
 	blink(Selected);
-	DrawPixelE(172, 42); // 165,42
+	DrawPixelE(172, 50); // 165,42
 	blink(Selected);
-	DrawPixelL(179, 42); // 172,42
+	DrawPixelL(179, 50); // 172,42
 	blink(Selected);
-	DrawPixelP(187, 42); // 180,42
+	DrawPixelP(187, 50); // 180,42
 	resetBgColor();
 }
 
-void DrawHelpScreen(const gameConfig_t *config)
+void drawHelpScreen(const gameConfig_t *config)
 { // Draws the help screen only
 	clearScreen();
-	DrawBordersMenu(config->winStartX, config->winStartY, config->winW, config->winH);
+	drawBordersMenu(config->winStartX, config->winStartY, config->winW, config->winH);
 
 	DrawPixelH(config->winStartX + 95, config->winStartY + 10);	 // 60,20
 	DrawPixelE(config->winStartX + 105, config->winStartY + 10); // 70,20
@@ -626,31 +627,44 @@ void DrawHelpScreen(const gameConfig_t *config)
 
 	goTo(config->winStartX + 30, config->winStartY + 30);
 	fgColor(2);
-	printf("How To Play");
-	resetBgColor();
-	goTo(30, 32);
-	printf("Controls:");
-	goTo(30, 34);
-	printf("Joystick UP = Change shot angle");
-	goTo(30, 36);
-	printf("Joystick LEFT = Move left");
-	goTo(30, 38);
-	printf("Joystick RIGHT = Move right");
-	goTo(30, 40);
-	printf("Red Button = Shoot");
-	goTo(30, 42);
-	printf("White Button = Boss Key");
+		printf("How To Play");
+		resetBgColor();
+		goTo(30, 32);
+		printf("Controls:");
+		goTo(30, 34);
+		printf("Joystick UP = Change shot angle");
+		goTo(30, 36);
+		printf("Joystick DOWN = Change shot angle");
+		goTo(30, 38);
+		printf("5 shot angles to choose from");
+		goTo(30,40);
+		printf("Joystick LEFT = Move left");
+		goTo(30, 42);
+		printf("Joystick RIGHT = Move right");
+		goTo(30, 44);
+		printf("White Button = Shoot");
+		goTo(30, 46);
+		printf("Red Button = Boss Key");
 
-	goTo(100, 30);
-	fgColor(4);
-	printf("Objective");
-	resetBgColor();
-	goTo(100, 32);
-	printf("Alien forces have come to take the Earth and all its minerals");
-	goTo(100, 34);
-	printf("you are earths last defender, destroy all the aliens and make sure none of their asteroids hit Earth");
-	goTo(100, 36);
-	printf("Good Luck");
+		goTo(100, 30);
+		fgColor(4);
+		printf("Objective");
+		resetBgColor();
+		goTo(100, 32);
+		printf("Alien forces have come to take the Earth and all its minerals");
+		goTo(100, 34);
+		printf("You are earths last defender");
+		goTo(100,36);
+		printf("Destroy all the aliens and be careful of their asteroids!");
+		goTo(100, 38);
+		printf("Good Luck");
+
+		goTo(170,30);
+		printf("Power Ups:");
+		goTo(170,32);
+		printf("Lead Bullets: More damage");
+		goTo(170,34);
+		printf("Lightning Fuel: Faster Spaceship");
 }
 
 void Joystick_Toggle()
@@ -732,41 +746,47 @@ void Joystick_Toggle()
 
 // NEW
 
-void navigator(screen_t *screen, joystick_x_t joyX, uint8_t select, active_button_t *button) {
+void navigator(screen_t *screen, joystick_x_t joyX, joystick_btn_t joyBtn, active_button_t *focusButton)
+{
+    // If nothing is focused, default to LEFT (START / MENU)
+    if (*focusButton == NONE) *focusButton = LEFT;
 
-	switch (*screen) {
-		case (MENU):
-			if (select) {
-				if (*button == RIGHT)
-				{ // HELP Clicked
+    switch (*screen)
+    {
+        case MENU:
+            if (joyX == JOY_X_LEFT) {
+                DrawHelpText(0);
+                DrawStartText(1);
+                *focusButton = LEFT;
+            } else if (joyX == JOY_X_RIGHT) {
+                DrawStartText(0);
+                DrawHelpText(1);
+                *focusButton = RIGHT;
+            }
 
-					*screen = HELP;
-				}
-				else if (*button == LEFT)
-				{ // START game Clicked
-					clearScreen();
-					*screen = GAME;
-				}
-			} else {
-				if (joyX == JOY_X_LEFT)
-				{ // Toggle to START
-					DrawHelpText(0);
-					DrawStartText(1);
-					*button = LEFT;
-				}
-				else if (joyX == JOY_X_RIGHT)
-				{ // Toggle to HELP
-					DrawStartText(0);
-					DrawHelpText(1);
-					*button = RIGHT;
-				}
-			}
-			break;
-		default:
-			break;
-	}
+            if (joyBtn == BTN_WHITE) {
+                if 	(*focusButton == RIGHT) *screen = HELP;
+                else if (*focusButton == LEFT) *screen = GAME; // LEFT or NONE -> GAME
+            }
+            break;
 
+        case HELP:
+            if (joyBtn == BTN_WHITE) *screen = MENU;
+            break;
 
+        case GAME_OVER:
+            if (joyX == JOY_X_LEFT)  *focusButton = LEFT;
+            if (joyX == JOY_X_RIGHT) *focusButton = RIGHT;
+
+            if (joyBtn == BTN_WHITE) {
+                if (*focusButton == LEFT)  *screen = MENU;
+                else *screen = GAME;
+            }
+            break;
+
+        default:
+            break;
+    }
 }
 
 void DrawMenuBorderAndTitle(const gameConfig_t *config)
@@ -774,7 +794,7 @@ void DrawMenuBorderAndTitle(const gameConfig_t *config)
 	clearScreen();
 	drawBordersMenu(config->winStartX, config->winStartY, config->winW, config->winH);
 
-	DrawTitleScreen(config->winStartX + 1, config->winStartY + 1);
+	DrawTitleScreen(config->winStartX + 55, config->winStartY + 10);
 }
 
 void MenuButtons(const gameConfig_t *config)
@@ -795,10 +815,6 @@ void ShowMenu()
 	while (1)
 	{
 	};
-}
-
-void drawHelpScreen(const gameConfig_t *config) {
-
 }
 
 void drawDeathScreen(const gameConfig_t *config, const gameState_t *state)

@@ -85,6 +85,11 @@ void blink(uint8_t on) {
 	}
 }
 
+void bold(uint8_t on) {
+	// Toggle underline
+	if (on) printf("%c[01m", ESC);
+	else printf("%c[22m", ESC);
+}
 
 void up() {                   //Rykker cursoren 1 op og 1 til højre
 	printf("%c[1A", ESC);

@@ -52,7 +52,7 @@
 	void DrawTitleScreen(uint8_t startX, uint8_t startY);
 
 	void DrawMenuBorderAndTitle(const gameConfig_t *config);
-	void navigator(screen_t *screen, joystick_x_t joyX, uint8_t select, active_button_t *button);
+	void navigator(screen_t *screen, joystick_x_t joyX, joystick_btn_t joyBtn, active_button_t *focusButton);
 	void MenuButtons(const gameConfig_t *config);
 
 	void drawBordersMenu(uint8_t winStartX, uint8_t winStartY, uint8_t winW, uint8_t winH);

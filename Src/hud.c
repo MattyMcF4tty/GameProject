@@ -24,23 +24,34 @@ static uint32_t lastTotalSeconds = 0;
 //------------------------------------------------------
 // Draw the entire HUD (score + lives)
 //------------------------------------------------------
-void drawHud(const gameState_t *state)
+void drawHud(const gameConfig_t *config, const gameState_t *state)
 {
-    // --- Draw score ---
-    clearLine(HUD_SCORE_Y);
-    goTo(1, HUD_SCORE_Y);
+	fgColor(7);
+	resetBgColor();
+	uint8_t scoreY = config->winStartY - 1;
+	uint8_t livesY = config->winStartY - 2;
+	uint8_t levelY = config->winStartY - 3;
 
-    printf("Score: %u", state->score);
+    // --- Draw score ---
+    clearLine(scoreY);
+    goTo(config->winStartX, scoreY);
+
+    printf("Score: %lu", (unsigned long)state->score);
 
     // --- Draw lives ---
-    clearLine(HUD_LIVES_Y);
-    goTo(1, HUD_LIVES_Y);
+    clearLine(livesY);
+    goTo(config->winStartX, livesY);
 
     printf("Lives: ");
 
     for (uint8_t i = 0; i < state->lives; i++) {
         printf("♥ ");   //sprite heart here not added yet
     }
+
+    clearLine(levelY);
+    goTo(config->winStartX, levelY);
+    printf("Level: %u ", state->level);
+
 }
 
 void hudLoseLife()

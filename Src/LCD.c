@@ -22,7 +22,7 @@ void lcdWriteString(const char *str, uint16_t slice, uint8_t line)
     uint16_t line_start = line * 128;
     uint16_t pixel = 0;
 
-    memset(lcd_buffer, 0x00,512); // clears the lcd_buffer
+    //memset(lcd_buffer, 0x00,512); // clears the lcd_buffer
 
     // Convert pixel offset to character + column offset
     // every character is 5 pixels wide and 1 pixel is space between next character
@@ -66,11 +66,11 @@ void updateLCD(const gameState_t *gameState)
 
 	memset(lcd_buffer, 0x00, sizeof(lcd_buffer)); // Clear entire LCD buffer
 
-	snprintf(text, sizeof(text), "Lives: %u", gameState->lives);
-	lcdWriteString(text, 0, 0);
+	snprintf(text, sizeof(text), "Lives: %d", gameState->lives);
+	lcdWriteString(text, 0, 1);
 
 	snprintf(text, sizeof(text), "Score: %lu", gameState->score);
-	lcdWriteString(text, 0, 1);
+	lcdWriteString(text, 0, 2);
 
 	lcd_push_buffer(lcd_buffer);
 }

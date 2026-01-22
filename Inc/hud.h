@@ -17,7 +17,7 @@
 	#include "game_master.h"
 
 	/* ----- Functions ----- */
-	void drawHud(const gameState_t *state);
+	void drawHud(const gameConfig_t *config, const gameState_t *state);
 	void hudLoseLife(void);
 	uint8_t hudGetLives(void);
 	void updateScore(uint32_t *score);

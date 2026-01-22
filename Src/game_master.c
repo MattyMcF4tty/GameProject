@@ -28,20 +28,6 @@ static void updateSpaceship(const gameConfig_t *config, spaceship_t *ship, bulle
 static void addPowerUp(const gameConfig_t *config, power_up_t *powerUpArray, uint8_t type, int16_t x, int16_t y);
 static void updatePowerUps(const gameConfig_t *config, power_up_t *powerUpArray, spaceship_t *ship);
 
-
-/* ----------- RANDOMNESS ---------- */
-// Should use pin noise and should be in stm helpers
-static uint32_t randomRange(uint32_t min, uint32_t max)
-{
-	if (max < min)
-	{
-		return min; // or swap, or assert
-	}
-
-	uint32_t span = max - min + 1;
-	return min + ((uint32_t)rand() % span);
-}
-
 /* ---------- Public functions ---------- */
 uint8_t initGameState(const gameConfig_t *config, gameState_t *state)
 {
@@ -73,7 +59,6 @@ uint8_t initGameState(const gameConfig_t *config, gameState_t *state)
 	// Set game values
 	state->lives = 3;
 	state->score = 0;
-	state->screen = MENU;
 
 	lcdTextInit();
 
@@ -95,19 +80,48 @@ void updateGameState(const gameConfig_t *config, gameState_t *state, const joyst
 
 		if (state->score > state->highScore) state->highScore = state->score; // update highscore
 	}
+
+	if 		(state->score > 100) state->level = 1;
+	else if (state->score > 200) state->level = 2;
+	else if (state->score > 300) state->level = 3;
 }
 
 /*------------ Local functions ---------- */
 static void entitySpawner(const gameConfig_t *config, gameState_t *state)
 {
-	uint16_t spawn = (uint16_t)randomRange(0, 1000);
+	uint16_t spawnRoll = (uint16_t)randomRange(0, 1000);
 
-	if (spawn <= 100)
-	{ // 10% spawn change
+	uint16_t asteroidSpawnRate;
+	uint16_t ufoSpawnRate;
+	switch(state->level) {
+		case (0):
+			asteroidSpawnRate = 5;  // 0.5%
+			ufoSpawnRate 	  = 10; // 1%
+			state->ship->lvl  = 0;
+			break;
+		case (1):
+			asteroidSpawnRate = 10; // 1%
+			ufoSpawnRate 	  = 50; // 5%
+			state->ship->lvl  = 1;
+			break;
+		case (2):
+			asteroidSpawnRate = 20;  // 2%
+			ufoSpawnRate 	  = 100; // 10%
+			state->ship->lvl  = 2;
+			break;
+		default:
+			asteroidSpawnRate = 50;  // 5%
+			ufoSpawnRate 	  = 150; // 15%
+			state->ship->lvl  = 3;
+			break;
+	}
+
+	if (spawnRoll <= asteroidSpawnRate)
+	{
 		addAsteroid(config, state->asteroidArray);
 	}
-	if (spawn <= 5)
-	{ // 0.5% spawn change
+	if (spawnRoll <= ufoSpawnRate)
+	{
 		addUfo(config, state->ufoArray);
 	}
 }
@@ -499,14 +513,14 @@ static void updateSpaceship(const gameConfig_t *config, spaceship_t *ship, bulle
 		int16_t vX = 0;
 		int16_t vY = -1 << 5;
 
-		/*switch (ship->shotAngle)
+		switch (ship->shotAngle)
 		{
 		    case 4:  vX = -(3 << 6); break; // big left
 		    case 3:  vX = -(1 << 6); break; // small left
 		    case 2:  vX = 0;         break; // straight
 		    case 1:  vX = +(1 << 6); break; // small right
 		    case 0:  vX = +(3 << 6); break; // big right
-		}*/
+		}
 
 		addBullet(config, bulletArray, ship->powerUp,
 		          ship->x + (SPRITE_SHIP_W << 5), 	// Middle of ship sprite

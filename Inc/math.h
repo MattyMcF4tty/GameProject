@@ -34,5 +34,7 @@
 	void rotateShotAngle(int32_t angleDeg);
 	void applyAsteroidGravity(bullet_t *b, const asteroid_t *a);
 	void applyLorentzForce(shot_t *s, int32_t k);
+	void initRandom();
+	uint32_t randomRange(uint32_t min, uint32_t max);
 
 #endif

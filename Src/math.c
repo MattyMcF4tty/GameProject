@@ -174,4 +174,60 @@ void applyLorentzForce(shot_t *s, int32_t k) { //EGG
 }
 
 
+void initRandom(void)
+{
+    // Enable GPIOA clock
+    RCC->AHBENR |= RCC_AHBPeriph_GPIOA;
+
+    // PA4 -> analog mode (MODER bits: 2*4 and 2*4+1)
+    GPIOA->MODER &= ~(3u << (4u * 2u));
+    GPIOA->MODER |=  (3u << (4u * 2u));
+
+    // ADC1 is already enabled/calibrated in enablePots().
+}
+
+static uint16_t readNoiseADC(void)
+{
+    // PA4 on STM32F302 = ADC_IN5
+    ADC_RegularChannelConfig(ADC1, ADC_Channel_5, 1, ADC_SampleTime_1Cycles5);
+
+    ADC_StartConversion(ADC1);
+    while (ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC) == 0) { }
+
+    return ADC_GetConversionValue(ADC1);
+}
+
+uint32_t randomRange(uint32_t min, uint32_t max)
+{
+    if (max < min) return min;
+
+    uint32_t span = (max - min) + 1u;
+
+    // We build a 32-bit value from ADC noise LSBs.
+    uint32_t r = 0;
+    for (int i = 0; i < 32; i++)
+    {
+        uint16_t s = readNoiseADC();
+        r = (r << 1) | (uint32_t)(s & 1u);
+
+        // We allow for a small maount of jitter, helps to make value more random
+        for (volatile int d = 0; d < 10; d++) { }
+    }
+
+    // We avoid modulo bias (random % N can favor some values slightly). Again, makes it more random.
+    uint32_t limit = 0xFFFFFFFFu - (0xFFFFFFFFu % span);
+    while (r >= limit)
+    {
+        // Generate 32 bits
+        r = 0;
+        for (int i = 0; i < 32; i++)
+        {
+            uint16_t s = readNoiseADC();
+            r = (r << 1) | (uint32_t)(s & 1u);
+            for (volatile int d = 0; d < 10; d++) { }
+        }
+    }
+
+    return min + (r % span);
+}
 
