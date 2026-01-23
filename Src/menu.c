@@ -212,7 +212,6 @@ void DrawPixelS(uint8_t x, uint8_t y)
 	// Original position: x = 43, y = 42
 	//  Draw pixel S:
 	// First line in S
-	fgColor(7);
 	goTo(x, y);
 	printf("%c", (unsigned char)219);
 	printf("%c", (unsigned char)219);
@@ -247,14 +246,14 @@ void DrawPixelS(uint8_t x, uint8_t y)
 	printf("%c", (unsigned char)219);
 	printf("%c", (unsigned char)219);
 
-	resetBgColor();
+
 }
 
 void DrawPixelT(uint8_t x, uint8_t y)
 { // x = 50, y = 42
 	// Draw PIXEL T
 	goTo(x, y); // 50,42
-	fgColor(7);
+
 	printf("%c", (unsigned char)219);
 	printf("%c", (unsigned char)219);
 	printf("%c", (unsigned char)219);
@@ -281,7 +280,7 @@ void DrawPixelT(uint8_t x, uint8_t y)
 	goTo(x + 2, y + 5); // 52,47
 	printf("%c", (unsigned char)219);
 	printf("%c", (unsigned char)219);
-	resetBgColor();
+
 }
 
 void DrawPixelA(uint8_t x, uint8_t y)
@@ -289,7 +288,7 @@ void DrawPixelA(uint8_t x, uint8_t y)
 	// Draw A
 
 	goTo(x, y); //(59,42)
-	fgColor(7);
+
 	printf("%c", (unsigned char)219);
 	printf("%c", (unsigned char)219);
 	printf("%c", (unsigned char)219);
@@ -344,7 +343,7 @@ void DrawPixelA(uint8_t x, uint8_t y)
 	goTo(65, y + 5);
 	printf("%c", (unsigned char)219);
 	printf("%c", (unsigned char)219);
-	resetBgColor();
+
 }
 
 void DrawPixelR(uint8_t x, uint8_t y)
@@ -352,7 +351,7 @@ void DrawPixelR(uint8_t x, uint8_t y)
 	// Draw Pixel R
 
 	goTo(x, y); // Original position: (70,42)
-	fgColor(7);
+
 	printf("%c", (unsigned char)219);
 	printf("%c", (unsigned char)219);
 	printf("%c", (unsigned char)219);
@@ -397,13 +396,13 @@ void DrawPixelR(uint8_t x, uint8_t y)
 	goTo(x + 5, y + 5);
 	printf("%c", (unsigned char)219);
 	printf("%c", (unsigned char)219);
-	resetBgColor();
+
 }
 
 void DrawPixelH(uint8_t x, uint8_t y)
 {
 	// Draw H:
-	fgColor(7);
+
 	// Left leg
 	goTo(x, y); // (155,42)
 	printf("%c", (unsigned char)219);
@@ -453,14 +452,14 @@ void DrawPixelH(uint8_t x, uint8_t y)
 	printf("%c", (unsigned char)219);
 	printf("%c", (unsigned char)219);
 
-	resetBgColor();
+
 }
 
 void DrawPixelE(uint8_t x, uint8_t y)
 {
 	// Draw E:
 
-	fgColor(7);
+
 	goTo(x, y); //(165,42)
 	printf("%c", (unsigned char)219);
 	printf("%c", (unsigned char)219);
@@ -496,14 +495,14 @@ void DrawPixelE(uint8_t x, uint8_t y)
 	printf("%c", (unsigned char)219);
 	printf("%c", (unsigned char)219);
 
-	resetBgColor();
+
 }
 
 void DrawPixelL(uint8_t x, uint8_t y)
 {
 	// Draw L
 	//  Body
-	fgColor(7);
+
 	goTo(x, y); //(172,42)
 	printf("%c", (unsigned char)219);
 	printf("%c", (unsigned char)219);
@@ -530,14 +529,14 @@ void DrawPixelL(uint8_t x, uint8_t y)
 	printf("%c", (unsigned char)219);
 	printf("%c", (unsigned char)219);
 
-	resetBgColor();
+
 }
 
 void DrawPixelP(uint8_t x, uint8_t y)
 {
 	// Draw P
 	// Body
-	fgColor(7);
+
 	goTo(x, y); //(180,42)
 	printf("%c", (unsigned char)219);
 	printf("%c", (unsigned char)219);
@@ -576,7 +575,7 @@ void DrawPixelP(uint8_t x, uint8_t y)
 	goTo(x + 6, y + 2);
 	printf("%c", (unsigned char)219);
 
-	resetBgColor();
+
 }
 
 static void StartAndHelp(const gameConfig_t *config)
@@ -589,21 +588,51 @@ static void StartAndHelp(const gameConfig_t *config)
 
 void DrawStartText(uint8_t Selected)
 { // If selected == 1, blink on else off.
-	blink(Selected);
-	DrawPixelS(42, 50); // 43,42
-	blink(Selected);
-	DrawPixelT(49, 50); // 50,42
-	blink(Selected);
-	DrawPixelA(59, 50); // 59,42
-	blink(Selected);
-	DrawPixelR(70, 50); // 70,42
-	blink(Selected);
-	DrawPixelT(79, 50); // 80,42
-	resetBgColor();
+	if (Selected == 1) {
+		fgColor(2);
+		DrawPixelS(42, 50); // 43,42
+		DrawPixelT(49, 50); // 50,42
+		DrawPixelA(59, 50); // 59,42
+		DrawPixelR(70, 50); // 70,42
+		DrawPixelT(79, 50); // 80,42
+		resetBgColor();
+	}
+	else if (Selected == 0) {
+		fgColor(7);
+		DrawPixelS(42, 50); // 43,42
+		DrawPixelT(49, 50); // 50,42
+		DrawPixelA(59, 50); // 59,42
+		DrawPixelR(70, 50); // 70,42
+		DrawPixelT(79, 50); // 80,42
+		resetBgColor();
+
+	}
+
 }
 
 void DrawHelpText(uint8_t Selected)
 { // If selected == 1, blink on else off.
+	if (Selected == 1) {
+			fgColor(2);
+			DrawPixelH(162, 50); // 155,42
+			DrawPixelE(172, 50); // 165,42
+			DrawPixelL(179, 50); // 172,42
+			DrawPixelP(187, 50); // 180,42
+			resetBgColor();
+		}
+		else if (Selected == 0) {
+			fgColor(7);
+			DrawPixelH(162, 50); // 155,42
+			DrawPixelE(172, 50); // 165,42
+			DrawPixelL(179, 50); // 172,42
+			DrawPixelP(187, 50); // 180,42
+			resetBgColor();
+
+		}
+
+
+
+/*
 	blink(Selected);
 	DrawPixelH(162, 50); // 155,42
 	blink(Selected);
@@ -613,6 +642,7 @@ void DrawHelpText(uint8_t Selected)
 	blink(Selected);
 	DrawPixelP(187, 50); // 180,42
 	resetBgColor();
+	*/
 }
 
 void drawHelpScreen(const gameConfig_t *config)
