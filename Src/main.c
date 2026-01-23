@@ -27,7 +27,6 @@ int main()
 	gameConfig.maxAsteroids = 5;
 	gameConfig.maxUfos = 40;
 	gameConfig.maxPowerUps = 5;
-	gameConfig.difficulty = 1;
 	gameConfig.winH = 64;
 	gameConfig.winW = 207;
 	gameConfig.winStartX = 1;
@@ -36,16 +35,13 @@ int main()
 	gameState_t gameState;
 
 
-	uint8_t initError = 0;
-	gameState.screen = MENU;
 	screen_t prevScreen = NO_SCREEN;
 	joystick_btn_t prevButton = BTN_NONE;
 	active_button_t button = NONE;
-	gameState.highScore = 0;
 	joystick_input_t joyInput;
 	timerStart(); // Start timer
 
-	initError = initGameState(&gameConfig, &gameState);
+	uint8_t initError = initGameState(&gameConfig, &gameState);
 
 	while (!initError)
 	{
@@ -77,16 +73,15 @@ int main()
 	    	if (gameState.screen == GAME)
 				{
 
-					if (prevScreen != GAME)
+					if (prevScreen != GAME || prevButton == BTN_RED)
 					{
 						clearScreen();
 						prevScreen = GAME;
-						gameState.lives = 3;
-						gameState.level = 0;
-						gameState.score = 0;
-
 						drawBordersMenu(gameConfig.winStartX, gameConfig.winStartY,
 										gameConfig.winW, gameConfig.winH);
+
+						if (prevButton != BTN_RED) // we dont want to reset when boss key is pressed
+							resetGameState(&gameConfig, &gameState);
 					}
 
 					updateGameState(&gameConfig, &gameState, &joyInput);
@@ -124,7 +119,7 @@ int main()
 	        }
 	    }
 
-	    prevButton = joyInput.button;  // CRITICAL
+	    prevButton = joyInput.button;
 	}
 
 

@@ -51,18 +51,53 @@ uint8_t initGameState(const gameConfig_t *config, gameState_t *state)
 		return 1;
 	}
 
+	state->highScore = 0;
+	state->screen = MENU;
+
+	return 0;
+}
+
+void resetGameState(const gameConfig_t *config, gameState_t *state) {
+
+	// Reset entities
+	// Asteroid
+	for (uint8_t i = 0; i < config->maxAsteroids; i++) {
+		asteroid_t *ast = &state->asteroidArray[i];
+		if (ast->active) ast->active = 0;
+	}
+	// UFO
+	for (uint8_t i = 0; i < config->maxUfos; i++) {
+		ufo_t *ufo = &state->ufoArray[i];
+		if (ufo->active) ufo->active = 0;
+	}
+	// Power ups
+	for (uint8_t i = 0; i < config->maxPowerUps; i++) {
+		power_up_t *powerUp = &state->powerUpArray[i];
+		if (powerUp->active) powerUp->active = 0;
+	}
+	// Bullets
+	for (uint8_t i = 0; i < config->maxBullets; i++) {
+		bullet_t *bullet = &state->bulletArray[i];
+		if (bullet->active) bullet->active = 0;
+	}
+
+
 	// Init spaceship
+	state->ship->lvl 			= 0;
+	state->ship->powerUp		= 0;
+	state->ship->powerUpTime	= 0;
+	state->ship->shotAngle		= 0;
+
 	addSpaceship(state->ship,
 				 (int16_t)((config->winStartX + config->winW) << 5),
 				 (int16_t)(config->winH - SPRITE_SHIP_H) << 6);
 
-	// Set game values
+	// Init game
 	state->lives = 3;
 	state->score = 0;
+	state->level = 0;
 
 	lcdTextInit();
-
-	return 0;
 }
 
 void updateGameState(const gameConfig_t *config, gameState_t *state, const joystick_input_t *joyInput)

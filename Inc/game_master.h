@@ -76,7 +76,6 @@
 		uint8_t maxUfos;
 		uint8_t maxAsteroids;
 		uint8_t maxPowerUps;
-		uint8_t difficulty;		// Difficulty multiplier
 		uint8_t winW;			// Window width
 		uint8_t winH;			// Window height
 		uint8_t winStartX;
@@ -88,7 +87,6 @@
 		uint32_t	score;
 		uint32_t 	highScore;
 		uint8_t 	level;
-		uint8_t 	spawnRate;
 		ufo_t 		*ufoArray;
 		asteroid_t 	*asteroidArray;
 		bullet_t 	*bulletArray;
@@ -100,6 +98,7 @@
 
 	/* ----- Functions ----- */
 	uint8_t initGameState(const gameConfig_t *config, gameState_t *state);
+	void resetGameState(const gameConfig_t *config, gameState_t *state);
 	void updateGameState(const gameConfig_t *config, gameState_t *state, const joystick_input_t *joyInput);
 
 #endif
