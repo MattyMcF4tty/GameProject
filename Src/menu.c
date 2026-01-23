@@ -94,7 +94,7 @@ static void drawBox(uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2)
 
 // Drawing Functions:
 
-void DrawPixelS(uint8_t x, uint8_t y)
+static void DrawPixelS(uint8_t x, uint8_t y)
 {
 	// Original position: x = 43, y = 42
 	//  Draw pixel S:
@@ -136,7 +136,7 @@ void DrawPixelS(uint8_t x, uint8_t y)
 
 }
 
-void DrawPixelT(uint8_t x, uint8_t y)
+static void DrawPixelT(uint8_t x, uint8_t y)
 { // x = 50, y = 42
 	// Draw PIXEL T
 	goTo(x, y); // 50,42
@@ -170,7 +170,7 @@ void DrawPixelT(uint8_t x, uint8_t y)
 
 }
 
-void DrawPixelA(uint8_t x, uint8_t y)
+static void DrawPixelA(uint8_t x, uint8_t y)
 {
 	// Draw A
 
@@ -233,7 +233,7 @@ void DrawPixelA(uint8_t x, uint8_t y)
 
 }
 
-void DrawPixelR(uint8_t x, uint8_t y)
+static void DrawPixelR(uint8_t x, uint8_t y)
 {
 	// Draw Pixel R
 
@@ -286,7 +286,7 @@ void DrawPixelR(uint8_t x, uint8_t y)
 
 }
 
-void DrawPixelH(uint8_t x, uint8_t y)
+static void DrawPixelH(uint8_t x, uint8_t y)
 {
 	// Draw H:
 
@@ -342,7 +342,7 @@ void DrawPixelH(uint8_t x, uint8_t y)
 
 }
 
-void DrawPixelE(uint8_t x, uint8_t y)
+static void DrawPixelE(uint8_t x, uint8_t y)
 {
 	// Draw E:
 
@@ -384,7 +384,7 @@ void DrawPixelE(uint8_t x, uint8_t y)
 
 }
 
-void DrawPixelL(uint8_t x, uint8_t y)
+static void DrawPixelL(uint8_t x, uint8_t y)
 {
 	// Draw L
 	//  Body
@@ -418,7 +418,7 @@ void DrawPixelL(uint8_t x, uint8_t y)
 
 }
 
-void DrawPixelP(uint8_t x, uint8_t y)
+static void DrawPixelP(uint8_t x, uint8_t y)
 {
 	// Draw P
 	// Body
@@ -633,18 +633,6 @@ void MenuButtons(const gameConfig_t *config)
 	DrawStartText(0); // Parameter is blink ON or OFF, 1 for ON and 0 for OFF
 }
 
-void ShowMenu()
-{ // Starts and runs the Menu
-	clearScreen();
-	resetBgColor();
-	goHome();
-	//DrawMenuBorderAndTitle();
-	//MenuButtons();
-	Joystick_Toggle();
-	while (1)
-	{
-	};
-}
 
 void drawDeathScreen(const gameConfig_t *config, const gameState_t *state)
 {
@@ -675,9 +663,9 @@ void drawDeathScreen(const gameConfig_t *config, const gameState_t *state)
     // Instructions
     fgColor(2);
     goTo(config->winStartX + 80, config->winStartY + 50);
-    printf("Left  = Return to MENU");
+    printf("Hold Left and click white button  = Return to MENU");
     goTo(config->winStartX + 80, config->winStartY + 52);
-    printf("Center = Restart Game");
+    printf("Hold right and click white button = Restart Game");
     resetBgColor();
 
 }

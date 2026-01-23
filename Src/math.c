@@ -140,7 +140,7 @@ void applyAsteroidGravity(bullet_t *b, const asteroid_t *a) {
 	int16_t absDx = (bulletDeltaX < 0) ? -bulletDeltaX : bulletDeltaX;
 	int16_t absDy = (bulletDeltaY < 0) ? -bulletDeltaY : bulletDeltaY;
 
-	int16_t gravityRange = 7 << 6; // cells
+	int16_t gravityRange = 9 << 6; // cells
 
 	if (absDx <= gravityRange && absDy <= gravityRange) {
 

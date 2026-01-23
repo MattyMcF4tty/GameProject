@@ -16,14 +16,14 @@
 
 	/* ----- Functions ----- */
 
-	void DrawPixelS(uint8_t x, uint8_t y);
-	void DrawPixelT(uint8_t x, uint8_t y);
-	void DrawPixelA(uint8_t x, uint8_t y);
-	void DrawPixelR(uint8_t x, uint8_t y);
-	void DrawPixelH(uint8_t x, uint8_t y);
-	void DrawPixelE(uint8_t x, uint8_t y);
-	void DrawPixelL(uint8_t x, uint8_t y);
-	void DrawPixelP(uint8_t x, uint8_t y);
+	static void DrawPixelS(uint8_t x, uint8_t y);
+	static void DrawPixelT(uint8_t x, uint8_t y);
+	static void DrawPixelA(uint8_t x, uint8_t y);
+	static void DrawPixelR(uint8_t x, uint8_t y);
+	static void DrawPixelH(uint8_t x, uint8_t y);
+	static void DrawPixelE(uint8_t x, uint8_t y);
+	static void DrawPixelL(uint8_t x, uint8_t y);
+	static void DrawPixelP(uint8_t x, uint8_t y);
 
 	void DrawStartText(uint8_t Selected);
 	void DrawHelpText(uint8_t Selected);
@@ -33,7 +33,6 @@
 	void Setchoice (int value);
 	int Getchoice();
 
-	void ShowMenu();
 	void ShowDeathScreen(const gameConfig_t *config, gameState_t *state, const joystick_input_t *joyInput);
 
 	void DrawTitleScreen(uint8_t startX, uint8_t startY);

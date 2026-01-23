@@ -46,6 +46,7 @@ uint8_t initGameState(const gameConfig_t *config, gameState_t *state)
 		free(state->ufoArray);
 		free(state->asteroidArray);
 		free(state->bulletArray);
+		free(state->powerUpArray);
 		free(state->ship);
 
 		return 1;
@@ -116,9 +117,9 @@ void updateGameState(const gameConfig_t *config, gameState_t *state, const joyst
 		if (state->score > state->highScore) state->highScore = state->score; // update highscore
 	}
 
-	if 		(state->score > 100) state->level = 1;
+	if 		(state->score > 300) state->level = 3;
 	else if (state->score > 200) state->level = 2;
-	else if (state->score > 300) state->level = 3;
+	else if (state->score > 100) state->level = 1;
 }
 
 /*------------ Local functions ---------- */
