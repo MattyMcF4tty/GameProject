@@ -580,10 +580,10 @@ void DrawPixelP(uint8_t x, uint8_t y)
 
 static void StartAndHelp(const gameConfig_t *config)
 {
-	drawBox(config->winStartX + 150, config->winStartY + 40,
-			config->winStartX + 200, config->winStartY + 50); // Length of box = 55, Height of box = 10
-	drawBox(config->winStartX + 33, config->winStartY + 40,
-			config->winStartX + 87, config->winStartY + 50);   // Length of box = x2-x1 = 55, Height of box = y2-y1 = 10
+	drawBox(config->winStartX + 130, config->winStartY + 40,   // 150,40 HELP box
+			config->winStartX + 180, config->winStartY + 50);  // 200,50 HELP box
+	drawBox(config->winStartX + 33, config->winStartY + 40,    // START box
+			config->winStartX + 87, config->winStartY + 50);   // START box
 }
 
 void DrawStartText(uint8_t Selected)
@@ -599,11 +599,11 @@ void DrawStartText(uint8_t Selected)
 	}
 	else if (Selected == 0) {
 		fgColor(7);
-		DrawPixelS(42, 50); // 43,42
-		DrawPixelT(49, 50); // 50,42
-		DrawPixelA(59, 50); // 59,42
-		DrawPixelR(70, 50); // 70,42
-		DrawPixelT(79, 50); // 80,42
+		DrawPixelS(42, 50); // 42
+		DrawPixelT(49, 50); // 49
+		DrawPixelA(59, 50); // 59
+		DrawPixelR(70, 50); // 70
+		DrawPixelT(79, 50); // 79
 		resetBgColor();
 
 	}
@@ -614,18 +614,18 @@ void DrawHelpText(uint8_t Selected)
 { // If selected == 1, blink on else off.
 	if (Selected == 1) {
 			fgColor(2);
-			DrawPixelH(162, 50); // 155,42
-			DrawPixelE(172, 50); // 165,42
-			DrawPixelL(179, 50); // 172,42
-			DrawPixelP(187, 50); // 180,42
+			DrawPixelH(142, 50); // 162
+			DrawPixelE(152, 50); // 172
+			DrawPixelL(159, 50); // 179
+			DrawPixelP(168, 50); // 187
 			resetBgColor();
 		}
 		else if (Selected == 0) {
 			fgColor(7);
-			DrawPixelH(162, 50); // 155,42
-			DrawPixelE(172, 50); // 165,42
-			DrawPixelL(179, 50); // 172,42
-			DrawPixelP(187, 50); // 180,42
+			DrawPixelH(142, 50); // 155,42
+			DrawPixelE(152, 50); // 165,42
+			DrawPixelL(159, 50); // 172,42
+			DrawPixelP(168, 50); // 180,42
 			resetBgColor();
 
 		}
@@ -650,50 +650,54 @@ void drawHelpScreen(const gameConfig_t *config)
 	clearScreen();
 	drawBordersMenu(config->winStartX, config->winStartY, config->winW, config->winH);
 
-	DrawPixelH(config->winStartX + 95, config->winStartY + 10);	 // 60,20
-	DrawPixelE(config->winStartX + 105, config->winStartY + 10); // 70,20
-	DrawPixelL(config->winStartX + 112, config->winStartY + 10); // 77,20
-	DrawPixelP(config->winStartX + 120, config->winStartY + 10); // 85,20
+	DrawPixelH(config->winStartX + 85, config->winStartY + 10);	 // 60,20
+	DrawPixelE(config->winStartX + 95, config->winStartY + 10); // 70,20
+	DrawPixelL(config->winStartX + 102, config->winStartY + 10); // 77,20
+	DrawPixelP(config->winStartX + 110, config->winStartY + 10); // 85,20
 
 	goTo(config->winStartX + 30, config->winStartY + 30);
 	fgColor(2);
-		printf("How To Play");
+
 		resetBgColor();
-		goTo(30, 32);
+		goTo(20, 30);
+		fgColor(6);
 		printf("Controls:");
-		goTo(30, 34);
+		resetBgColor();
+		goTo(20, 32);
 		printf("Joystick UP = Change shot angle");
-		goTo(30, 36);
+		goTo(20, 34);
 		printf("Joystick DOWN = Change shot angle");
-		goTo(30, 38);
+		goTo(20, 36);
 		printf("5 shot angles to choose from");
-		goTo(30,40);
+		goTo(20,38);
 		printf("Joystick LEFT = Move left");
-		goTo(30, 42);
+		goTo(20, 40);
 		printf("Joystick RIGHT = Move right");
-		goTo(30, 44);
+		goTo(20, 42);
 		printf("White Button = Shoot");
-		goTo(30, 46);
+		goTo(20, 44);
 		printf("Red Button = Boss Key");
 
-		goTo(100, 30);
-		fgColor(4);
+		goTo(75, 30);
+		fgColor(2);
 		printf("Objective");
 		resetBgColor();
-		goTo(100, 32);
+		goTo(75, 32);
 		printf("Alien forces have come to take the Earth and all its minerals");
-		goTo(100, 34);
+		goTo(75, 34);
 		printf("You are earths last defender");
-		goTo(100,36);
+		goTo(75,36);
 		printf("Destroy all the aliens and be careful of their asteroids!");
-		goTo(100, 38);
+		goTo(75, 38);
 		printf("Good Luck");
 
-		goTo(170,30);
+		goTo(160,30);
+		fgColor(1);
 		printf("Power Ups:");
-		goTo(170,32);
+		resetBgColor();
+		goTo(160,32);
 		printf("Lead Bullets: More damage");
-		goTo(170,34);
+		goTo(160,34);
 		printf("Lightning Fuel: Faster Spaceship");
 }
 
