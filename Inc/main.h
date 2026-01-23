@@ -13,7 +13,6 @@
 	#include "joystick30010.h"
 	#include "hud.h"
 	#include "timer.h"
-	#include "display_lcd.h"
 	#include "menu.h"
 	#include "LED.h"
 	#include "LCD.h"

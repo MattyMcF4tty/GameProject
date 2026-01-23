@@ -14,9 +14,6 @@ static joystick_y_t readPotYaxis();
 static joystick_x_t readPotXaxis();
 static joystick_btn_t readButton();
 
-/* ---------- Definitions ---------- */
-#define ADC_MID     2048
-#define DEADZONE    200				// tune able
 
 /* ---------- Public joystick functions ---------- */
 void readJoystick(joystick_input_t *joyInput)
@@ -70,7 +67,7 @@ void enablePots(void) {
 void enableButtons(void) {
 
 	GPIOC->MODER &= ~(0x00000003 << (0 * 2)); //Set PC0 to input mode
-	GPIOC->MODER &= ~(0x00000003 << (1 * 2)); // Set PC1 to inpu mode
+	GPIOC->MODER &= ~(0x00000003 << (1 * 2)); // Set PC1 to input mode
 
 	GPIOC->PUPDR &= ~(0x00000003 << (0 * 2)); // Clear PUPDR for PC0
 	GPIOC->PUPDR &= ~(0x00000003 << (1 * 2)); // Clear PUPDR for PC1
