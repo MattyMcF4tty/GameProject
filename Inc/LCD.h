@@ -7,7 +7,6 @@
 	#include "charset.h"
 	#include "timer.h"
 	#include "game_master.h"
-	#include <string.h>
 	#include <stdio.h>
 
 	/* ----- Functions ----- */

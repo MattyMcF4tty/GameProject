@@ -5,14 +5,19 @@
  *      Author: tobia
  */
 
-#include <LCD.h>
+#include "LCD.h""
 
 static uint8_t lcd_buffer[512];
 
 void lcdTextInit(void)
 {
     lcd_init();
-    memset(lcd_buffer, 0x00, sizeof(lcd_buffer));
+
+    for (uint16_t i = 0; i < sizeof(lcd_buffer); i++) //Reset buffer
+    {
+        lcd_buffer[i] = 0;
+    }
+
     lcd_push_buffer(lcd_buffer);
 }
 
@@ -22,10 +27,6 @@ void lcdWriteString(const char *str, uint16_t slice, uint8_t line)
     uint16_t line_start = line * 128;
     uint16_t pixel = 0;
 
-    //memset(lcd_buffer, 0x00,512); // clears the lcd_buffer
-
-    // Convert pixel offset to character + column offset
-    // every character is 5 pixels wide and 1 pixel is space between next character
     uint16_t char_skip = slice / 6;   //determines how many full characters to skip
     uint8_t  col_skip  = slice % 6;   // determines how many pixels of the first character to skip
 
@@ -64,7 +65,10 @@ void updateLCD(const gameState_t *gameState)
 {
 	char text[32];
 
-	memset(lcd_buffer, 0x00, sizeof(lcd_buffer)); // Clear entire LCD buffer
+	for (uint16_t i = 0; i < sizeof(lcd_buffer); i++) //Reset buffer
+	{
+	    lcd_buffer[i] = 0;
+	}
 
 	snprintf(text, sizeof(text), "Lives: %d", gameState->lives);
 	lcdWriteString(text, 0, 1);
@@ -75,24 +79,4 @@ void updateLCD(const gameState_t *gameState)
 	lcd_push_buffer(lcd_buffer);
 }
 
-/*
-void lcd_update(void)
-{
-    stopwatch_time_t t;
-    char text[20];
-
-    if (!timer_tick_occurred())
-        return;
-
-    timer_get_time(&t);
-
-    snprintf(text, sizeof(text),
-             "%02d:%02d:%02d",
-             t.hours, t.minutes, t.seconds);
-
-    memset(lcd_buffer, 0x00, sizeof(lcd_buffer));
-    lcd_write_string(text, 0, 0);
-    lcd_push_buffer(lcd_buffer);
-}
-*/
 
