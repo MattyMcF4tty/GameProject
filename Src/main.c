@@ -47,10 +47,6 @@ int main()
 	{
 	    readJoystick(&joyInput);
 
-	    goHome();
-
-	    printf("%d", joyInput.button);
-
 	    if (joyInput.button == BTN_RED)
 	    {
 	        bossKey();

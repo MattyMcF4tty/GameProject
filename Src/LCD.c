@@ -5,7 +5,7 @@
  *      Author: tobia
  */
 
-#include "LCD.h""
+#include "LCD.h"
 
 static uint8_t lcd_buffer[512];
 
