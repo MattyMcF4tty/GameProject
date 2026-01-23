@@ -92,8 +92,8 @@ static void drawBox(uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2)
 	printf("%c", (char)217); // Bottom Right Corner
 }
 
-// Drawing Functions:
 
+// Drawing Functions:
 static void DrawPixelS(uint8_t x, uint8_t y)
 {
 	// Original position: x = 43, y = 42
@@ -173,9 +173,7 @@ static void DrawPixelT(uint8_t x, uint8_t y)
 static void DrawPixelA(uint8_t x, uint8_t y)
 {
 	// Draw A
-
 	goTo(x, y); //(59,42)
-
 	printf("%c", (unsigned char)219);
 	printf("%c", (unsigned char)219);
 	printf("%c", (unsigned char)219);
@@ -236,9 +234,7 @@ static void DrawPixelA(uint8_t x, uint8_t y)
 static void DrawPixelR(uint8_t x, uint8_t y)
 {
 	// Draw Pixel R
-
 	goTo(x, y); // Original position: (70,42)
-
 	printf("%c", (unsigned char)219);
 	printf("%c", (unsigned char)219);
 	printf("%c", (unsigned char)219);
@@ -289,7 +285,6 @@ static void DrawPixelR(uint8_t x, uint8_t y)
 static void DrawPixelH(uint8_t x, uint8_t y)
 {
 	// Draw H:
-
 	// Left leg
 	goTo(x, y); // (155,42)
 	printf("%c", (unsigned char)219);
@@ -345,7 +340,6 @@ static void DrawPixelH(uint8_t x, uint8_t y)
 static void DrawPixelE(uint8_t x, uint8_t y)
 {
 	// Draw E:
-
 	goTo(x, y); //(165,42)
 	printf("%c", (unsigned char)219);
 	printf("%c", (unsigned char)219);
@@ -388,7 +382,6 @@ static void DrawPixelL(uint8_t x, uint8_t y)
 {
 	// Draw L
 	//  Body
-
 	goTo(x, y); //(172,42)
 	printf("%c", (unsigned char)219);
 	printf("%c", (unsigned char)219);
@@ -422,7 +415,6 @@ static void DrawPixelP(uint8_t x, uint8_t y)
 {
 	// Draw P
 	// Body
-
 	goTo(x, y); //(180,42)
 	printf("%c", (unsigned char)219);
 	printf("%c", (unsigned char)219);
@@ -497,7 +489,7 @@ void DrawStartText(uint8_t Selected)
 }
 
 void DrawHelpText(uint8_t Selected)
-{ // If selected == 1, blink on else off.
+{
 	if (Selected == 1) {
 			fgColor(2);
 			DrawPixelH(142, 50); // 162
@@ -629,8 +621,8 @@ void DrawMenuBorderAndTitle(const gameConfig_t *config)
 void MenuButtons(const gameConfig_t *config)
 { // Make START and HELP buttons/boxes
 	StartAndHelp(config);
-	DrawHelpText(0);  // Parameter is blink ON or OFF, 1 for ON and 0 for OFF
-	DrawStartText(0); // Parameter is blink ON or OFF, 1 for ON and 0 for OFF
+	DrawHelpText(0);  // Parameter is Selected ON or OFF, 1 for ON and 0 for OFF
+	DrawStartText(0); // Parameter is Selected ON or OFF, 1 for ON and 0 for OFF
 }
 
 
