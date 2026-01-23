@@ -15,15 +15,6 @@
 	} active_button_t;
 
 	/* ----- Functions ----- */
-	void DrawLineVertical(uint8_t x,uint8_t y);
-	void DrawLineHorizontal(uint8_t x, uint8_t y);
-	void DrawRightLineDiagonal (uint8_t x, uint8_t y);
-	void DrawLeftLineDiagonal(uint8_t x, uint8_t y);
-
-	void DrawLetterM();
-	void DrawLetterE();
-	void DrawLetterN();
-	void DrawLetterU();
 
 	void DrawPixelS(uint8_t x, uint8_t y);
 	void DrawPixelT(uint8_t x, uint8_t y);
@@ -34,17 +25,13 @@
 	void DrawPixelL(uint8_t x, uint8_t y);
 	void DrawPixelP(uint8_t x, uint8_t y);
 
-	void DrawPixelM(uint8_t x, uint8_t y);
-
 	void DrawStartText(uint8_t Selected);
 	void DrawHelpText(uint8_t Selected);
 
 	void joystick_inputs_init();
 	void Joystick_Toggle();
 	void Setchoice (int value);
-	int Getchoice(void);
-
-	void Draw_Text_MENU();
+	int Getchoice();
 
 	void ShowMenu();
 	void ShowDeathScreen(const gameConfig_t *config, gameState_t *state, const joystick_input_t *joyInput);

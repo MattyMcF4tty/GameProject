@@ -32,7 +32,6 @@ void DrawTitleScreen(uint8_t startX, uint8_t startY) //(70,10)
 
 void drawBordersMenu(uint8_t winStartX, uint8_t winStartY, uint8_t winW, uint8_t winH)
 {
-
 	fgColor(7);
 	char ASCII_character_top = 205;
 	char ASCII_character_sides = 186;
@@ -94,118 +93,6 @@ static void drawBox(uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2)
 }
 
 // Drawing Functions:
-
-void DrawLineVertical(uint8_t x, uint8_t y)
-{
-	goTo(x, y);
-	uint16_t i = 0;
-	for (i = 0; i < 10; i++)
-	{
-		goTo(x, y + i);
-		printf("%c", (unsigned char)179);
-	}
-}
-
-void DrawLineHorizontal(uint8_t x, uint8_t y)
-{
-	goTo(x, y);
-	uint16_t i = 0;
-	for (i = 0; i < 10; i++)
-	{
-		goTo(x + i, y);
-		printf("%c", (unsigned char)196);
-	}
-}
-
-void DrawRightLineDiagonal(uint8_t x, uint8_t y)
-{
-	goTo(x, y);
-	uint16_t i = 0;
-	for (i = 0; i < 10; i++)
-	{
-		goTo(x + i, y + i);
-		printf("%c", (unsigned char)92);
-	}
-}
-
-void DrawLeftLineDiagonal(uint8_t x, uint8_t y)
-{
-	goTo(x, y);
-	uint16_t i = 0;
-	for (i = 0; i < 10; i++)
-	{
-		goTo(x - i, y + i);
-		printf("%c", (unsigned char)47);
-	}
-}
-
-void DrawLetterM()
-{
-	DrawLeftLineDiagonal(20, 10);
-	DrawRightLineDiagonal(20, 10);
-	DrawLeftLineDiagonal(39, 10);
-	DrawRightLineDiagonal(39, 10);
-}
-
-void DrawLetterE()
-{
-	goTo(53, 8);
-	printf("%c", (unsigned char)218);
-	DrawLineVertical(53, 9);   // 53,9
-	DrawLineHorizontal(54, 8); // 54,8
-	DrawLineHorizontal(54, 13);
-	goTo(53, 19);
-	printf("%c", (unsigned char)192);
-	DrawLineHorizontal(54, 19);
-}
-
-void DrawLetterN()
-{
-	goTo(75, 9);
-	printf("%c", (unsigned char)179);
-	goTo(87, 9);
-	printf("%c", (unsigned char)179);
-
-	DrawLineVertical(75, 10);
-	DrawRightLineDiagonal(76, 9);
-	goTo(86, 19);
-	printf("%c", (unsigned char)92);
-
-	DrawLineVertical(87, 10);
-}
-
-void DrawLetterU()
-{
-	DrawLineHorizontal(101, 20); // 101
-	goTo(111, 20);
-	printf("%c", (unsigned char)217);
-	goTo(100, 19);
-	printf("%c", (unsigned char)179);
-	goTo(100, 20);
-	printf("%c", (unsigned char)192);
-	goTo(111, 19);
-	printf("%c", (unsigned char)179);
-	DrawLineVertical(100, 9);
-	DrawLineVertical(111, 9);
-}
-
-void Draw_Text_MENU()
-{
-	// MENU title screen 1:
-	resetBgColor();
-	fgColor(5);
-	DrawLetterM(); // M
-	resetBgColor();
-	fgColor(6);
-	DrawLetterE(); // E
-	resetBgColor();
-	fgColor(1);
-	DrawLetterN(); // N
-	resetBgColor();
-	fgColor(2);
-	DrawLetterU(); // U
-	resetBgColor();
-}
 
 void DrawPixelS(uint8_t x, uint8_t y)
 {
@@ -459,7 +346,6 @@ void DrawPixelE(uint8_t x, uint8_t y)
 {
 	// Draw E:
 
-
 	goTo(x, y); //(165,42)
 	printf("%c", (unsigned char)219);
 	printf("%c", (unsigned char)219);
@@ -630,19 +516,6 @@ void DrawHelpText(uint8_t Selected)
 
 		}
 
-
-
-/*
-	blink(Selected);
-	DrawPixelH(162, 50); // 155,42
-	blink(Selected);
-	DrawPixelE(172, 50); // 165,42
-	blink(Selected);
-	DrawPixelL(179, 50); // 172,42
-	blink(Selected);
-	DrawPixelP(187, 50); // 180,42
-	resetBgColor();
-	*/
 }
 
 void drawHelpScreen(const gameConfig_t *config)
@@ -701,84 +574,6 @@ void drawHelpScreen(const gameConfig_t *config)
 		printf("Lightning Fuel: Faster Spaceship");
 }
 
-void Joystick_Toggle()
-	{ // Uses the onboard STM_32 Joystick, can toggle left, right and click by pressing center
-		joystick_inputs_init();
-
-		while (1)
-		{
-			// These are for the onboard mini Joystick, not for the one we use:
-			/*
-			 uint8_t left = (GPIOC->IDR >> 1) & 1u;  // PC1
-			 uint8_t right = (GPIOC->IDR >> 0) & 1u;  // PC0
-			 uint8_t center = (GPIOB->IDR >> 5) & 1u;  // PB5
-			*/
-/*
-			if (left)
-			{ // Toggle to START
-				DrawHelpText(0);
-				DrawStartText(1);
-				Setchoice(0);
-
-				// simple delay to avoid flooding PuTTY
-				for (volatile uint32_t i = 0; i < 9000; i++)
-				{
-				}
-			}
-
-			if (right)
-			{ // Toggle to HELP
-				DrawStartText(0);
-				DrawHelpText(1);
-				Setchoice(1);
-				// simple delay to avoid flooding PuTTY
-				for (volatile uint32_t i = 0; i < 9000; i++)
-				{
-				}
-			}
-
-			if (center && Getchoice())
-			{ // HELP Clicked
-				DrawStartText(0);
-				DrawHelpText(0);
-				clearScreen();
-				// simple delay to avoid flooding PuTTY
-				for (volatile uint32_t i = 0; i < 9000; i++)
-				{
-				}
-				// HELP screen:
-				DrawPixelH(95, 10);	 // 60,20
-				DrawPixelE(105, 10); // 70,20
-				DrawPixelL(112, 10); // 77,20
-				DrawPixelP(120, 10); // 85,20
-
-				goTo(30, 30);
-				printf("How To Play");
-				goTo(30, 32);
-				printf("Controls: Joystick UP = Change shot angle");
-				goTo(30, 34);
-				printf("Joystick LEFT = Travel left");
-				goTo(30, 36);
-				printf("Joystick RIGHT = Travel right");
-				goTo(30, 38);
-				printf("Red Button = Shoot");
-				goTo(30, 40);
-				printf("? Button = Boss Key");
-			}
-
-			if (center && Getchoice() != 1)
-			{ // START game Clicked
-				DrawStartText(0);
-				DrawHelpText(0);
-				clearScreen();
-				// Game Start and play here:
-				//
-				//
-			}*/
-		}
-	}
-
-// NEW
 
 void navigator(screen_t *screen, joystick_x_t joyX, joystick_btn_t joyBtn, active_button_t *focusButton)
 {
@@ -886,8 +681,3 @@ void drawDeathScreen(const gameConfig_t *config, const gameState_t *state)
     resetBgColor();
 
 }
-/*
-En funktion som tegner titlen og borderen: DrawMenuBorderAndTitle();
-En funktion som tegner START og HELP knapperne: MenuButtons();
-En funktion som tegner HELP skærmen efter man har trykket på HELP knappen: DrawHelpScreen()
- */
