@@ -15,15 +15,13 @@ void LEDinitializer() {
 	    GPIOA->MODER &= ~(3u << (4u * 2u));   // PA4
 	    GPIOB->MODER &= ~(3u << (0u * 2u));   // PB0
 	    GPIOB->MODER &= ~(3u << (5u * 2u));   // PB5
-	    GPIOC->MODER &= ~(3u << (0u * 2u));   // PC0
-	    GPIOC->MODER &= ~(3u << (1u * 2u));   // PC1
+
 
 	    // PUPDR: typisk eksterne pulldowns på boardet -> "no pull" (00) er fint
 	    GPIOA->PUPDR &= ~(3u << (4u * 2u));
 	    GPIOB->PUPDR &= ~(3u << (0u * 2u));
 	    GPIOB->PUPDR &= ~(3u << (5u * 2u));
-	    GPIOC->PUPDR &= ~(3u << (0u * 2u));
-	    GPIOC->PUPDR &= ~(3u << (1u * 2u));
+
 
 
 		//Red PB4

@@ -51,9 +51,11 @@ int main()
 	{
 	    readJoystick(&joyInput);
 
-	    joystick_btn_t edgeBtn = (joyInput.button != prevButton) ? joyInput.button : BTN_NONE;
+	    goHome();
 
-	    if (edgeBtn == BTN_RED)
+	    printf("%d", joyInput.button);
+
+	    if (joyInput.button == BTN_RED)
 	    {
 	        bossKey();
 	        gameState.bossModeActive = 1;
@@ -118,7 +120,7 @@ int main()
 	                }
 	            }
 
-	            navigator(&gameState.screen, joyInput.xAxis, edgeBtn, &button);
+	            navigator(&gameState.screen, joyInput.xAxis, joyInput.button, &button);
 	        }
 	    }
 
